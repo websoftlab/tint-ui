@@ -1,0 +1,36 @@
+{
+	"name": "@tint-ui/trigger",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/trigger",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/trigger"
+	},
+	"dependencies": {
+		"@tint-ui/tools": "*"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12",
+		"@tint-ui/toast-manager": "*",
+		"@tint-ui/dialog-manager": "*"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19"
+	},
+	"exports": {
+		".": {
+			"default": "./build/index.js"
+		},
+		"./package.json": {
+			"default": "./package.json"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

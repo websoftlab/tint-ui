@@ -1,0 +1,55 @@
+{
+	"name": "@tint-ui/form-grid",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/form-grid",
+		"postbuild": "node ../../scripts/main.js form-grid",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/form-grid"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"@tint-ui/tools": "*",
+		"@tint-ui/theme": "*",
+		"@tint-ui/trigger": "*",
+		"@tint-ui/input": "*",
+		"@tint-ui/input-checkbox": "*",
+		"@tint-ui/input-select": "*",
+		"@tint-ui/input-password": "*",
+		"@tint-ui/form-input-group": "*"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12",
+		"react-hook-form": "^7.57.0",
+		"zod": "^3.25.49",
+		"@hookform/resolvers": "^5.0.1"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19",
+		"react-hook-form": "^7",
+		"zod": "^3",
+		"@hookform/resolvers": "^5"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		},
+		"./styles.module.scss": {
+			"require": "./build/styles.module.scss",
+			"default": "./build/styles.module.scss"
+		},
+		"./styles.module.css": {
+			"require": "./build/styles.module.css",
+			"default": "./build/styles.module.css"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

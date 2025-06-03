@@ -1,0 +1,66 @@
+.dialogManager {
+	@apply fixed inset-0 z-50 flex flex-row justify-center items-start overflow-y-auto pointer-events-auto py-0 sm:py-10;
+}
+
+.overlay {
+	&[data-state="open"] {
+		animation-name: enter;
+		animation-duration: 0.3s;
+		--enter-opacity: 0;
+	}
+	&[data-state="closed"] {
+		animation-name: exit;
+		animation-duration: 0.3s;
+		--exit-opacity: 0;
+	}
+}
+
+.content {
+	@apply relative grid gap-4 w-full max-w-full sm:max-w-lg p-6 border bg-background shadow-lg duration-200 sm:rounded-lg mt-0 sm:mt-[5vh];
+	&[data-state="open"] {
+		animation-name: enter;
+		animation-duration: 0.3s;
+		--enter-opacity: 0;
+		--enter-scale: 0.95;
+		--enter-translate-y: -48%;
+	}
+	&[data-state="closed"] {
+		animation-name: exit;
+		animation-duration: 0.3s;
+		--exit-opacity: 0;
+		--exit-scale: 0.95;
+		--exit-translate-y: -48%;
+	}
+}
+
+.sm {
+	@apply max-w-full sm:max-w-sm;
+}
+.md {
+	@apply max-w-full sm:max-w-md;
+}
+.lg {
+	@apply max-w-full sm:max-w-lg;
+}
+.xl {
+	@apply max-w-full sm:max-w-xl;
+}
+.xxl {
+	@apply max-w-full sm:max-w-2xl;
+}
+
+@keyframes enter {
+	from {
+		opacity: var(--enter-opacity, 1);
+		transform: translate3d(0, var(--enter-translate-y, 0), 0)
+			scale3d(var(--enter-scale, 1), var(--enter-scale, 1), var(--enter-scale, 1));
+	}
+}
+
+@keyframes exit {
+	to {
+		opacity: var(--exit-opacity, 1);
+		transform: translate3d(0, var(--exit-translate-y, 0), 0)
+			scale3d(var(--exit-scale, 1), var(--exit-scale, 1), var(--exit-scale, 1));
+	}
+}

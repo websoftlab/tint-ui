@@ -1,0 +1,96 @@
+.select {
+	@apply flex justify-between items-center gap-1.5 pr-2 px-3 py-2 w-full rounded-md border border-input bg-background text-base;
+	@apply disabled:cursor-not-allowed disabled:opacity-50;
+	@apply ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+
+	&[aria-invalid="true"] {
+		@apply border-destructive bg-destructive-foreground focus-visible:ring-destructive;
+	}
+}
+
+.selector,
+.clear {
+	@apply opacity-50 shrink-0 transition-opacity;
+}
+
+.clear {
+	@apply w-4 h-4 hover:opacity-100 text-destructive cursor-pointer;
+	&[aria-disabled="true"] {
+		@apply text-slate-300 cursor-not-allowed;
+	}
+}
+
+.selector {
+	@apply w-6 h-6 my-[-1px];
+}
+
+.placeholder {
+	@apply truncate mr-auto;
+}
+
+.tags {
+	@apply flex flex-wrap gap-1.5 pt-1;
+}
+
+.tag {
+	@apply inline-flex items-center text-xs gap-1 pl-1.5 pr-1 py-0.5 border border-input select-none rounded-md min-w-16 max-w-[45%];
+	> span {
+		@apply truncate;
+	}
+}
+
+.popover {
+	@apply min-w-[80px] p-0;
+	width: var(--popover-width, 200px);
+}
+
+// expanded
+
+.check {
+	@apply opacity-0;
+	[aria-checked="true"] & {
+		@apply opacity-100;
+	}
+}
+
+.select[aria-expanded="true"] {
+	@apply outline-none ring-2 ring-ring ring-offset-2;
+	.selector {
+		@apply opacity-100;
+	}
+}
+
+// sizes
+
+.xs {
+	&.select {
+		@apply px-1 py-0.5 text-xs h-6 rounded-[3px];
+	}
+	.selector {
+		@apply w-4 h-4;
+	}
+}
+.sm {
+	&.select {
+		@apply pl-2 pr-1.5 py-1 text-sm h-8 rounded-sm;
+	}
+	.selector {
+		@apply w-5 h-5;
+	}
+}
+.md {
+	&.select {
+		@apply pl-3 pr-2 py-2 gap-1.5 h-10;
+	}
+	.selector {
+		@apply w-6 h-6;
+	}
+}
+.lg {
+	&.select {
+		@apply pl-4 pr-3 py-3 h-12;
+	}
+	.selector {
+		@apply w-6 h-6;
+	}
+}

@@ -1,0 +1,108 @@
+{
+	"src": [
+		{
+			"target": "node",
+			"output": "./cjs"
+		},
+		{
+			"target": "module",
+			"output": "."
+		},
+		{
+			"target": "types",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"require": "./cjs/index.js",
+						"default": "./index.js"
+					},
+					"./as-props": {
+						"require": "./cjs/as-props.js",
+						"default": "./as-props.js"
+					},
+					"./browser-support": {
+						"require": "./cjs/browser-support.js",
+						"default": "./browser-support.js"
+					},
+					"./class-group": {
+						"require": "./cjs/class-group.js",
+						"default": "./class-group.js"
+					},
+					"./clone-plain-object": {
+						"require": "./cjs/clone-plain-object.js",
+						"default": "./clone-plain-object.js"
+					},
+					"./error-message": {
+						"require": "./cjs/error-message.js",
+						"default": "./error-message.js"
+					},
+					"./is-empty": {
+						"require": "./cjs/is-empty.js",
+						"default": "./is-empty.js"
+					},
+					"./is-plain-object": {
+						"require": "./cjs/is-plain-object.js",
+						"default": "./is-plain-object.js"
+					},
+					"./logger": {
+						"require": "./cjs/logger.js",
+						"default": "./logger.js"
+					},
+					"./make-option": {
+						"require": "./cjs/make-option.js",
+						"default": "./make-option.js"
+					},
+					"./merge-void-callback": {
+						"require": "./cjs/merge-void-callback.js",
+						"default": "./merge-void-callback.js"
+					},
+					"./noop": {
+						"require": "./cjs/noop.js",
+						"default": "./noop.js"
+					},
+					"./proof": {
+						"require": "./cjs/proof.js",
+						"default": "./proof.js"
+					},
+					"./resize-element": {
+						"require": "./cjs/resize-element.js",
+						"default": "./resize-element.js"
+					},
+					"./resize-page": {
+						"require": "./cjs/resize-page.js",
+						"default": "./resize-page.js"
+					},
+					"./scroll-page": {
+						"require": "./cjs/scroll-page.js",
+						"default": "./scroll-page.js"
+					},
+					"./to-case": {
+						"require": "./cjs/to-case.js",
+						"default": "./to-case.js"
+					},
+					"./use-fork-ref": {
+						"require": "./cjs/use-fork-ref.js",
+						"default": "./use-fork-ref.js"
+					},
+					"./use-local-storage-state": {
+						"require": "./cjs/use-local-storage-state.js",
+						"default": "./use-local-storage-state.js"
+					},
+					"./use-media-query": {
+						"require": "./cjs/use-media-query.js",
+						"default": "./use-media-query.js"
+					},
+					"./use-mount": {
+						"require": "./cjs/use-mount.js",
+						"default": "./use-mount.js"
+					},
+					"./package.json": {
+						"require": "./package.json",
+						"default": "./package.json"
+					}
+				}
+			}
+		}
+	]
+}

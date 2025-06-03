@@ -1,0 +1,118 @@
+.checkbox {
+	@apply relative appearance-none m-[1px] box-content overflow-hidden shrink-0 self-start disabled:cursor-not-allowed;
+	@apply ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+
+	// circle
+	&::before {
+		@apply block box-content content-[''] w-4 h-4 shrink-0 border-2 border-muted-foreground;
+		transition: 0.2s border-color ease;
+	}
+
+	&:hover::before,
+	&:checked::before {
+		@apply border-foreground;
+		transition: 0.5s border-color ease;
+	}
+
+	&:disabled::before {
+		@apply border-transparent bg-muted-foreground/30;
+	}
+
+	// dot
+	&::after {
+		@apply block absolute box-content top-[50%] left-[50%] origin-[50%_50%] rounded-full content-[''] w-4 h-4 bg-foreground;
+		transform: translate(-50%, -50%) scale(0);
+	}
+
+	&[type="radio"] {
+		&,
+		&::before {
+			@apply rounded-full;
+		}
+
+		&::after {
+			@apply w-4 h-4 rounded-full;
+			transform: translate(-50%, -50%) scale(0);
+		}
+
+		&:checked::after {
+			animation: toggle-radio 0.2s ease forwards;
+		}
+	}
+
+	&[type="checkbox"] {
+		&,
+		&::before {
+			@apply rounded-[3px];
+		}
+
+		&::after {
+			@apply w-2 h-3.5 rounded-[2px] bg-transparent;
+			transform: translate(-50%, -85%) scale(0) rotate(45deg);
+			box-shadow: 3px 3px 0 0 theme("colors.foreground");
+		}
+
+		&:checked::after {
+			animation: toggle-checkbox 0.2s ease forwards;
+		}
+
+		&:indeterminate::after {
+			@apply bg-muted-foreground hover:bg-foreground transition-colors w-2.5 h-0.5 shadow-none translate-x-[-50%] translate-y-[-50%];
+		}
+
+		&:disabled:indeterminate::after {
+			@apply bg-muted-foreground;
+		}
+	}
+
+	&[aria-invalid="true"] {
+		&::before {
+			@apply border-destructive;
+		}
+	}
+
+	// todo add sizes: sm, md, lg
+}
+
+.label {
+	@apply inline-flex gap-1.5 justify-start items-start;
+}
+
+.labelText {
+	@apply text-sm font-medium leading-snug pt-[1px] text-muted-foreground transition-colors;
+	.checkbox:checked + & {
+		@apply text-foreground;
+	}
+}
+
+.group {
+	@apply flex gap-y-3 pt-2.5;
+}
+.horizontal {
+	@apply gap-x-5 flex-wrap;
+}
+.vertical {
+	@apply flex-col;
+}
+
+@keyframes toggle-checkbox {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -85%) scale(0) rotate(45deg);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -85%) scale(0.8) rotate(45deg);
+	}
+}
+
+@keyframes toggle-radio {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(0.6);
+	}
+}

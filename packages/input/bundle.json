@@ -1,0 +1,48 @@
+{
+	"src": [
+		{
+			"target": "node",
+			"output": "./cjs"
+		},
+		{
+			"target": "module",
+			"output": "."
+		},
+		{
+			"target": "types",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"require": "./cjs/index.js",
+						"default": "./index.js"
+					},
+					"./create-text-adapter-handlers": {
+						"require": "./cjs/create-text-adapter-handlers.js",
+						"default": "./create-text-adapter-handlers.js"
+					},
+					"./create-number-adapter-handlers": {
+						"require": "./cjs/create-number-adapter-handlers",
+						"default": "./create-number-adapter-handlers"
+					},
+					"./styles.module.scss": {
+						"require": "./styles.module.scss",
+						"default": "./styles.module.scss"
+					},
+					"./styles.module.css": {
+						"require": "./styles.module.css",
+						"default": "./styles.module.css"
+					},
+					"./styles.css": {
+						"require": "./styles.css",
+						"default": "./styles.css"
+					},
+					"./package.json": {
+						"require": "./package.json",
+						"default": "./package.json"
+					}
+				}
+			}
+		}
+	]
+}

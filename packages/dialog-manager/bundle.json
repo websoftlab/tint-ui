@@ -1,0 +1,68 @@
+{
+	"src": [
+		{
+			"target": "node",
+			"output": "./cjs"
+		},
+		{
+			"target": "module",
+			"output": "."
+		},
+		{
+			"target": "types",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"require": "./cjs/index.js",
+						"default": "./index.js"
+					},
+					"./dialog-alert": {
+						"require": "./cjs/dialog-alert.js",
+						"default": "./dialog-alert.js"
+					},
+					"./dialog-confirm": {
+						"require": "./cjs/dialog-confirm.js",
+						"default": "./dialog-confirm.js"
+					},
+					"./dialog-prompt": {
+						"require": "./cjs/dialog-prompt.js",
+						"default": "./dialog-prompt.js"
+					},
+					"./register": {
+						"require": "./cjs/register.js",
+						"default": "./register.js"
+					},
+					"./register-alert": {
+						"require": "./cjs/register-alert.js",
+						"default": "./dialog-alert.js"
+					},
+					"./register-confirm": {
+						"require": "./cjs/register-confirm.js",
+						"default": "./dialog-confirm.js"
+					},
+					"./register-prompt": {
+						"require": "./cjs/register-prompt.js",
+						"default": "./register-prompt.js"
+					},
+					"./styles.module.scss": {
+						"require": "./styles.module.scss",
+						"default": "./styles.module.scss"
+					},
+					"./styles.module.css": {
+						"require": "./styles.module.css",
+						"default": "./styles.module.css"
+					},
+					"./styles.css": {
+						"require": "./styles.css",
+						"default": "./styles.css"
+					},
+					"./package.json": {
+						"require": "./package.json",
+						"default": "./package.json"
+					}
+				}
+			}
+		}
+	]
+}

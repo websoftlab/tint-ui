@@ -1,0 +1,44 @@
+{
+	"src": [
+		{
+			"target": "node",
+			"output": "./cjs"
+		},
+		{
+			"target": "module",
+			"output": "."
+		},
+		{
+			"target": "types",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"require": "./cjs/index.js",
+						"default": "./index.js"
+					},
+					"./button": {
+						"require": "./cjs/button.js",
+						"default": "./button.js"
+					},
+					"./constant": {
+						"require": "./cjs/constant.js",
+						"default": "./constant.js"
+					},
+					"./input": {
+						"require": "./cjs/input.js",
+						"default": "./input.js"
+					},
+					"./svg-icon": {
+						"require": "./cjs/svg-icon.js",
+						"default": "./svg-icon.js"
+					},
+					"./package.json": {
+						"require": "./package.json",
+						"default": "./package.json"
+					}
+				}
+			}
+		}
+	]
+}

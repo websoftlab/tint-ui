@@ -1,0 +1,82 @@
+{
+	"name": "@tint-ui/dialog-manager",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/dialog-manager",
+		"postbuild": "node ../../scripts/main.js dialog-manager",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/dialog-manager"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"@tint-ui/tools": "*",
+		"@tint-ui/theme": "*",
+		"@tint-ui/trigger": "*",
+		"@tint-ui/dialog": "*"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19"
+	},
+	"optionalDependencies": {
+		"@tint-ui/button": "*",
+		"@tint-ui/input": "*",
+		"@tint-ui/app": "*"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		},
+		"./dialog-alert": {
+			"require": "./build/cjs/dialog-alert.js",
+			"default": "./build/dialog-alert.js"
+		},
+		"./dialog-confirm": {
+			"require": "./build/cjs/dialog-confirm.js",
+			"default": "./build/dialog-confirm.js"
+		},
+		"./dialog-prompt": {
+			"require": "./build/cjs/dialog-prompt.js",
+			"default": "./build/dialog-prompt.js"
+		},
+		"./register": {
+			"require": "./build/cjs/register.js",
+			"default": "./build/register.js"
+		},
+		"./register-alert": {
+			"require": "./build/cjs/register-alert.js",
+			"default": "./build/dialog-alert.js"
+		},
+		"./register-confirm": {
+			"require": "./build/cjs/register-confirm.js",
+			"default": "./build/dialog-confirm.js"
+		},
+		"./register-prompt": {
+			"require": "./build/cjs/register-prompt.js",
+			"default": "./build/register-prompt.js"
+		},
+		"./styles.module.scss": {
+			"require": "./build/styles.module.scss",
+			"default": "./build/styles.module.scss"
+		},
+		"./styles.module.css": {
+			"require": "./build/styles.module.css",
+			"default": "./build/styles.module.css"
+		},
+		"./styles.css": {
+			"require": "./build/styles.css",
+			"default": "./build/styles.css"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

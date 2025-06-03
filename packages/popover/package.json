@@ -1,0 +1,44 @@
+{
+	"name": "@tint-ui/popover",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/popover",
+		"postbuild": "node ../../scripts/main.js popover",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/popover"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"@radix-ui/react-popover": "^1.1.14",
+		"@tint-ui/tools": "*",
+		"@tint-ui/theme": "*"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		},
+		"./styles.module.scss": {
+			"require": "./build/styles.module.scss",
+			"default": "./build/styles.module.scss"
+		},
+		"./styles.module.css": {
+			"require": "./build/styles.module.css",
+			"default": "./build/styles.module.css"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

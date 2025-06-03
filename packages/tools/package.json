@@ -1,0 +1,112 @@
+{
+	"name": "@tint-ui/tools",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/tools",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/tools"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		},
+		"./as-props": {
+			"require": "./build/cjs/as-props.js",
+			"default": "./build/as-props.js"
+		},
+		"./browser-support": {
+			"require": "./build/cjs/browser-support.js",
+			"default": "./build/browser-support.js"
+		},
+		"./class-group": {
+			"require": "./build/cjs/class-group.js",
+			"default": "./build/class-group.js"
+		},
+		"./clone-plain-object": {
+			"require": "./build/cjs/clone-plain-object.js",
+			"default": "./build/clone-plain-object.js"
+		},
+		"./error-message": {
+			"require": "./build/cjs/error-message.js",
+			"default": "./build/error-message.js"
+		},
+		"./is-empty": {
+			"require": "./build/cjs/is-empty.js",
+			"default": "./build/is-empty.js"
+		},
+		"./is-plain-object": {
+			"require": "./build/cjs/is-plain-object.js",
+			"default": "./build/is-plain-object.js"
+		},
+		"./logger": {
+			"require": "./build/cjs/logger.js",
+			"default": "./build/logger.js"
+		},
+		"./make-option": {
+			"require": "./build/cjs/make-option.js",
+			"default": "./build/make-option.js"
+		},
+		"./merge-void-callback": {
+			"require": "./build/cjs/merge-void-callback.js",
+			"default": "./build/merge-void-callback.js"
+		},
+		"./noop": {
+			"require": "./build/cjs/noop.js",
+			"default": "./build/noop.js"
+		},
+		"./proof": {
+			"require": "./build/cjs/proof.js",
+			"default": "./build/proof.js"
+		},
+		"./resize-element": {
+			"require": "./build/cjs/resize-element.js",
+			"default": "./build/resize-element.js"
+		},
+		"./resize-page": {
+			"require": "./build/cjs/resize-page.js",
+			"default": "./build/resize-page.js"
+		},
+		"./scroll-page": {
+			"require": "./build/cjs/scroll-page.js",
+			"default": "./build/scroll-page.js"
+		},
+		"./to-case": {
+			"require": "./build/cjs/to-case.js",
+			"default": "./build/to-case.js"
+		},
+		"./use-fork-ref": {
+			"require": "./build/cjs/use-fork-ref.js",
+			"default": "./build/use-fork-ref.js"
+		},
+		"./use-local-storage-state": {
+			"require": "./build/cjs/use-local-storage-state.js",
+			"default": "./build/use-local-storage-state.js"
+		},
+		"./use-media-query": {
+			"require": "./build/cjs/use-media-query.js",
+			"default": "./build/use-media-query.js"
+		},
+		"./use-mount": {
+			"require": "./build/cjs/use-mount.js",
+			"default": "./build/use-mount.js"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

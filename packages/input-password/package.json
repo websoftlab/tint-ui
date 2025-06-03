@@ -1,0 +1,38 @@
+{
+	"name": "@tint-ui/input-password",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/input-password",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/input-password"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"@tint-ui/tools": "*",
+		"@tint-ui/input": "*"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12",
+		"react-hook-form": "^7.57.0"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19"
+	},
+	"optionalDependencies": {
+		"@tint-ui/form-input-group": "*"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

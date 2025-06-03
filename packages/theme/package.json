@@ -1,0 +1,31 @@
+{
+	"name": "@tint-ui/theme",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/theme",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/theme"
+	},
+	"devDependencies": {
+		"@types/react": "^18.0.12",
+		"mobx": "^6.13.5"
+	},
+	"peerDependencies": {
+		"react": "^16.8.0 || ^17 || ^18 || ^19",
+		"mobx": "^4.15.0 || ^5 || ^6"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

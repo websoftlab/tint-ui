@@ -1,0 +1,42 @@
+.formGrid {
+}
+
+.form {
+	@apply space-y-5;
+	&:not(:last-child) {
+		@apply mb-5;
+	}
+}
+
+.group {
+	@apply grid grid-cols-6 gap-5;
+}
+
+.n1 {
+	@apply col-span-6;
+}
+
+.n1x2 {
+	@apply col-span-3;
+}
+
+.n1x3 {
+	@apply col-span-2;
+}
+
+.n2x3 {
+	@apply col-span-4;
+}
+
+.loader,
+.error {
+	@apply border w-full h-10 rounded-md;
+}
+
+.loader {
+	@apply border-input bg-accent animate-pulse;
+}
+
+.error {
+	@apply border-destructive px-3 py-2 flex items-center text-sm text-destructive;
+}

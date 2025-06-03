@@ -1,0 +1,25 @@
+{
+	"src": [
+		{
+			"target": "module",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"default": "./index.js"
+					},
+					"./package.json": {
+						"default": "./package.json"
+					}
+				},
+				"bin": {
+					"tint-ui": "./index.js"
+				}
+			}
+		},
+		{
+			"target": "types",
+			"output": "."
+		}
+	]
+}

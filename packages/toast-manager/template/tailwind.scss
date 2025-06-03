@@ -1,0 +1,33 @@
+.toast {
+	@apply bg-background text-foreground border-border shadow-lg;
+}
+
+.description {
+	@apply text-muted-foreground;
+}
+
+.actionButton {
+	@apply bg-primary text-primary-foreground;
+}
+
+.cancelButton {
+	@apply bg-muted text-muted-foreground;
+}
+
+.loader {
+	@apply w-4 h-4 inline-flex justify-center items-center;
+}
+
+// icons
+
+.svgIcon {
+	@apply w-4 h-4;
+}
+
+.svgIconClose {
+	@apply w-3.5 h-3.5;
+}
+
+.svgIconSpin {
+	@apply animate-spin;
+}

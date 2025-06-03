@@ -1,0 +1,51 @@
+.command {
+	@apply flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground;
+}
+
+.search {
+	@apply flex items-center border-b px-3;
+}
+
+.input {
+	@apply flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none focus-visible:outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.icon {
+	@apply mr-2 h-4 w-4 shrink-0 opacity-50;
+}
+
+.list {
+	@apply max-h-[300px] overflow-y-auto overflow-x-hidden;
+}
+
+.empty {
+	@apply py-6 text-center text-sm;
+}
+
+.group {
+	@apply overflow-hidden p-1 text-foreground;
+	& [cmdk-group-heading] {
+		@apply px-2 py-1.5 text-xs font-medium text-muted-foreground;
+	}
+}
+
+.separator {
+	@apply -mx-1 h-px bg-border;
+}
+
+.item {
+	@apply relative flex cursor-default gap-2 select-none items-center justify-between rounded-sm px-2 py-1.5 text-sm outline-none;
+	&[data-disabled="true"] {
+		@apply pointer-events-none opacity-50;
+	}
+	&[data-selected="true"] {
+		@apply bg-accent text-accent-foreground;
+	}
+	& svg {
+		@apply pointer-events-none size-4 shrink-0;
+	}
+}
+
+.shortcut {
+	@apply ml-auto text-xs tracking-widest text-muted-foreground;
+}

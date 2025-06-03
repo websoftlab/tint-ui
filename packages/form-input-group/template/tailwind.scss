@@ -1,0 +1,30 @@
+.group {
+	@apply flex flex-col gap-y-0.5 w-full max-w-full;
+}
+
+.label {
+	@apply inline-flex items-center self-start max-w-full truncate font-medium;
+}
+
+.name {
+	@apply truncate;
+}
+
+.asterisk {
+	@apply text-blue-500 text-2xl leading-[0] align-baseline ml-1;
+	.invalid & {
+		@apply text-destructive;
+	}
+}
+
+.label,
+.helper {
+	@apply text-sm;
+}
+
+.helper {
+	@apply text-muted-foreground;
+	.invalid & {
+		@apply text-destructive;
+	}
+}

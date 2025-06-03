@@ -1,0 +1,97 @@
+.table {
+	@apply w-full caption-bottom text-sm;
+}
+
+.wrapper {
+	@apply relative w-full overflow-auto;
+}
+
+.header tr {
+	@apply border-b;
+}
+
+.body tr:last-child {
+	@apply border-0;
+}
+
+.footer {
+	@apply border-t bg-muted/50 font-medium;
+	& > tr {
+		@apply last:border-b-0;
+	}
+}
+
+.row {
+	@apply border-b transition-colors;
+	&[data-state="selected"] {
+		@apply bg-muted;
+	}
+}
+.body .row:hover {
+	@apply bg-muted/50;
+}
+
+.head {
+	@apply h-12 text-left font-medium text-muted-foreground;
+	& > div[data-align] {
+		@apply flex items-center w-full;
+	}
+	& > div[data-align="start"] {
+		@apply justify-start;
+	}
+	& > div[data-align="center"] {
+		@apply justify-center;
+	}
+	& > div[data-align="end"] {
+		@apply justify-end;
+	}
+}
+
+.cell {
+	@apply py-4;
+	&[data-align="start"] {
+		@apply text-left;
+	}
+	&[data-align="center"] {
+		@apply text-center;
+	}
+	&[data-align="end"] {
+		@apply text-right;
+	}
+}
+
+.head,
+.cell {
+	@apply pl-4 align-middle;
+
+	&:last-of-type {
+		@apply pr-4;
+	}
+
+	&[role="checkbox"] {
+		@apply w-10;
+		input[type="checkbox"] {
+			@apply align-top;
+		}
+	}
+}
+
+.caption {
+	@apply mt-4 text-sm text-muted-foreground;
+}
+
+.sort {
+	@apply inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8;
+	&[data-state="open"] {
+		@apply bg-accent;
+	}
+	& svg {
+		@apply pointer-events-none size-4 shrink-0;
+	}
+	[data-align="start"] & {
+		@apply -ml-3;
+	}
+	[data-align="end"] & {
+		@apply -mr-3;
+	}
+}

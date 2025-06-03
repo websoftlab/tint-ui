@@ -1,0 +1,32 @@
+{
+	"src": [
+		{
+			"target": "node",
+			"output": "./cjs"
+		},
+		{
+			"target": "module",
+			"output": "."
+		},
+		{
+			"target": "types",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"require": "./cjs/index.js",
+						"default": "./index.js"
+					},
+					"./lexicon": {
+						"require": "./cjs/lexicon/index.js",
+						"default": "./lexicon/index.js"
+					},
+					"./package.json": {
+						"require": "./package.json",
+						"default": "./package.json"
+					}
+				}
+			}
+		}
+	]
+}

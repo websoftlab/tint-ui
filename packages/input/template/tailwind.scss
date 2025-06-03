@@ -1,0 +1,155 @@
+.group,
+.input {
+	@apply flex w-full rounded-md border border-input bg-background;
+
+	&.xs {
+		@apply rounded-[3px];
+	}
+	&.sm {
+		@apply rounded-sm;
+	}
+}
+
+.input {
+	@apply px-3 py-2 text-base;
+	@apply disabled:cursor-not-allowed disabled:opacity-50;
+	@apply ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+
+	&[aria-invalid="true"] {
+		@apply border-destructive bg-destructive-foreground focus-visible:ring-destructive;
+	}
+
+	&.xs {
+		@apply px-1 py-0.5 text-xs;
+	}
+	&.sm {
+		@apply px-2 py-1 text-sm;
+	}
+	&.md {
+		@apply px-3 py-2;
+	}
+	&.lg {
+		@apply px-4 py-3;
+	}
+}
+
+.inline {
+	@apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground;
+
+	&.xs {
+		@apply h-6;
+	}
+	&.sm {
+		@apply h-8;
+	}
+	&.md {
+		@apply h-10;
+	}
+	&.lg {
+		@apply h-12;
+	}
+}
+
+.textarea {
+	@apply min-h-[80px];
+}
+
+.group {
+	@apply relative;
+	& > .input {
+		@apply border-none border-transparent flex-shrink focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0;
+
+		&:not(:first-child) {
+			@apply pl-1.5 rounded-l-none;
+		}
+
+		&:not(:last-child) {
+			@apply pr-1.5 rounded-r-none;
+		}
+	}
+
+	&:focus-within {
+		@apply ring-offset-background outline-none ring-2 ring-ring ring-offset-2;
+	}
+
+	&[aria-invalid="true"] {
+		@apply border-destructive bg-destructive-foreground;
+		&:focus-within {
+			@apply ring-destructive/50;
+		}
+	}
+
+	&.xs > .inline {
+		@apply h-[calc(theme(height.6)_-_2px)];
+	}
+	&.sm > .inline {
+		@apply h-[calc(theme(height.8)_-_2px)];
+	}
+	& > .inline,
+	&.md > .inline {
+		@apply h-[calc(theme(height.10)_-_2px)];
+	}
+	&.lg > .inline {
+		@apply h-[calc(theme(height.12)_-_2px)];
+	}
+}
+
+.addon {
+	@apply relative z-10 text-sm shrink-0 font-medium min-w-10 p-2 inline-flex justify-center items-center first:rounded-l-md last:rounded-r-md;
+	.xs & {
+		@apply p-0.5 min-w-6 first:rounded-l-[3px] last:rounded-r-[3px];
+	}
+	.sm & {
+		@apply p-1 min-w-8 first:rounded-l-sm last:rounded-r-sm;
+	}
+	.md & {
+		@apply p-2 min-w-10;
+	}
+	.lg & {
+		@apply p-3 min-w-12;
+	}
+
+	& > svg {
+		@apply shrink-0;
+	}
+	.xs & > svg,
+	.sm & > svg {
+		@apply w-4 h-4;
+	}
+	.md & > svg,
+	& > svg {
+		@apply w-5 h-5;
+	}
+	.lg & > svg {
+		@apply w-6 h-6;
+	}
+
+	&:not(:last-child) {
+		@apply border-r border-r-input;
+	}
+	.input ~ & {
+		@apply border-r-0 border-r-transparent border-l border-l-input;
+	}
+}
+
+.addonText {
+	@apply text-neutral-400 transition-colors;
+	.group:focus-within & {
+		@apply text-neutral-500;
+	}
+}
+
+.addonButton {
+	@apply cursor-pointer transition-colors bg-slate-100 text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+	&:not(:disabled):hover {
+		@apply bg-slate-50;
+	}
+}
+
+.addonBlank {
+	@apply border-none;
+}
+
+.addonLabel {
+	@apply border-none opacity-40;
+}

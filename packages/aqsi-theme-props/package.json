@@ -1,0 +1,45 @@
+{
+	"name": "@tint-ui/aqsi-theme-props",
+	"version": "0.0.1",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/aqsi-theme-props",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/aqsi-theme-props"
+	},
+	"dependencies": {
+		"@tint-ui/tools": "*"
+	},
+	"devDependencies": {
+		"@tint-ui/theme": "*"
+	},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		},
+		"./button": {
+			"require": "./build/cjs/button.js",
+			"default": "./build/button.js"
+		},
+		"./constant": {
+			"require": "./build/cjs/constant.js",
+			"default": "./build/constant.js"
+		},
+		"./input": {
+			"require": "./build/cjs/input.js",
+			"default": "./build/input.js"
+		},
+		"./svg-icon": {
+			"require": "./build/cjs/svg-icon.js",
+			"default": "./build/svg-icon.js"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}
