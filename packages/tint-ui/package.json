@@ -1,12 +1,12 @@
 {
-	"name": "tint-ui",
+	"name": "tint-ui-core",
 	"version": "0.0.1",
 	"author": "phragon@websoftlab.com",
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
-		"build": "phragon-script build --cwd \"../../\" -P tint-ui",
-		"prettier": "phragon-script prettier --cwd \"../../\" -P tint-ui"
+		"build": "phragon-script build --cwd \"../../\" -P tint-ui-core",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P tint-ui-core"
 	},
 	"dependencies": {
 		"@antfu/ni": "^0.23.1",

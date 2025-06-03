@@ -1,22 +1,22 @@
-# tint-ui
+# tint-ui-core
 
-The main package for generating and installing dependencies for the tint-ui library. It is intended for development use and is recommended for developers working with tint-ui.
+The main package for generating and installing dependencies for the `tint-ui-core` library. It is intended for development use and is recommended for developers working with Tint UI.
 
-`tint-ui` uses Tailwind CSS for styling and Radix UI for some interactive components.
+Tint UI uses Tailwind CSS for styling and Radix UI for some interactive components.
 
 ## Installation
 
 ```bash
-npm install --save-dev tint-ui
+npm install --save-dev `tint-ui-core`
 ```
 
 ## Usage
 
-tint-ui provides three basic commands:
+Tint UI provides three basic commands:
 
-- **init**: Initializes the tint-ui setup in your project, generating necessary configuration files and installing dependencies.
-- **add**: Adds a new component or feature to your project.
-- **create**: Creates a new project or component structure based on templates.
+- `init`: Initializes the `tint-ui` setup in your project, generating necessary configuration files and installing dependencies.
+- `add`: Adds a new component or feature to your project.
+- `create`: Creates a new project or component structure based on templates.
 
 ## Commands
 
@@ -26,7 +26,7 @@ tint-ui provides three basic commands:
 npx tint-ui init
 ```
 
-This command sets up the tint-ui environment, including theme configuration, component registration, and necessary dependencies.
+This command sets up the Tint UI environment, including theme configuration, component registration, and necessary dependencies.
 
 ### add
 
@@ -108,7 +108,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
 
 ## Note
 
-While tint-ui is not mandatory after initial setup, it is recommended for development to ensure consistency and ease of use.
+While Tint UI is not mandatory after initial setup, it is recommended for development to ensure consistency and ease of use.
 
 ## License
 

@@ -68,10 +68,11 @@ Before installation, make sure to:
 1. Install Tailwind CSS v3
 2. Add the main styles file where you include `@tailwind base;` to define and add styles
 3. Configure paths in `tsconfig.json` for the main project directory, for example: `"paths": { "@/*": ["./src/*"] }`
-4. Then run the installation and follow the instructions
+4. Install `tint-ui-core` package
+5. Then run the installation and follow the instructions
 
 ```bash
-npx tint-ui install
+npx tint-ui init
 ```
 
 Install individual components as needed, use the CLI tool to add components with all necessary dependencies.\
@@ -120,7 +121,7 @@ export function MyComponent() {
 
 ## Available Packages
 
-- `tint-ui` - Core development library for component installation, dependency management, and component scaffolding
+- `tint-ui-core` - Core development library for component installation, dependency management, and component scaffolding
 - `@tint-ui/tools` - Utility functions and hooks
 - `@tint-ui/theme` - Core theme system and style management
 
