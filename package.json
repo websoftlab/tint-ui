@@ -1,0 +1,45 @@
+{
+	"name": "tint-ui",
+	"private": true,
+	"version": "1.0.0",
+	"description": "React tint-ui packages for websoftlab projects",
+	"scripts": {
+		"boilerpdalate": "phragon-script boilerplate",
+		"prettier": "phragon-script prettier",
+		"increment": "phragon-script increment",
+		"build": "phragon-script build",
+		"postbuild": "node ./scripts/main.js --all",
+		"release": "phragon-script release --channel global",
+		"release-local": "phragon-script release --channel local"
+	},
+	"workspaces": [
+		"packages/*"
+	],
+	"keywords": [
+		"tint-ui",
+		"tint",
+		"ui",
+		"react"
+	],
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"dependencies": {
+		"@phragon-util/script": "^0.0.7"
+	},
+	"devDependencies": {
+		"@types/node": "^18.15.3",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
+	},
+	"browserslist": {
+		"production": [
+			"> 1%"
+		],
+		"node": [
+			"node 18"
+		]
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}
