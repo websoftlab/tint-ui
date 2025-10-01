@@ -1,8 +1,8 @@
 "use client";
 
-import type { HTMLAttributes, MouseEventHandler, DetailedHTMLProps } from "react";
+import type { HTMLAttributes, InputHTMLAttributes, MouseEventHandler, DetailedHTMLProps } from "react";
 import type { InputSelectClasses } from "./classes";
-import type { InputSelectProps, InputSelectSize, TagGroupProps } from "./types";
+import type { InputSelectProps, InputSelectSize, TagGroupProps, OptionType } from "./types";
 
 import * as React from "react";
 import clsx from "clsx";
@@ -25,6 +25,7 @@ import { useInputSelectClasses } from "./classes";
 
 type ButtonSelectProps = Omit<DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "size"> & {
 	clearable: boolean;
+	name?: string;
 	disabled?: boolean;
 	invalid?: boolean;
 	loading?: boolean;
@@ -34,20 +35,56 @@ type ButtonSelectProps = Omit<DetailedHTMLProps<HTMLAttributes<HTMLButtonElement
 	onSelectOption(value: string | string[] | null): void;
 };
 
-const IconX = ({ onClick, disabled = false }: { onClick: MouseEventHandler<SVGSVGElement>; disabled?: boolean }) => {
+const ButtonCancel = ({
+	onClick,
+	inside = false,
+	disabled = false,
+}: {
+	inside?: boolean;
+	onClick: MouseEventHandler<HTMLButtonElement>;
+	disabled?: boolean;
+}) => {
 	const classes = useInputSelectClasses();
+	const icon = <SvgThemeIcon icon="x" aria-disabled={disabled} />;
+	const props = {
+		className: classes.close,
+		onClick: disabled ? undefined : onClick,
+	};
+	if (inside) {
+		return (
+			<span role="button" tabIndex={1} aria-disabled={disabled} {...props}>
+				{icon}
+			</span>
+		);
+	}
 	return (
-		<SvgThemeIcon
-			role="button"
-			icon="x"
-			onClick={disabled ? undefined : onClick}
-			aria-disabled={disabled}
-			className={classes.clear}
+		<button type="button" disabled={disabled} {...props}>
+			{icon}
+		</button>
+	);
+};
+
+ButtonCancel.displayName = "ButtonCancel";
+
+const InputHidden = ({ name, value }: { name: string; value: null | OptionType | OptionType[] }) => {
+	const classes = useInputSelectClasses();
+	const { className, ...props } = useProps<
+		DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+	>("component.input-select.hidden", { name }, { as: "input" });
+	return (
+		<input
+			{...props}
+			className={clsx(classes.hidden, className)}
+			type="hidden"
+			name={name}
+			value={value == null ? "" : Array.isArray(value) ? JSON.stringify(value) : String(value)}
 		/>
 	);
 };
 
-const Tag = ({ children, ...rest }: { children: string; disabled: boolean; onClick(): void }) => {
+InputHidden.displayName = "InputHidden";
+
+const Tag = ({ children, ...rest }: { children: React.ReactNode; disabled: boolean; onClick(): void }) => {
 	const classes = useInputSelectClasses();
 	const { className, ...tagProps } = useProps<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>>(
 		"component.input-select.tag",
@@ -56,11 +93,13 @@ const Tag = ({ children, ...rest }: { children: string; disabled: boolean; onCli
 	);
 	return (
 		<span {...tagProps} className={clsx(classes.tag, className)}>
-			<span>{children}</span>
-			<IconX {...rest} />
+			{React.isValidElement(children) ? children : <span>{children}</span>}
+			<ButtonCancel {...rest} />
 		</span>
 	);
 };
+
+Tag.displayName = "Tag";
 
 const TagGroup = ({ children, size, ...rest }: TagGroupProps) => {
 	const classes = useInputSelectClasses();
@@ -71,6 +110,8 @@ const TagGroup = ({ children, size, ...rest }: TagGroupProps) => {
 		</div>
 	);
 };
+
+TagGroup.displayName = "TagGroup";
 
 const ButtonSelect = React.forwardRef<HTMLButtonElement, ButtonSelectProps>((props, ref) => {
 	const { classes, children, onSelectOption, ...restProps } = props;
@@ -85,7 +126,7 @@ const ButtonSelect = React.forwardRef<HTMLButtonElement, ButtonSelectProps>((pro
 		...buttonProps
 	} = useProps("component.input-select", restProps, { as: "button" });
 
-	const onClearHandler: MouseEventHandler<SVGSVGElement> = React.useCallback(
+	const onClearHandler: MouseEventHandler<HTMLButtonElement> = React.useCallback(
 		(event) => {
 			event.preventDefault();
 			onSelectOption(null);
@@ -96,6 +137,7 @@ const ButtonSelect = React.forwardRef<HTMLButtonElement, ButtonSelectProps>((pro
 	return (
 		<button
 			aria-invalid={invalid}
+			disabled={disabled}
 			type="button"
 			role="combobox"
 			{...buttonProps}
@@ -106,12 +148,14 @@ const ButtonSelect = React.forwardRef<HTMLButtonElement, ButtonSelectProps>((pro
 			{loading ? (
 				<SvgThemeIcon icon="loader" spin className={classes.loader} />
 			) : (
-				clearable && <IconX disabled={disabled} onClick={onClearHandler} />
+				clearable && <ButtonCancel inside disabled={disabled} onClick={onClearHandler} />
 			)}
 			<SvgThemeIcon role="button" icon="selector" className={classes.selector} />
 		</button>
 	);
 });
+
+ButtonSelect.displayName = "ButtonSelect";
 
 const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props, ref) => {
 	const {
@@ -129,6 +173,7 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 		setOpen,
 		isOptionSelected,
 		renderOption,
+		renderTag,
 		disableSearch,
 		inputController,
 		error,
@@ -136,6 +181,9 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 		loaded,
 		tagsProps,
 		popoverProps,
+		name,
+		inputHidden,
+		value,
 	} = useSelect(props);
 
 	const classes = useInputSelectClasses();
@@ -144,63 +192,69 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 	const forkRef = useForkRef(innerRef, ref);
 
 	return (
-		<Popover open={disabled ? false : open} onOpenChange={disabled ? noop : setOpen}>
-			<PopoverTrigger asChild>
-				<ButtonSelect
-					{...buttonProps}
-					loading={loading}
-					classes={classes}
-					clearable={clearable}
-					onSelectOption={onSelectOption}
-					aria-expanded={open}
-					ref={forkRef}
-				>
-					{lexicon.placeholder}
-				</ButtonSelect>
-			</PopoverTrigger>
-			{tags.length > 0 && (
-				<TagGroup size={size} {...tagsProps}>
-					{tags.map((item) => (
-						<Tag key={item.value} disabled={disabled} onClick={item.onClear}>
-							{item.label}
-						</Tag>
-					))}
-				</TagGroup>
-			)}
-			<PopoverContent
-				{...popoverProps}
-				className={clsx(classes.popover, popoverProps.className)}
-				style={{ ...popoverStyle, ...popoverProps.style }}
-				ref={popoverRef}
-				themePropsType="input-select"
-			>
-				<Command>
-					{disableSearch ? null : <CommandInput placeholder={lexicon.search} {...inputController} />}
-					{loaded ? null : <CommandLoading>{lexicon.loading}</CommandLoading>}
-					<CommandList>
-						{(!forceMount || options.length === 0 || error != null) && (
-							<CommandEmpty>{error == null ? lexicon.notFound : error}</CommandEmpty>
-						)}
-						{options.map(({ label, options }, index) => (
-							<CommandGroup key={`group:${index}`} heading={label} forceMount={forceMount}>
-								{options.map((item) => (
-									<CommandItem
-										key={item.value}
-										value={`${item.value}`}
-										disabled={item.disabled}
-										onSelect={onSelectOption}
-										aria-checked={isOptionSelected(item.value as string)}
-									>
-										{renderOption(item)}
-										<SvgThemeIcon icon="check" className={classes.check} />
-									</CommandItem>
-								))}
-							</CommandGroup>
+		<>
+			<Popover open={disabled ? false : open} onOpenChange={disabled ? noop : setOpen}>
+				<PopoverTrigger asChild>
+					<ButtonSelect
+						{...buttonProps}
+						name={inputHidden ? undefined : name}
+						loading={loading}
+						classes={classes}
+						clearable={clearable}
+						onSelectOption={onSelectOption}
+						aria-expanded={open}
+						ref={forkRef}
+					>
+						{lexicon.placeholder}
+					</ButtonSelect>
+				</PopoverTrigger>
+				{tags.length > 0 && (
+					<TagGroup size={size} {...tagsProps}>
+						{tags.map((item) => (
+							<Tag key={item.id} disabled={disabled} onClick={item.onClear}>
+								{renderTag(item)}
+							</Tag>
 						))}
-					</CommandList>
-				</Command>
-			</PopoverContent>
-		</Popover>
+					</TagGroup>
+				)}
+				<PopoverContent
+					{...popoverProps}
+					className={clsx(classes.popover, popoverProps.className)}
+					style={{ ...popoverStyle, ...popoverProps.style }}
+					ref={popoverRef}
+					themePropsType="input-select"
+				>
+					<Command>
+						{disableSearch ? null : <CommandInput placeholder={lexicon.search} {...inputController} />}
+						{loaded ? null : <CommandLoading>{lexicon.loading}</CommandLoading>}
+						<CommandList>
+							{(!forceMount || options.length === 0 || error != null) && (
+								<CommandEmpty className={error == null ? undefined : classes.error}>
+									{error == null ? lexicon.notFound : error}
+								</CommandEmpty>
+							)}
+							{options.map(({ label, options }, index) => (
+								<CommandGroup key={`group:${index}`} heading={label} forceMount={forceMount}>
+									{options.map((item) => (
+										<CommandItem
+											key={item.value}
+											value={`${item.value}`}
+											disabled={item.disabled}
+											onSelect={onSelectOption}
+											aria-checked={isOptionSelected(item.value as string)}
+										>
+											{renderOption(item)}
+											<SvgThemeIcon icon="check" className={classes.check} />
+										</CommandItem>
+									))}
+								</CommandGroup>
+							))}
+						</CommandList>
+					</Command>
+				</PopoverContent>
+			</Popover>
+			{inputHidden && <InputHidden name={name!} value={value} />}
+		</>
 	);
 });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { UseFormReturn } from "react-hook-form";
-import type { FormGridType } from "./types";
+import type { FormGridSize, FormGridType } from "./types";
 
 import * as React from "react";
 import { invariant } from "@tint-ui/tools/proof";
@@ -26,7 +26,7 @@ interface FormGridContextType {
 	/**
 	 * The confirmation message.
 	 */
-	confirmMessage: string;
+	confirmMessage: React.ReactNode;
 	/**
 	 * The error message. Only used when toastError is false. Error message display implementation is handled by the user.
 	 */
@@ -65,6 +65,8 @@ interface FormGridContextType {
  */
 const FormGridContext = React.createContext<FormGridContextType | null>(null);
 
+FormGridContext.displayName = "FormGridContext";
+
 /**
  * useFormContext is the hook to use the form grid context.
  */
@@ -74,5 +76,13 @@ const useFormContext = (): FormGridContextType => {
 	return ctx;
 };
 
-export { useFormContext, FormGridContext };
+const FormGridSizeContext = React.createContext<FormGridSize>("md");
+
+FormGridSizeContext.displayName = "FormGridSizeContext";
+
+const useFormGridSize = () => {
+	return React.useContext(FormGridSizeContext);
+};
+
+export { useFormContext, FormGridContext, useFormGridSize, FormGridSizeContext };
 export type { FormGridContextType };

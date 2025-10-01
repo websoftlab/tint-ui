@@ -15,12 +15,16 @@ const preventCallback = (event: { preventDefault(): void }) => {
 
 export interface DialogManagerProps extends React.HTMLAttributes<HTMLDivElement> {
 	registerTypes?: DialogManagerRegisterType[];
+	asyncForceDelay?: number;
 }
 
 export const DialogManager = React.forwardRef<HTMLDivElement, DialogManagerProps>(
-	({ className, registerTypes, ...rest }, ref) => {
+	({ className, registerTypes, asyncForceDelay, ...rest }, ref) => {
 		const classes = useDialogManagerClasses();
-		const { open, manager, props, locked, onOpenChange } = useCreateDialogManager(registerTypes);
+		const { open, manager, props, locked, onOpenChange } = useCreateDialogManager(
+			registerTypes,
+			typeof asyncForceDelay === "number" ? asyncForceDelay : 0
+		);
 		if (!manager) {
 			return null;
 		}

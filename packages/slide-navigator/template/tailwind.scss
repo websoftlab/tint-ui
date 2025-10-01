@@ -1,0 +1,85 @@
+.slideNavigator {
+	@apply relative w-full max-w-full;
+}
+
+.navigation {
+	@apply grid items-center;
+	grid-template-columns: min-content 1fr min-content;
+}
+
+.auto {
+	&.navigation {
+		gap: var(--tui-sn-navigation-spacing, 0.8rem);
+	}
+	.container {
+		gap: var(--tui-sn-slide-spacing, 1rem);
+		height: var(--tui-sn-height, auto);
+	}
+	> .button {
+		width: var(--tui-sn-button-width, auto);
+		min-width: var(--tui-sn-button-width, auto);
+	}
+}
+.lg {
+	&.navigation {
+		@apply gap-3;
+	}
+	.container {
+		@apply h-12 gap-4;
+	}
+	> .button {
+		@apply w-9 min-w-9;
+	}
+}
+.md {
+	&.navigation {
+		@apply gap-2.5;
+	}
+	.container {
+		@apply h-10 gap-3;
+	}
+	> .button {
+		@apply w-7 min-w-7;
+	}
+}
+.sm {
+	&.navigation {
+		@apply gap-2;
+	}
+	.container {
+		@apply h-8 gap-2.5;
+	}
+	> .button {
+		@apply w-6 min-w-6;
+	}
+}
+.xs {
+	&.navigation {
+		@apply gap-1.5;
+	}
+	.container {
+		@apply h-6 gap-2;
+	}
+	> .button {
+		@apply w-4 min-w-4;
+	}
+}
+
+.viewport {
+	@apply overflow-hidden p-1;
+}
+
+.container {
+	@apply flex items-center;
+	touch-action: pan-y pinch-zoom;
+}
+
+.slide,
+.container > * {
+	transform: translate3d(0, 0, 0);
+	min-width: 0;
+	position: relative;
+}
+
+.button {
+}

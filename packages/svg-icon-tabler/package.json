@@ -1,0 +1,392 @@
+{
+	"name": "@tint-ui/svg-icon-tabler",
+	"version": "3.35.0",
+	"author": "phragon@websoftlab.com",
+	"license": "MIT",
+	"scripts": {
+		"build": "phragon-script build --cwd \"../../\" -P @tint-ui/svg-icon-tabler",
+		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/svg-icon-tabler"
+	},
+	"dependencies": {},
+	"exports": {
+		".": {
+			"require": "./build/cjs/index.js",
+			"default": "./build/index.js"
+		},
+		"./tags.json": {
+			"require": "./icons-data/tags.json",
+			"default": "./icons-data/tags.json"
+		},
+		"./name-all.json": {
+			"require": "./icons-data/name-all.json",
+			"default": "./icons-data/name-all.json"
+		},
+		"./name-outline.json": {
+			"require": "./icons-data/name-outline.json",
+			"default": "./icons-data/name-outline.json"
+		},
+		"./name-filled.json": {
+			"require": "./icons-data/name-filled.json",
+			"default": "./icons-data/name-filled.json"
+		},
+		"./icon-all.json": {
+			"require": "./icons-data/icon-all.json",
+			"default": "./icons-data/icon-all.json"
+		},
+		"./icon-all-outline.json": {
+			"require": "./icons-data/icon-all-outline.json",
+			"default": "./icons-data/icon-all-outline.json"
+		},
+		"./icon-all-filled.json": {
+			"require": "./icons-data/icon-all-filled.json",
+			"default": "./icons-data/icon-all-filled.json"
+		},
+		"./icon-development.json": {
+			"require": "./icons-data/icon-development.json",
+			"default": "./icons-data/icon-development.json"
+		},
+		"./icon-development-outline.json": {
+			"require": "./icons-data/icon-development-outline.json",
+			"default": "./icons-data/icon-development-outline.json"
+		},
+		"./icon-math.json": {
+			"require": "./icons-data/icon-math.json",
+			"default": "./icons-data/icon-math.json"
+		},
+		"./icon-math-outline.json": {
+			"require": "./icons-data/icon-math-outline.json",
+			"default": "./icons-data/icon-math-outline.json"
+		},
+		"./icon-devices.json": {
+			"require": "./icons-data/icon-devices.json",
+			"default": "./icons-data/icon-devices.json"
+		},
+		"./icon-devices-outline.json": {
+			"require": "./icons-data/icon-devices-outline.json",
+			"default": "./icons-data/icon-devices-outline.json"
+		},
+		"./icon-design.json": {
+			"require": "./icons-data/icon-design.json",
+			"default": "./icons-data/icon-design.json"
+		},
+		"./icon-design-outline.json": {
+			"require": "./icons-data/icon-design-outline.json",
+			"default": "./icons-data/icon-design-outline.json"
+		},
+		"./icon-system.json": {
+			"require": "./icons-data/icon-system.json",
+			"default": "./icons-data/icon-system.json"
+		},
+		"./icon-system-outline.json": {
+			"require": "./icons-data/icon-system-outline.json",
+			"default": "./icons-data/icon-system-outline.json"
+		},
+		"./icon-vehicles.json": {
+			"require": "./icons-data/icon-vehicles.json",
+			"default": "./icons-data/icon-vehicles.json"
+		},
+		"./icon-vehicles-outline.json": {
+			"require": "./icons-data/icon-vehicles-outline.json",
+			"default": "./icons-data/icon-vehicles-outline.json"
+		},
+		"./icon-map.json": {
+			"require": "./icons-data/icon-map.json",
+			"default": "./icons-data/icon-map.json"
+		},
+		"./icon-map-outline.json": {
+			"require": "./icons-data/icon-map-outline.json",
+			"default": "./icons-data/icon-map-outline.json"
+		},
+		"./icon-text.json": {
+			"require": "./icons-data/icon-text.json",
+			"default": "./icons-data/icon-text.json"
+		},
+		"./icon-text-outline.json": {
+			"require": "./icons-data/icon-text-outline.json",
+			"default": "./icons-data/icon-text-outline.json"
+		},
+		"./icon-letters.json": {
+			"require": "./icons-data/icon-letters.json",
+			"default": "./icons-data/icon-letters.json"
+		},
+		"./icon-letters-outline.json": {
+			"require": "./icons-data/icon-letters-outline.json",
+			"default": "./icons-data/icon-letters-outline.json"
+		},
+		"./icon-symbols.json": {
+			"require": "./icons-data/icon-symbols.json",
+			"default": "./icons-data/icon-symbols.json"
+		},
+		"./icon-symbols-outline.json": {
+			"require": "./icons-data/icon-symbols-outline.json",
+			"default": "./icons-data/icon-symbols-outline.json"
+		},
+		"./icon-photography.json": {
+			"require": "./icons-data/icon-photography.json",
+			"default": "./icons-data/icon-photography.json"
+		},
+		"./icon-photography-outline.json": {
+			"require": "./icons-data/icon-photography-outline.json",
+			"default": "./icons-data/icon-photography-outline.json"
+		},
+		"./icon-food.json": {
+			"require": "./icons-data/icon-food.json",
+			"default": "./icons-data/icon-food.json"
+		},
+		"./icon-food-outline.json": {
+			"require": "./icons-data/icon-food-outline.json",
+			"default": "./icons-data/icon-food-outline.json"
+		},
+		"./icon-games.json": {
+			"require": "./icons-data/icon-games.json",
+			"default": "./icons-data/icon-games.json"
+		},
+		"./icon-games-outline.json": {
+			"require": "./icons-data/icon-games-outline.json",
+			"default": "./icons-data/icon-games-outline.json"
+		},
+		"./icon-document.json": {
+			"require": "./icons-data/icon-document.json",
+			"default": "./icons-data/icon-document.json"
+		},
+		"./icon-document-outline.json": {
+			"require": "./icons-data/icon-document-outline.json",
+			"default": "./icons-data/icon-document-outline.json"
+		},
+		"./icon-arrows.json": {
+			"require": "./icons-data/icon-arrows.json",
+			"default": "./icons-data/icon-arrows.json"
+		},
+		"./icon-arrows-outline.json": {
+			"require": "./icons-data/icon-arrows-outline.json",
+			"default": "./icons-data/icon-arrows-outline.json"
+		},
+		"./icon-media.json": {
+			"require": "./icons-data/icon-media.json",
+			"default": "./icons-data/icon-media.json"
+		},
+		"./icon-media-outline.json": {
+			"require": "./icons-data/icon-media-outline.json",
+			"default": "./icons-data/icon-media-outline.json"
+		},
+		"./icon-health.json": {
+			"require": "./icons-data/icon-health.json",
+			"default": "./icons-data/icon-health.json"
+		},
+		"./icon-health-outline.json": {
+			"require": "./icons-data/icon-health-outline.json",
+			"default": "./icons-data/icon-health-outline.json"
+		},
+		"./icon-e-commerce.json": {
+			"require": "./icons-data/icon-e-commerce.json",
+			"default": "./icons-data/icon-e-commerce.json"
+		},
+		"./icon-e-commerce-outline.json": {
+			"require": "./icons-data/icon-e-commerce-outline.json",
+			"default": "./icons-data/icon-e-commerce-outline.json"
+		},
+		"./icon-badges.json": {
+			"require": "./icons-data/icon-badges.json",
+			"default": "./icons-data/icon-badges.json"
+		},
+		"./icon-badges-outline.json": {
+			"require": "./icons-data/icon-badges-outline.json",
+			"default": "./icons-data/icon-badges-outline.json"
+		},
+		"./icon-sport.json": {
+			"require": "./icons-data/icon-sport.json",
+			"default": "./icons-data/icon-sport.json"
+		},
+		"./icon-sport-outline.json": {
+			"require": "./icons-data/icon-sport-outline.json",
+			"default": "./icons-data/icon-sport-outline.json"
+		},
+		"./icon-animals.json": {
+			"require": "./icons-data/icon-animals.json",
+			"default": "./icons-data/icon-animals.json"
+		},
+		"./icon-animals-outline.json": {
+			"require": "./icons-data/icon-animals-outline.json",
+			"default": "./icons-data/icon-animals-outline.json"
+		},
+		"./icon-computers.json": {
+			"require": "./icons-data/icon-computers.json",
+			"default": "./icons-data/icon-computers.json"
+		},
+		"./icon-computers-outline.json": {
+			"require": "./icons-data/icon-computers-outline.json",
+			"default": "./icons-data/icon-computers-outline.json"
+		},
+		"./icon-laundry.json": {
+			"require": "./icons-data/icon-laundry.json",
+			"default": "./icons-data/icon-laundry.json"
+		},
+		"./icon-laundry-outline.json": {
+			"require": "./icons-data/icon-laundry-outline.json",
+			"default": "./icons-data/icon-laundry-outline.json"
+		},
+		"./icon-extensions.json": {
+			"require": "./icons-data/icon-extensions.json",
+			"default": "./icons-data/icon-extensions.json"
+		},
+		"./icon-extensions-outline.json": {
+			"require": "./icons-data/icon-extensions-outline.json",
+			"default": "./icons-data/icon-extensions-outline.json"
+		},
+		"./icon-numbers.json": {
+			"require": "./icons-data/icon-numbers.json",
+			"default": "./icons-data/icon-numbers.json"
+		},
+		"./icon-numbers-outline.json": {
+			"require": "./icons-data/icon-numbers-outline.json",
+			"default": "./icons-data/icon-numbers-outline.json"
+		},
+		"./icon-brand.json": {
+			"require": "./icons-data/icon-brand.json",
+			"default": "./icons-data/icon-brand.json"
+		},
+		"./icon-brand-outline.json": {
+			"require": "./icons-data/icon-brand-outline.json",
+			"default": "./icons-data/icon-brand-outline.json"
+		},
+		"./package.json": {
+			"require": "./icons-data/package.json",
+			"default": "./icons-data/package.json"
+		},
+		"./icon-communication.json": {
+			"require": "./icons-data/icon-communication.json",
+			"default": "./icons-data/icon-communication.json"
+		},
+		"./icon-communication-outline.json": {
+			"require": "./icons-data/icon-communication-outline.json",
+			"default": "./icons-data/icon-communication-outline.json"
+		},
+		"./icon-buildings.json": {
+			"require": "./icons-data/icon-buildings.json",
+			"default": "./icons-data/icon-buildings.json"
+		},
+		"./icon-buildings-outline.json": {
+			"require": "./icons-data/icon-buildings-outline.json",
+			"default": "./icons-data/icon-buildings-outline.json"
+		},
+		"./icon-nature.json": {
+			"require": "./icons-data/icon-nature.json",
+			"default": "./icons-data/icon-nature.json"
+		},
+		"./icon-nature-outline.json": {
+			"require": "./icons-data/icon-nature-outline.json",
+			"default": "./icons-data/icon-nature-outline.json"
+		},
+		"./icon-shapes.json": {
+			"require": "./icons-data/icon-shapes.json",
+			"default": "./icons-data/icon-shapes.json"
+		},
+		"./icon-shapes-outline.json": {
+			"require": "./icons-data/icon-shapes-outline.json",
+			"default": "./icons-data/icon-shapes-outline.json"
+		},
+		"./icon-charts.json": {
+			"require": "./icons-data/icon-charts.json",
+			"default": "./icons-data/icon-charts.json"
+		},
+		"./icon-charts-outline.json": {
+			"require": "./icons-data/icon-charts-outline.json",
+			"default": "./icons-data/icon-charts-outline.json"
+		},
+		"./icon-electrical.json": {
+			"require": "./icons-data/icon-electrical.json",
+			"default": "./icons-data/icon-electrical.json"
+		},
+		"./icon-electrical-outline.json": {
+			"require": "./icons-data/icon-electrical-outline.json",
+			"default": "./icons-data/icon-electrical-outline.json"
+		},
+		"./icon-weather.json": {
+			"require": "./icons-data/icon-weather.json",
+			"default": "./icons-data/icon-weather.json"
+		},
+		"./icon-weather-outline.json": {
+			"require": "./icons-data/icon-weather-outline.json",
+			"default": "./icons-data/icon-weather-outline.json"
+		},
+		"./icon-database.json": {
+			"require": "./icons-data/icon-database.json",
+			"default": "./icons-data/icon-database.json"
+		},
+		"./icon-database-outline.json": {
+			"require": "./icons-data/icon-database-outline.json",
+			"default": "./icons-data/icon-database-outline.json"
+		},
+		"./icon-currencies.json": {
+			"require": "./icons-data/icon-currencies.json",
+			"default": "./icons-data/icon-currencies.json"
+		},
+		"./icon-currencies-outline.json": {
+			"require": "./icons-data/icon-currencies-outline.json",
+			"default": "./icons-data/icon-currencies-outline.json"
+		},
+		"./icon-sytem.json": {
+			"require": "./icons-data/icon-sytem.json",
+			"default": "./icons-data/icon-sytem.json"
+		},
+		"./icon-sytem-outline.json": {
+			"require": "./icons-data/icon-sytem-outline.json",
+			"default": "./icons-data/icon-sytem-outline.json"
+		},
+		"./icon-gender.json": {
+			"require": "./icons-data/icon-gender.json",
+			"default": "./icons-data/icon-gender.json"
+		},
+		"./icon-gender-outline.json": {
+			"require": "./icons-data/icon-gender-outline.json",
+			"default": "./icons-data/icon-gender-outline.json"
+		},
+		"./icon-version-control.json": {
+			"require": "./icons-data/icon-version-control.json",
+			"default": "./icons-data/icon-version-control.json"
+		},
+		"./icon-version-control-outline.json": {
+			"require": "./icons-data/icon-version-control-outline.json",
+			"default": "./icons-data/icon-version-control-outline.json"
+		},
+		"./icon-gestures.json": {
+			"require": "./icons-data/icon-gestures.json",
+			"default": "./icons-data/icon-gestures.json"
+		},
+		"./icon-gestures-outline.json": {
+			"require": "./icons-data/icon-gestures-outline.json",
+			"default": "./icons-data/icon-gestures-outline.json"
+		},
+		"./icon-logic.json": {
+			"require": "./icons-data/icon-logic.json",
+			"default": "./icons-data/icon-logic.json"
+		},
+		"./icon-logic-outline.json": {
+			"require": "./icons-data/icon-logic-outline.json",
+			"default": "./icons-data/icon-logic-outline.json"
+		},
+		"./icon-mood.json": {
+			"require": "./icons-data/icon-mood.json",
+			"default": "./icons-data/icon-mood.json"
+		},
+		"./icon-mood-outline.json": {
+			"require": "./icons-data/icon-mood-outline.json",
+			"default": "./icons-data/icon-mood-outline.json"
+		},
+		"./icon-zodiac.json": {
+			"require": "./icons-data/icon-zodiac.json",
+			"default": "./icons-data/icon-zodiac.json"
+		},
+		"./icon-zodiac-outline.json": {
+			"require": "./icons-data/icon-zodiac-outline.json",
+			"default": "./icons-data/icon-zodiac-outline.json"
+		}
+	},
+	"types": "build/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"build/index.d.ts": ["src/index.ts"],
+			"*": ["src/*"]
+		}
+	}
+}

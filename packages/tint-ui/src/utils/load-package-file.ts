@@ -1,7 +1,7 @@
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import axios from "axios";
-import fs from "fs-extra";
-import { createRequire } from "module";
+import { readFile } from "./fs";
 
 export async function loadPackageFile(file: string): Promise<string> {
 	let url: string;
@@ -41,5 +41,5 @@ export async function loadPackageFile(file: string): Promise<string> {
 		url = fileURLToPath(url);
 	}
 
-	return fs.readFile(url, "utf-8");
+	return readFile(url);
 }

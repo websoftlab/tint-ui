@@ -2,7 +2,7 @@
 
 import type { FieldValues } from "react-hook-form";
 import type { FormGridContextType } from "./context";
-import type { FormGridType } from "./types";
+import type { FormGridFieldArrayType, FormGridFieldObjectType, FormGridType } from "./types";
 
 import * as React from "react";
 import { z } from "zod";
@@ -10,8 +10,10 @@ import { useApp } from "@tint-ui/app";
 import { useForm as useFormHook } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isObject } from "@tint-ui/tools/is-plain-object";
-import { createZodDefaultValue, createZodSchema } from "./form-grid-field-item";
+import { createZodSchema } from "./form-grid-field-item";
 import { useQueryTrigger } from "./use-query-trigger";
+import { isArrayType, isHiddenType, isObjectType } from "./type-of";
+import { createDefaultValues } from "./create-default-values";
 
 const createHash = (form: FormGridType) => {
 	let hash = `${form.name}:${form.url}?`;
@@ -23,35 +25,37 @@ const createHash = (form: FormGridType) => {
 	return hash;
 };
 
-const createDefaultValues = (form: FormGridType, initialValues: Record<string, unknown> = {}) => {
-	const values: Record<string, unknown> = { ...initialValues };
-	for (const field of form.fields) {
-		const { name } = field;
-		if (values[name] != null) {
-			continue;
-		}
-		const defaultValue = createZodDefaultValue(field);
-		if (defaultValue != null) {
-			values[name] = defaultValue;
-		}
-	}
-	values.__form_confirmation = false;
-	values.__form_name = form.name;
-	return values;
-};
-
 const createSchema = (
-	form: FormGridType,
+	form: FormGridType | FormGridFieldArrayType | FormGridFieldObjectType,
 	values: Record<string, unknown>,
 	confirmationErrorMessage: string | null = null
-) => {
+): z.ZodType => {
 	const object: Record<string, z.ZodType> = {};
 
 	for (const field of form.fields) {
-		object[field.name] = createZodSchema(field, values) || z.any();
+		const { name } = field;
+		if (isHiddenType(field)) {
+			object[name] = z.any();
+		} else if (isArrayType(field)) {
+			const { min, max } = field;
+			let type = z.array(createSchema(field, {}));
+			if (min) {
+				type = type.min(min);
+			}
+			if (max) {
+				type = type.max(max);
+			}
+			object[name] = type;
+		} else if (isObjectType(field)) {
+			const type = createSchema(field, {});
+			object[name] = field.required ? type : type.nullish();
+		} else {
+			const type = createZodSchema(field, values) || z.any();
+			object[name] = field.required ? type : type.nullish();
+		}
 	}
 
-	if (form.confirmation !== false) {
+	if ("confirmation" in form && form.confirmation !== false) {
 		object.__form_confirmation = z
 			.boolean()
 			.default(false)
@@ -99,6 +103,10 @@ export interface UseFormOptions {
 	 * The toastError flag. If true, the error will be displayed in a toast. Default is true.
 	 */
 	toastError?: boolean;
+	/**
+	 * The reset flag. If true, the form will be reset when the form is submitted. Default is true.
+	 */
+	reset?: boolean;
 }
 
 /**
@@ -108,10 +116,10 @@ export interface UseFormOptions {
 export const useFormGrid = (form: FormGridType, options: UseFormOptions = {}): FormGridContextType => {
 	const app = useApp();
 	const hash = createHash(form);
-	const { defaultValues = {}, toastError, trigger: triggerName = "fetch.form" } = options;
+	const { defaultValues = {}, toastError, reset = true, trigger: triggerName = "fetch.form" } = options;
 	const { values, schema } = React.useMemo(() => {
 		const confirm = app.line("form.errors.confirmation");
-		const values = createDefaultValues(form, defaultValues);
+		const values = createDefaultValues(form.fields, defaultValues, form.confirmation !== false);
 		const schema = createSchema(form, values, Array.isArray(confirm) ? confirm[0] : confirm);
 		return {
 			values,
@@ -137,7 +145,9 @@ export const useFormGrid = (form: FormGridType, options: UseFormOptions = {}): F
 			method: form.method,
 			body: data,
 			done(values) {
-				ctx.reset(values);
+				if (values != null || reset) {
+					ctx.reset(values);
+				}
 				ctx.clearErrors();
 			},
 			error(err) {
@@ -174,6 +184,9 @@ export const useFormGrid = (form: FormGridType, options: UseFormOptions = {}): F
 		get confirmMessage() {
 			if (typeof form.confirmation === "string") {
 				return form.confirmation;
+			}
+			if (typeof form.confirmation === "function") {
+				return form.confirmation();
 			}
 			return app.translate("form.messages.confirm", "I agree with the terms of the user agreement");
 		},

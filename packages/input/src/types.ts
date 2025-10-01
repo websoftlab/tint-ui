@@ -15,7 +15,7 @@ export type InputChangeNumberProps = {
 	min?: number;
 	max?: number;
 	step?: number;
-	shiftStep?: number;
+	ctrlStep?: number;
 	onFormatValue?: (value: number) => number;
 	onChangeValue?: (value: number | null) => void;
 	onChangeOptions?: Partial<{

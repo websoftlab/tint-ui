@@ -1,0 +1,65 @@
+.badges {
+	@apply gap-2 items-center;
+	[data-size="sm"] {
+		@apply gap-1;
+	}
+}
+
+.badge {
+	@apply inline-block rounded-sm px-1 font-normal truncate max-w-[120px];
+}
+
+.popover {
+	@apply max-w-[200px] p-0;
+}
+
+.button {
+	@apply border-dashed;
+	> .badges,
+	> .badge {
+		@apply ml-1 -mr-2;
+	}
+
+	&:hover .badge {
+		@apply bg-background;
+	}
+}
+
+.mobile {
+	@apply inline-flex lg:hidden;
+	&.badge {
+		@apply flow-root lg:hidden;
+	}
+}
+
+.desktop {
+	@apply hidden lg:inline-flex;
+}
+
+.checkbox {
+	@apply inline-flex size-4 items-center justify-center rounded-sm border border-dashed border-slate-500/50 opacity-50;
+	svg {
+		@apply size-4 invisible;
+	}
+	&.selected {
+		@apply border-transparent opacity-100;
+		svg {
+			@apply visible;
+		}
+	}
+}
+
+.text {
+	@apply w-[180px] lg:w-[220px];
+	&.textMobile {
+		@apply w-full;
+	}
+}
+
+.icon {
+	@apply mr-2 h-4 w-4 text-muted-foreground;
+}
+
+.label {
+	@apply mr-auto;
+}

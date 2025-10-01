@@ -5,25 +5,37 @@ import type { TextAdapterConfig } from "./text";
 import { z } from "zod";
 import { inputPasswordAdapter } from "@tint-ui/input-password";
 
-type PasswordAdapterConfig = TextAdapterConfig & {
+type PasswordAdapterConfig = Omit<TextAdapterConfig, "autoComplete" | "autoCorrect" | "inputMode" | "cols" | "rows"> & {
 	revealMode?: RevealModeType;
 };
 
 const passwordAdapter: AddFormFieldAdapter = (field: FormGridFieldType) => {
-	const { onFormatValue, onChangeValue, revealMode } = (field.config || {}) as PasswordAdapterConfig;
+	const { readOnly } = field;
+	const { onFormatValue, onChangeValue, onChangeOptions, size, revealMode, autoFocus, form, tabIndex } =
+		(field.config || {}) as PasswordAdapterConfig;
 	return inputPasswordAdapter({
 		placeholder: field.placeholder || undefined,
 		onFormatValue,
 		onChangeValue,
+		onChangeOptions,
+		size,
 		revealMode,
+		readOnly,
+		autoFocus,
+		form,
+		tabIndex,
 	});
 };
 
 const passwordAdapterOptions: AddFormFieldAdapterOptions = {
-	createZodSchema() {
+	createZodSchema(field) {
+		let zodType = z.string();
+		if (field.required) {
+			zodType = zodType.min(1);
+		}
 		return z.preprocess(
 			(value) => (typeof value === "string" ? value : String(value == null ? "" : value)),
-			z.string()
+			zodType
 		);
 	},
 	createZodDefaultValue() {

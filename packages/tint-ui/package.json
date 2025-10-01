@@ -19,14 +19,14 @@
 		"ts-morph": "^18.0.0",
 		"tsconfig-paths": "^4.2.0",
 		"cosmiconfig": "^9.0.0",
-		"fs-extra": "^11.2.0",
 		"fast-glob": "^3.3.2",
 		"deepmerge": "^4.3.1",
 		"axios": "^1.9.0",
 		"postcss": "^8.4.49",
 		"stringify-object": "^5.0.0",
 		"recast": "^0.23.9",
-		"@babel/parser": "^7.26.2"
+		"@babel/parser": "^7.26.2",
+		"strip-json-comments": "^5.0.2"
 	},
 	"devDependencies": {
 		"@types/prompts": "^2.4.2",

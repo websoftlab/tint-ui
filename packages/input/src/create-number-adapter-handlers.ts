@@ -8,7 +8,7 @@ const createNumberAdapterHandlers = function <T extends HTMLInputElement = HTMLI
 	name: string,
 	onChange: React.ChangeEventHandler<T>,
 	onKeyDown: React.KeyboardEventHandler<T> | null | undefined,
-	{ onChangeValue, onFormatValue, onChangeOptions = {}, min, max, step = 10, shiftStep = 100 }: InputChangeNumberProps
+	{ onChangeValue, onFormatValue, onChangeOptions = {}, min, max, step = 10, ctrlStep = 100 }: InputChangeNumberProps
 ): { onChange: React.ChangeEventHandler<T>; onKeyDown: React.KeyboardEventHandler<T> } {
 	const setMinMax = (value: number) => {
 		if (min != null && value < min) {
@@ -83,7 +83,7 @@ const createNumberAdapterHandlers = function <T extends HTMLInputElement = HTMLI
 			const key = event.key;
 			const isUp = key === "ArrowUp";
 			if (isUp || key === "ArrowDown") {
-				const stepValue = event.shiftKey ? shiftStep : step;
+				const stepValue = event.ctrlKey ? ctrlStep : step;
 				const value = ctx.getValues(name);
 
 				let number = 0;

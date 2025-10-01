@@ -1,9 +1,11 @@
 import type { Config } from "./get-config";
-import fs from "fs-extra";
+
+import path from "node:path";
+import { mkdir } from "node:fs/promises";
 import prompts from "prompts";
+import * as fs from "./fs";
 import { highlighter } from "./highlighter";
 import { logger } from "./logger";
-import path from "path";
 import { spinner } from "./spinner";
 
 export async function updateApp(config: Config) {
@@ -14,7 +16,7 @@ export async function updateApp(config: Config) {
 	let install = true;
 	let importLine = `import { ThemeContextProvider } from "@/components/theme";`;
 
-	if (fs.existsSync(appFile)) {
+	if (await fs.fileExists(appFile)) {
 		install = false;
 		const { overwrite } = await prompts({
 			type: "confirm",
@@ -38,8 +40,8 @@ export async function updateApp(config: Config) {
 		}
 	} else {
 		const dirName = path.dirname(appFile);
-		if (!fs.pathExistsSync(dirName)) {
-			fs.mkdirSync(dirName, { recursive: true });
+		if (!(await fs.pathExists(dirName))) {
+			await mkdir(dirName, { recursive: true });
 		}
 	}
 
@@ -62,6 +64,6 @@ export default function App${isLayout ? "Layout" : "Page"}(${
 `;
 
 	const updateSpinner = spinner(install ? `Install app file.` : `Update app file.`).start();
-	await fs.writeFile(appFile, code, "utf-8");
+	await fs.writeFile(appFile, code);
 	updateSpinner.succeed();
 }

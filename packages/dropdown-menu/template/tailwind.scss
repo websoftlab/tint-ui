@@ -86,7 +86,10 @@
 }
 
 .checker {
-	@apply absolute left-2 flex h-3.5 w-3.5 items-center justify-center;
+	@apply absolute left-2 flex size-4 items-center justify-center;
+	&:empty {
+		@apply rounded-sm border border-dashed border-slate-500/50;
+	}
 }
 
 .iconRight {

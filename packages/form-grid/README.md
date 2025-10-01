@@ -175,6 +175,12 @@ The type of the `config` is determined by the type of the field.
 - `onReset` - The onReset function. After successful form submission, another submission is only possible after calling this function. The complete flag is reset when this function is called.
 - `onSubmit` - The onSubmit function. It is a form event handler that is automatically attached to the form inside FormGrid, but can be used manually if FormGrid is not used and implemented differently.
 
+## Tools
+
+- `addFormFieldAdapter` - Function to add a form field adapter. Used to add a form field adapter to the form grid.
+- `addFormFieldAdapterAsync` - Function to add an asynchronous form field adapter. Used to add an asynchronous form field adapter to the form grid.
+- `hasFormFieldAdapter` - Function to check if a form field adapter exists. Used to check if a form field adapter exists in the form grid.
+
 ## License
 
 MIT

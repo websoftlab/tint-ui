@@ -3,7 +3,7 @@ import { FRAMEWORKS, type Framework } from "./frameworks";
 import { Config, RawConfig, getConfig, resolveConfigPaths } from "./get-config";
 import { getPackageInfo } from "./get-package-info";
 import fg from "fast-glob";
-import fs from "fs-extra";
+import * as fs from "./fs";
 import { loadConfig } from "tsconfig-paths";
 import { z } from "zod";
 
@@ -113,7 +113,7 @@ export async function getTailwindCssFile(cwd: string) {
 	}
 
 	for (const file of files) {
-		const contents = await fs.readFile(path.resolve(cwd, file), "utf8");
+		const contents = await fs.readFile(path.resolve(cwd, file));
 		// Assume that if the file contains `@tailwind base` it's the main css file.
 		if (contents.includes("@tailwind base")) {
 			return file;
@@ -177,10 +177,8 @@ export async function getTsConfig(cwd: string) {
 			continue;
 		}
 
-		// We can't use fs.readJSON because it doesn't support comments.
-		const contents = await fs.readFile(filePath, "utf8");
-		const cleanedContents = contents.replace(/\/\*\s*\*\//g, "");
-		const result = TS_CONFIG_SCHEMA.safeParse(JSON.parse(cleanedContents));
+		const jsonData = await fs.readJson(filePath);
+		const result = TS_CONFIG_SCHEMA.safeParse(jsonData);
 
 		if (result.error) {
 			continue;

@@ -1,9 +1,9 @@
 import type { Config } from "../get-config";
 import type { RegistryIconSchema } from "../registry/types";
 
-import path from "path";
-import fs from "fs-extra";
+import path from "node:path";
 import recast from "recast";
+import { writeFile } from "../fs";
 import { handleError } from "../handle-error";
 import { spinner } from "../spinner";
 import { fileToAst } from "../ast/file-to-ast";
@@ -112,7 +112,7 @@ export async function updateIcons(
 
 		// Generate new source and write
 		iconSpinner.start();
-		await fs.writeFile(themeFile, recast.print(ast).code, "utf-8");
+		await writeFile(themeFile, recast.print(ast).code);
 		iconSpinner.succeed();
 	} catch (error) {
 		if (iconSpinner.isSpinning) {

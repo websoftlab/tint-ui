@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { isLocalStorage } from "./browser-support";
 import { logger } from "./logger";

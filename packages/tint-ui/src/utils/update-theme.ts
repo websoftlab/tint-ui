@@ -1,17 +1,19 @@
 import type { Config } from "./get-config";
-import fs from "fs-extra";
-import path from "path";
+
+import { mkdir } from "node:fs/promises";
+import path from "node:path";
+import { fileExists, pathExists, writeFile } from "./fs";
 import { spinner } from "./spinner";
 
 export async function updateTheme(config: Config) {
 	const themeFile = path.resolve(config.resolvedPaths.components, "theme/index." + (config.ts ? "tsx" : "jsx"));
-	if (fs.existsSync(themeFile)) {
+	if (await fileExists(themeFile)) {
 		return;
 	}
 
 	const dirName = path.dirname(themeFile);
-	if (!fs.pathExistsSync(dirName)) {
-		fs.mkdirSync(dirName, { recursive: true });
+	if (!(await pathExists(dirName))) {
+		await mkdir(dirName, { recursive: true });
 	}
 
 	const isTs = config.ts;
@@ -31,6 +33,6 @@ export function ThemeContextProvider({ children }${isTs ? `: { children: React.R
 `;
 
 	const baseSpinner = spinner(`Install theme.`).start();
-	await fs.writeFile(themeFile, code, "utf-8");
+	await writeFile(themeFile, code);
 	baseSpinner.succeed();
 }

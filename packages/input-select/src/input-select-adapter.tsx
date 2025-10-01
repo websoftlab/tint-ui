@@ -2,16 +2,17 @@
 
 import type { FormInputGroupRenderHandler } from "@tint-ui/form-input-group";
 import type { UseFormReturn } from "react-hook-form";
+import type { InputSelectOption } from "@tint-ui/tools";
 import type { InputSelectProps } from "./types";
 
 import * as React from "react";
-import { mergeVoidCallbackAsync } from "@tint-ui/tools/merge-void-callback";
 import { InputSelect } from "./input-select";
 import { getValue } from "./get-value";
 
 interface InputSelectAdapterProps
 	extends Omit<InputSelectProps, "name" | "required" | "onSelectOption" | "disabled" | "value" | "invalid"> {
 	onValueChange?(value: null | string | number | (string | number)[]): void;
+	onOptionChange?(option: InputSelectOption | null): void;
 }
 
 const asNumber = (ctx: UseFormReturn, name: string) => {
@@ -41,25 +42,26 @@ const inputSelectAdapter = (props: InputSelectAdapterProps = {}) => {
 	const {
 		multiple = false,
 		clearable = false,
-		onBlur: onBlurProp,
 		valueAsNumber: valueAsNumberProp,
 		onValueChange,
+		onOptionChange,
 		...restProp
 	} = props;
 	return ((props, { invalid }, ctx) => {
-		const { onChange, onBlur, ref, name, ...rest } = props;
-		const { watch, setValue } = ctx;
+		const { name, disabled, required } = props;
+		const { watch, setValue, clearErrors } = ctx;
 		const originValue = watch(name);
 		return (
 			<InputSelect
 				{...restProp}
-				{...rest}
+				required={required}
+				disabled={disabled}
+				name={name}
 				invalid={invalid}
 				value={originValue}
 				multiple={multiple}
 				clearable={clearable}
-				onBlur={mergeVoidCallbackAsync(onBlurProp, onBlur as typeof onBlurProp)}
-				onSelectOption={(value, close) => {
+				onSelectOption={(value, { close, option }) => {
 					const test = getValue<string | number>(originValue, value, {
 						multiple,
 						clearable,
@@ -67,11 +69,15 @@ const inputSelectAdapter = (props: InputSelectAdapterProps = {}) => {
 					});
 					if (test.valid) {
 						setValue(name, test.value);
+						clearErrors(name);
 						if (onValueChange) {
 							onValueChange(test.value);
 						}
 						if (!multiple) {
 							close();
+							if (onOptionChange) {
+								onOptionChange(option);
+							}
 						}
 					}
 				}}

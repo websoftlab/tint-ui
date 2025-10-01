@@ -10,9 +10,11 @@
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
+		"@tint-ui/app": "*",
 		"@tint-ui/tools": "*",
 		"@tint-ui/theme": "*",
 		"@tint-ui/trigger": "*",
+		"@tint-ui/button": "*",
 		"@tint-ui/input": "*",
 		"@tint-ui/input-checkbox": "*",
 		"@tint-ui/input-select": "*",

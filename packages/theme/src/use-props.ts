@@ -9,19 +9,29 @@ export const useProps = function <T extends object, Attr extends object = object
 ): T {
 	const theme = useTheme();
 	let themeProps = theme.getProps<T>(name);
-	if (props.themePropsType) {
-		const { themePropsType, ...rest } = props;
+	let themePropsType: string | undefined | null = null;
+
+	// Even an empty value!
+	if ("themePropsType" in props) {
+		const { themePropsType: type, ...rest } = props;
+		themePropsType = type;
 		props = rest as T;
+	}
+
+	if (themePropsType) {
 		const suffixName = `${name}->${themePropsType}`;
 		if (theme.hasProps(suffixName)) {
 			themeProps = theme.getProps<T>(suffixName);
 		}
 	}
+
 	if (!themeProps) {
 		return props;
 	}
+
 	if (typeof themeProps === "function") {
 		return themeProps(props, name, options);
 	}
+
 	return { ...themeProps, ...props };
 };

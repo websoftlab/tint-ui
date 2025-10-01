@@ -9,13 +9,16 @@
 }
 
 .selector,
-.clear {
+.close {
 	@apply opacity-50 shrink-0 transition-opacity;
 }
 
-.clear {
-	@apply w-4 h-4 hover:opacity-100 text-destructive cursor-pointer;
-	&[aria-disabled="true"] {
+.close {
+	@apply size-6 hover:opacity-100 text-destructive cursor-pointer appearance-none border-0 inline-flex items-center justify-center;
+	> svg {
+		@apply size-4;
+	}
+	&:disabled {
 		@apply text-slate-300 cursor-not-allowed;
 	}
 }
@@ -37,6 +40,10 @@
 	> span {
 		@apply truncate;
 	}
+}
+
+.hidden {
+	@apply absolute appearance-none invisible opacity-0 size-0;
 }
 
 .popover {

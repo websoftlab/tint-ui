@@ -29,12 +29,12 @@ export const icons: RegistryIconSchema[] = [
 	{
 		name: "sort-asc",
 		type: "outline",
-		data: ["M12 5l0 14", "M18 11l-6 -6", "M6 11l6 -6"],
+		data: ["M12 5l0 14", "M18 13l-6 6", "M6 13l6 6"],
 	},
 	{
 		name: "sort-desc",
 		type: "outline",
-		data: ["M12 5l0 14", "M18 13l-6 6", "M6 13l6 6"],
+		data: ["M12 5l0 14", "M18 11l-6 -6", "M6 11l6 -6"],
 	},
 	{
 		name: "eye",
@@ -91,6 +91,11 @@ export const icons: RegistryIconSchema[] = [
 		],
 	},
 	{
+		name: "chevron-left",
+		type: "outline",
+		data: ["M15 6l-6 6l6 6"],
+	},
+	{
 		name: "chevron-right",
 		type: "outline",
 		data: ["M9 6l6 6l-6 6"],
@@ -108,5 +113,129 @@ export const icons: RegistryIconSchema[] = [
 			"M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
 			"M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
 		],
+	},
+	{
+		name: "plus",
+		type: "outline",
+		data: ["M12 5l0 14", "M5 12l14 0"],
+	},
+	{
+		name: "item-collapse",
+		type: "outline",
+		data: [
+			"M4 18v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z",
+			"M4 9h16",
+			"M10 16l2 -2l2 2",
+		],
+	},
+	{
+		name: "item-expand",
+		type: "outline",
+		data: [
+			"M4 18v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z",
+			"M4 9h16",
+			"M10 14l2 2l2 -2",
+		],
+	},
+	{
+		name: "arrow-down",
+		type: "outline",
+		data: ["M12 5l0 14", "M18 13l-6 6", "M6 13l6 6"],
+	},
+	{
+		name: "data-table-row-menu",
+		type: "outline",
+		data: [
+			"M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
+			"M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
+			"M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
+		],
+	},
+	{
+		name: "data-table-boolean-true",
+		type: "outline",
+		data: ["M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0", "M9 12l2 2l4 -4"],
+	},
+	{
+		name: "data-table-boolean-false",
+		type: "outline",
+		data: ["M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0", "M9 12l6 0"],
+	},
+	{
+		name: "data-table-boolean-null",
+		type: "outline",
+		data: [
+			"M7.5 4.21l0 .01",
+			"M4.21 7.5l0 .01",
+			"M3 12l0 .01",
+			"M4.21 16.5l0 .01",
+			"M7.5 19.79l0 .01",
+			"M12 21l0 .01",
+			"M16.5 19.79l0 .01",
+			"M19.79 16.5l0 .01",
+			"M21 12l0 .01",
+			"M19.79 7.5l0 .01",
+			"M16.5 4.21l0 .01",
+			"M12 3l0 .01",
+		],
+	},
+	{
+		name: "data-table-view",
+		type: "outline",
+		data: [
+			"M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0",
+			"M4 6l8 0",
+			"M16 6l4 0",
+			"M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0",
+			"M4 12l2 0",
+			"M10 12l10 0",
+			"M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0",
+			"M4 18l11 0",
+			"M19 18l1 0",
+		],
+	},
+	{
+		name: "data-table-view-columns",
+		type: "outline",
+		data: ["M3 3m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v16a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1zm6 -1v18m6 -18v18"],
+	},
+	{
+		name: "data-table-view-sorts",
+		type: "outline",
+		data: ["M7 3l0 18", "M10 6l-3 -3l-3 3", "M20 18l-3 3l-3 -3", "M17 21l0 -18"],
+	},
+	{
+		name: "data-table-view-filters",
+		type: "outline",
+		data: [
+			"M11.36 20.213l-2.36 .787v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414",
+			"M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0",
+			"M20.2 20.2l1.8 1.8",
+		],
+	},
+	{
+		name: "data-table-add-filter",
+		type: "outline",
+		data: ["M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0", "M9 12h6", "M12 9v6"],
+	},
+	{
+		name: "pagination-first",
+		type: "outline",
+		data: ["M11 7l-5 5l5 5", "M17 7l-5 5l5 5"],
+	},
+	{
+		name: "pagination-last",
+		type: "outline",
+		data: ["M7 7l5 5l-5 5", "M13 7l5 5l-5 5"],
+	},
+	{
+		name: "pagination-previous",
+		type: "outline",
+		data: ["M15 6l-6 6l6 6"],
+	},
+	{
+		name: "pagination-next",
+		type: "outline",
+		data: ["M9 6l6 6l-6 6"],
 	},
 ];

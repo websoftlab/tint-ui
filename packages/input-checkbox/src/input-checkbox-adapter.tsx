@@ -41,19 +41,24 @@ const createInputCheckboxAdapter = (type: keyof typeof components) => {
 	const Label = components[type];
 	const radio = type === "radio";
 	return (props: InputCheckboxAdapterProps) => {
-		const { inputProps = {}, label, ...labelProp } = props;
+		const { inputProps = {}, readOnly, label, value, ...labelProp } = props;
 		const { onBlur: onBlurProp, ...inputPropsRest } = inputProps;
 		return ((props, { invalid }, ctx) => {
-			const { onBlur, onChange, ref, name, ...rest } = props;
+			const { onBlur, onChange, ref, name, disabled, ...rest } = props;
 			const originValue = ctx.watch(name);
+			const checked = radio ? value === originValue : typeof originValue === "boolean" ? originValue : undefined;
 			return (
 				<Label
 					{...labelProp}
 					inputProps={{
-						defaultChecked: radio ? undefined : originValue === true,
+						defaultChecked: radio || checked !== undefined ? undefined : originValue === true,
+						checked: checked,
 						name,
+						value,
 						...inputPropsRest,
 						...rest,
+						disabled: disabled || readOnly === true, // readOnly flag doesn't work for checkbox
+						readOnly: readOnly,
 						invalid,
 						onBlur: mergeVoidCallbackAsync(onBlurProp, onBlur as typeof onBlurProp),
 						onChange(event) {
@@ -115,16 +120,18 @@ const getValue = function <T extends string | number>(
 };
 
 const inputCheckboxGroupAdapter = (props: InputCheckboxGroupAdapterProps = {}) => {
-	const { onBlur: onBlurProp, multiple = false, valueAsNumber, ...checkboxRest } = props;
+	const { onBlur: onBlurProp, multiple = false, valueAsNumber, readOnly, ...checkboxRest } = props;
 	const { options } = props;
 	return ((props, { invalid }, ctx) => {
-		const { onChange, ref, onBlur, ...rest } = props;
+		const { onChange, ref, onBlur, disabled, ...rest } = props;
 		const { name } = props;
 		const originValue = ctx.watch(name);
 		return (
 			<InputCheckboxGroup
 				{...checkboxRest}
 				{...rest}
+				disabled={disabled || readOnly === true}
+				readOnly={readOnly}
 				multiple={multiple}
 				invalid={invalid}
 				onBlur={mergeVoidCallbackAsync(onBlurProp, onBlur as typeof onBlurProp)}

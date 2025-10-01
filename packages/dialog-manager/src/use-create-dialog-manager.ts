@@ -4,12 +4,15 @@ import type {
 	TriggerDialogManagerProps,
 	DialogManagerRegisterType,
 	DialogManagerSizeType,
+	DialogManagerRegisterSyncType,
+	DialogManagerAsyncLoader,
 } from "./types";
 
 import * as React from "react";
 import { useTrigger } from "@tint-ui/trigger";
 import { createDialogContext } from "./context";
 import { lockBodyScroll } from "./lock-body-scroll";
+import { DialogAsyncLoader } from "./dialog-async-loader";
 
 type IdType = {
 	id: string;
@@ -43,9 +46,11 @@ const compare = (a: IdType, b: IdType) => a.id === b.id && a.type === b.type;
 
 const comparePlain = (a: IdType, type: string, id: string) => a.id === id && a.type === type;
 
-export const useCreateDialogManager = (registerTypes: DialogManagerRegisterType[] = []) => {
+export const useCreateDialogManager = (registerTypes: DialogManagerRegisterType[] = [], asyncForceDelay = 0) => {
 	const trigger = useTrigger();
 	const [managerState, setManagerState] = React.useState<ManagerState>(defaultState);
+	const loaderRef = React.useRef(new WeakMap<DialogManagerAsyncLoader, ElementType>());
+	const refDelay = React.useRef(asyncForceDelay);
 	const { onMount, onOpenChange, onRegisterTypes } = React.useMemo(() => {
 		let state = managerState;
 		let mount = false;
@@ -53,7 +58,7 @@ export const useCreateDialogManager = (registerTypes: DialogManagerRegisterType[
 		let toClose = false;
 		let toHide = false;
 		let queue: ManagerType[] = [];
-		let types: { node: Required<DialogManagerRegisterType>; unmount: () => void }[] = [];
+		let types: { node: Required<DialogManagerRegisterSyncType>; unmount: () => void }[] = [];
 
 		const stopTimer = () => {
 			if (timer) {
@@ -294,6 +299,27 @@ export const useCreateDialogManager = (registerTypes: DialogManagerRegisterType[
 			closeDialogOnce(type, id);
 		};
 
+		const createLoaderComponent = (loader: DialogManagerAsyncLoader): ElementType => {
+			const onLoad = (loadedComponent: ElementType) => {
+				loaderRef.current.set(loader, loadedComponent);
+				types.forEach(({ node }) => {
+					if (node.component === component) {
+						node.component = loadedComponent;
+					}
+				});
+			};
+			const component = (originProps: object) => {
+				return React.createElement(DialogAsyncLoader, {
+					loader,
+					onLoad,
+					originProps,
+					asyncForceDelay: refDelay.current,
+				});
+			};
+			component.displayName = `DialogAsyncLoader(${loader.name || "wrapper"})`;
+			return component;
+		};
+
 		return {
 			onOpenChange: (value: boolean) => {
 				if (!value) {
@@ -340,18 +366,27 @@ export const useCreateDialogManager = (registerTypes: DialogManagerRegisterType[
 				}
 				const retype: typeof types = [];
 				for (const item of registerTypes) {
-					const {
-						type,
-						component,
-						escapeClosable = true,
-						overlayClosable = true,
-						size = "md",
-						detail = {},
-					} = item;
+					const { type, escapeClosable = true, overlayClosable = true, size = "md", detail = {} } = item;
+					let component: ElementType;
+
+					// async...
+					if ("loader" in item) {
+						const { loader } = item;
+						if (loaderRef.current.has(loader)) {
+							component = loaderRef.current.get(loader)!;
+						} else {
+							component = createLoaderComponent(loader);
+							loaderRef.current.set(loader, component);
+						}
+					} else {
+						component = item.component;
+					}
+
 					const index = types.findIndex((t) => t.node.type === type);
 					if (index !== -1) {
 						const last = types.splice(index, 1)[0];
 						const { node } = last;
+						node.size = size;
 						node.component = component;
 						node.escapeClosable = escapeClosable;
 						node.overlayClosable = overlayClosable;

@@ -59,7 +59,7 @@ const inputNumberAdapter = (props: InputNumberAdapterProps = {}): FormInputGroup
 		min,
 		max,
 		step,
-		shiftStep,
+		ctrlStep,
 		...restProp
 	} = props || {};
 	return ((props, { invalid }, ctx) => {
@@ -76,13 +76,14 @@ const inputNumberAdapter = (props: InputNumberAdapterProps = {}): FormInputGroup
 				min,
 				max,
 				step,
-				shiftStep,
+				ctrlStep,
 			}
 		);
 		return (
 			<InputText
 				{...(restProp as any)}
 				{...rest}
+				inputMode="number"
 				invalid={invalid}
 				onBlur={mergeVoidCallbackAsync(onBlurProp as () => void, onBlur as () => Promise<void>)}
 				onChange={onChangeHandler}

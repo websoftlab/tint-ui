@@ -1,12 +1,12 @@
-import path from "path";
+import path from "node:path";
+import prompts from "prompts";
 import { highlighter } from "../utils/highlighter";
 import { logger } from "../utils/logger";
-import fs from "fs-extra";
+import * as fs from "../utils/fs";
 import { z } from "zod";
 import { createOptionsSchema } from "../commands/create";
 import { preFlightAdd } from "./preflight-add";
 import { hasRegistryComponent } from "../utils/registry";
-import prompts from "prompts";
 
 const hasName = (name: string) =>
 	name.length > 0 && name.length < 50 && /^[a-z][a-z\d\-]+$/.test(name) && !/-(\d|-|$)/.test(name);
@@ -26,7 +26,7 @@ export async function preFlightCreate(options: z.infer<typeof createOptionsSchem
 			logger.warn(`The \`${highlighter.info(name)}\` component name is private`);
 		} else if (!hasName(name)) {
 			logger.warn(`Invalid component name \`${highlighter.info(name)}\``);
-		} else if (fs.existsSync(dirName)) {
+		} else if (await fs.exists(dirName)) {
 			logger.warn(`The \`${highlighter.info(name)}\` component path is already exists`);
 		} else if (hasRegistryComponent(name)) {
 			const { yes } = await prompts({

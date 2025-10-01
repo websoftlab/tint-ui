@@ -1,11 +1,11 @@
-import path from "path";
+import path from "node:path";
 import { initOptionsSchema } from "../commands/init";
 import * as ERRORS from "../utils/errors";
 import { getProjectInfo, type ProjectInfo } from "../utils/get-project-info";
 import { highlighter } from "../utils/highlighter";
 import { logger } from "../utils/logger";
 import { spinner } from "../utils/spinner";
-import fs from "fs-extra";
+import * as fs from "../utils/fs";
 import { z } from "zod";
 
 export async function preFlightInit(options: z.infer<typeof initOptionsSchema>) {
@@ -13,7 +13,7 @@ export async function preFlightInit(options: z.infer<typeof initOptionsSchema>) 
 
 	// Ensure target directory exists.
 	// Check for empty project. We assume if no package.json exists, the project is empty.
-	if (!fs.existsSync(options.cwd) || !fs.existsSync(path.resolve(options.cwd, "package.json"))) {
+	if (!(await fs.exists(options.cwd)) || !(await fs.exists(path.resolve(options.cwd, "package.json")))) {
 		errors[ERRORS.MISSING_DIR_OR_EMPTY_PROJECT] = true;
 		return {
 			errors,
@@ -25,7 +25,7 @@ export async function preFlightInit(options: z.infer<typeof initOptionsSchema>) 
 		silent: options.silent,
 	}).start();
 
-	if (fs.existsSync(path.resolve(options.cwd, "components.json")) && !options.overwrite) {
+	if ((await fs.exists(path.resolve(options.cwd, "components.json"))) && !options.overwrite) {
 		projectSpinner?.fail();
 		logger.break();
 		logger.error(

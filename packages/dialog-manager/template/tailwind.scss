@@ -49,6 +49,16 @@
 	@apply max-w-full sm:max-w-2xl;
 }
 
+[data-dialog-loading] {
+	.sm,
+	.md,
+	.lg,
+	.xl,
+	.xxl {
+		@apply max-w-full sm:max-w-sm;
+	}
+}
+
 @keyframes enter {
 	from {
 		opacity: var(--enter-opacity, 1);

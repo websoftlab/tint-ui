@@ -1,0 +1,31 @@
+.pagination {
+	@apply flex max-w-full w-full flex-col items-center justify-between gap-4 sm:flex-row sm:gap-3 mt-3;
+	.divider {
+		@apply ml-auto;
+	}
+}
+
+.divider {
+	@apply relative size-0 overflow-hidden;
+}
+
+.group {
+	@apply flex items-center gap-2;
+}
+
+.firstLast {
+	@apply hidden lg:inline-flex;
+}
+
+.previousNext {
+}
+
+.separator {
+	@apply inline-flex justify-center items-center size-5 text-slate-500/50;
+	> svg {
+		@apply size-[100%] align-top;
+	}
+	[data-navbar-size="sm"] & {
+		@apply size-4;
+	}
+}

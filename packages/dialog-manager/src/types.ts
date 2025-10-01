@@ -51,6 +51,16 @@ export interface DialogContextType {
 	setLocked(value: boolean | string): void;
 }
 
-export interface DialogManagerRegisterType<T = any> extends DialogManagerOptions {
+export type DialogManagerRegisterType<T = any> = DialogManagerRegisterSyncType<T> | DialogManagerRegisterAsyncType<T>;
+
+export type DialogManagerRegisterSyncType<T = any> = DialogManagerOptions & {
 	detail?: T;
-}
+};
+
+export type DialogManagerAsyncLoader = () => Promise<{ default: ElementType }>;
+
+export type DialogManagerRegisterAsyncType<T = any> = Omit<DialogManagerOptions, "component"> & {
+	type: string;
+	detail?: T;
+	loader: DialogManagerAsyncLoader;
+};

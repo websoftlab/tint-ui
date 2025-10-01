@@ -29,6 +29,10 @@
 						"require": "./cjs/dialog-prompt.js",
 						"default": "./dialog-prompt.js"
 					},
+					"./helpers": {
+						"require": "./cjs/helpers.js",
+						"default": "./helpers.js"
+					},
 					"./register": {
 						"require": "./cjs/register.js",
 						"default": "./register.js"

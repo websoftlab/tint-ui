@@ -29,7 +29,7 @@ export async function updateDependencies(
 
 	// Offer to use --overwrite or --legacy-peer-deps if using React 19 with npm.
 	let flag = "";
-	if (isUsingReact19(config) && packageManager === "npm") {
+	if ((await isUsingReact19(config)) && packageManager === "npm") {
 		dependenciesSpinner.stopAndPersist();
 		logger.warn(
 			"\nIt looks like you are using React 19. \nSome packages may fail to install due to peer dependency issues in npm.\n"
@@ -67,8 +67,8 @@ export async function updateDependencies(
 	dependenciesSpinner?.succeed();
 }
 
-function isUsingReact19(config: Config) {
-	const packageInfo = getPackageInfo(config.resolvedPaths.cwd);
+async function isUsingReact19(config: Config) {
+	const packageInfo = await getPackageInfo(config.resolvedPaths.cwd);
 
 	if (!packageInfo?.dependencies?.react) {
 		return false;

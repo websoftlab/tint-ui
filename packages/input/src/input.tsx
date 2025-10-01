@@ -1,6 +1,5 @@
 "use client";
 
-import type { InputHTMLAttributes, HTMLAttributes } from "react";
 import type { InputClassesType } from "./classes";
 import type { InputSize } from "./types";
 
@@ -9,20 +8,24 @@ import clsx from "clsx";
 import { useProps } from "@tint-ui/theme";
 import { useInputClasses, useInputFilterClasses } from "./classes";
 
-type BaseProps<T extends Element> = Omit<InputHTMLAttributes<T>, "size" | "invalid"> & {
+type ManualProps = {
 	invalid?: boolean;
 	size?: InputSize;
 	themePropsType?: string;
 };
 
-interface InputTextProps extends BaseProps<HTMLInputElement> {}
+type BaseProps<T extends Element> = Omit<React.InputHTMLAttributes<T>, "size" | "invalid"> & ManualProps;
 
 const InputGroupContext = React.createContext<null | { invalid?: boolean; disabled?: boolean; size?: InputSize }>(null);
 const useInputGroupContext = () => {
 	return React.useContext(InputGroupContext);
 };
 
-const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
+const InputText = React.forwardRef<
+	HTMLInputElement,
+	Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, keyof ManualProps> &
+		ManualProps
+>((props, ref) => {
 	const ctx = useInputGroupContext();
 	const {
 		type = "text",
@@ -46,9 +49,14 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
 	);
 });
 
-interface InputTextareaProps extends BaseProps<HTMLTextAreaElement> {}
-
-const InputTextarea = React.forwardRef<HTMLTextAreaElement, InputTextareaProps>((props, ref) => {
+const InputTextarea = React.forwardRef<
+	HTMLTextAreaElement,
+	Omit<
+		React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>,
+		keyof ManualProps
+	> &
+		ManualProps
+>((props, ref) => {
 	const ctx = useInputGroupContext();
 	const {
 		className,
@@ -133,7 +141,7 @@ const InputAddon = React.forwardRef<HTMLSpanElement | HTMLButtonElement | HTMLLa
 		const [As, classVariant] = addons[variant] || addons.text;
 		return (
 			<As
-				{...(addonProps as HTMLAttributes<HTMLSpanElement>)}
+				{...(addonProps as React.HTMLAttributes<HTMLSpanElement>)}
 				className={clsx(className, classes.addon, classes[classVariant])}
 				ref={ref as never}
 			>
@@ -147,6 +155,9 @@ InputText.displayName = "InputText";
 InputTextarea.displayName = "InputTextarea";
 InputGroup.displayName = "InputGroup";
 InputAddon.displayName = "InputAddon";
+
+type InputTextProps = React.ComponentProps<typeof InputText>;
+type InputTextareaProps = React.ComponentProps<typeof InputTextarea>;
 
 export { InputText, InputTextarea, InputGroup, InputAddon, useInputGroupContext };
 export type { InputTextProps, InputTextareaProps, InputGroupProps, InputAddonProps };

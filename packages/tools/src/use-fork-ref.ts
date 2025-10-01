@@ -1,3 +1,5 @@
+"use client";
+
 import type { MutableRefObject, Ref } from "react";
 import * as React from "react";
 

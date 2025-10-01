@@ -1,4 +1,5 @@
-import type { FieldValues } from "react-hook-form";
+import * as React from "react";
+import type { FieldValues, UseFormReturn } from "react-hook-form";
 import type { FormInputGroupRenderHandler } from "@tint-ui/form-input-group";
 import type { z } from "zod";
 
@@ -22,16 +23,127 @@ export interface FormGridType {
 	/**
 	 * The fields of the form.
 	 */
-	fields: FormGridFieldType[];
+	fields: FormGridFieldOneOfType[];
+	/**
+	 * The rules of the form fields.
+	 */
+	rules?: Record<string, FormGridThenRule>;
 	/**
 	 * The confirmation message to display checkbox for data processing consent. Adds a checkbox to the form if not false.
 	 */
-	confirmation?: boolean | null | string;
+	confirmation?: boolean | null | string | (() => React.ReactNode);
 	/**
 	 * The message to display after the form is submitted (implementation is up to the user, context contains a string but how to display the message is decided by the user).
 	 */
 	message?: null | string;
 }
+
+export type FormGridFieldOneOfType =
+	| FormGridFieldType
+	| FormGridFieldHiddenType
+	| FormGridFieldArrayType
+	| FormGridFieldObjectType;
+
+export type FormGridFieldOneOfDisplayType = FormGridFieldType | FormGridFieldArrayType | FormGridFieldObjectType;
+
+/**
+ * FormGridFieldHiddenType is the interface for the form grid field hidden type.
+ * It contains the name, type, and defaultValue.
+ */
+export type FormGridFieldHiddenType<T = unknown> = {
+	/**
+	 * The name of the field.
+	 */
+	name: string;
+	/**
+	 * The type of the field. Always "hidden".
+	 */
+	type: "hidden";
+	/**
+	 * The default value of the field. Value is not will be validated and included as is in the form data.
+	 */
+	defaultValue?: T;
+};
+
+export type FormGridFieldArrayType = Pick<
+	FormGridFieldType<{}>,
+	"name" | "label" | "readOnly" | "help" | "disabled" | "heading"
+> &
+	Pick<FormGridType, "rules" | "fields"> & {
+		/**
+		 * The type of the field. Always "object".
+		 */
+		type: "array";
+		/**
+		 * The minimum number of items in the array.
+		 */
+		min?: number;
+		/**
+		 * The maximum number of items in the array.
+		 */
+		max?: number;
+		/**
+		 * The movable flag of the array group. If true, items inside the array can be reordered.
+		 */
+		movable?: boolean;
+
+		keyName?: string;
+
+		labelName?: string;
+
+		itemLabel?: string | ((data: { position: number }) => string);
+
+		labelHidden?: boolean;
+		/**
+		 * The collapsible flag of the array group. If true, the array group will be displayed as a collapsible section.
+		 */
+		collapsible?: boolean;
+	};
+
+export type FormGridFieldObjectType = Pick<
+	FormGridFieldType<{}>,
+	"name" | "label" | "readOnly" | "help" | "disabled" | "required" | "heading"
+> &
+	Pick<FormGridType, "rules" | "fields"> & {
+		/**
+		 * The type of the field. Always "object".
+		 */
+		type: "object";
+
+		collapsible?: boolean;
+
+		modal?: boolean;
+	};
+
+export type FormGridThenOperator =
+	| "eq"
+	| "lt"
+	| "lte"
+	| "gt"
+	| "gte"
+	| "not"
+	| "include"
+	| "not-include"
+	| "is-empty"
+	| "not-empty"
+	| "is-null"
+	| "not-null";
+
+export type FormGridThenArrayOperator = "in" | "not-in";
+
+export type FormGridThenRule =
+	| {
+			name: string;
+			operator?: FormGridThenOperator;
+			value?: string | number | boolean;
+			required?: boolean;
+	  }
+	| {
+			name: string;
+			operator: FormGridThenArrayOperator;
+			value: unknown[];
+			required?: boolean;
+	  };
 
 /**
  * FormGridFieldType is the interface for the form grid field.
@@ -53,6 +165,10 @@ export type FormGridFieldType<P extends object = any> = {
 	 */
 	type?: "text" | "textarea" | "select" | "checkbox" | "number" | "password" | "email" | string;
 	/**
+	 * The help of the field.
+	 */
+	help?: string | null;
+	/**
 	 * The placeholder of the field.
 	 */
 	placeholder?: string | null;
@@ -60,6 +176,14 @@ export type FormGridFieldType<P extends object = any> = {
 	 * The required flag of the field.
 	 */
 	required?: boolean;
+	/**
+	 * The readOnly flag of the field.
+	 */
+	readOnly?: boolean;
+	/**
+	 * The disabled flag of the field.
+	 */
+	disabled?: boolean;
 	/**
 	 * The config of the field. The type of the config is determined by the type of the field.
 	 */
@@ -77,6 +201,10 @@ export type FormGridFieldType<P extends object = any> = {
 	 * The column start flag of the field. If true, forces the field to start on a new line, even if there is available space after previous fields.
 	 */
 	colStart?: boolean;
+	/**
+	 * The header of the field group. If set, the field will be displayed as a group with the header.
+	 */
+	heading?: FormGridGroupHeading | string | null;
 };
 
 /**
@@ -85,6 +213,18 @@ export type FormGridFieldType<P extends object = any> = {
  * it will always take 100% width of the form block regardless of this setting.
  */
 export type FormGridCol = "col-1" | "col-1-2" | "col-1-3" | "col-2-3";
+
+export type FormGridGroupCol = {
+	col: FormGridCol;
+	field: FormGridFieldOneOfDisplayType;
+};
+
+export type FormGridGroupHeading = {
+	heading: string;
+	id?: string;
+};
+
+export type FormGridSize = "sm" | "md" | "lg";
 
 /**
  * FormGridTriggerProps is the interface for the form grid trigger.
@@ -117,13 +257,23 @@ export type FormGridTriggerProps = {
  * AddFormFieldAdapter is the type for the form field adapter.
  * It contains the props of the field and the render handler.
  */
-export type AddFormFieldAdapter<P extends object = any> = (props: P) => FormInputGroupRenderHandler;
+export type AddFormFieldAdapter<P extends object = any> = (
+	field: FormGridFieldType<P>,
+	ctx: UseFormReturn
+) => FormInputGroupRenderHandler | { __virtual: React.ElementType };
+
+export type CreateZodSchemaCallback<P extends object = any> = (
+	field: FormGridFieldType<P>,
+	values: Record<string, unknown>
+) => z.ZodType;
+
+export type CreateZodDefaultValueCallback<P extends object = any> = (field: FormGridFieldType<P>) => unknown;
 
 /**
  * AddFormFieldAdapterOptions is the interface for the form field adapter options.
  * It contains the label, help, full, createZodSchema, and createZodDefaultValue options.
  */
-export interface AddFormFieldAdapterOptions {
+export type AddFormFieldAdapterOptions = {
 	/**
 	 * The label flag of the field. If true, the label will be displayed.
 	 */
@@ -139,9 +289,9 @@ export interface AddFormFieldAdapterOptions {
 	/**
 	 * Returns the Zod schema for the registered data type.
 	 */
-	createZodSchema?: (field: FormGridFieldType, values: Record<string, unknown>) => z.ZodType;
+	createZodSchema?: CreateZodSchemaCallback | undefined;
 	/**
 	 * Returns the default value for the registered data type.
 	 */
-	createZodDefaultValue?: (field: FormGridFieldType) => unknown;
-}
+	createZodDefaultValue?: CreateZodDefaultValueCallback | undefined;
+};

@@ -1,7 +1,7 @@
-.formGrid {
+.form {
 }
 
-.form {
+.content {
 	@apply space-y-5;
 	&:not(:last-child) {
 		@apply mb-5;
@@ -9,7 +9,25 @@
 }
 
 .group {
-	@apply grid grid-cols-6 gap-5;
+	@apply grid grid-cols-6 gap-5 empty:hidden;
+}
+
+.heading {
+	@apply font-medium;
+}
+h2.heading {
+	@apply text-xl leading-tight;
+}
+h3.heading {
+	@apply text-lg leading-tight;
+}
+
+.n1x2,
+.n1x3,
+.n2x3 {
+	&:not([data-field-type="checkbox"]) ~ [data-field-type="checkbox"] {
+		@apply pt-5 justify-center;
+	}
 }
 
 .n1 {
@@ -39,4 +57,61 @@
 
 .error {
 	@apply border-destructive px-3 py-2 flex items-center text-sm text-destructive;
+}
+
+// array & object components
+
+.box {
+	@apply w-full max-w-full col-span-full;
+}
+
+.invalid > .helper {
+	@apply text-destructive;
+}
+
+.boxLabel {
+	@apply mr-auto text-sm font-medium first:ml-2;
+}
+
+.boxEmpty {
+	//
+}
+
+.boxHeader {
+	@apply flex items-center justify-between gap-2 p-2 min-h-12;
+}
+
+.boxArrayList {
+	@apply space-y-4;
+	.boxEmpty .boxCard {
+		@apply bg-slate-400/5 rounded-md;
+	}
+	& & {
+		@apply space-y-1;
+		> .boxArrayItem {
+			.boxCard {
+				@apply bg-slate-400/5 rounded-md;
+			}
+			&:not(:last-child) > .boxCard {
+				@apply rounded-b-sm;
+			}
+			&:not(:first-child) > .boxCard {
+				@apply rounded-t-sm;
+			}
+		}
+	}
+}
+
+.boxCard > .content {
+	@apply px-4 pt-2 pb-4 border-t;
+}
+.invalid > .boxCard > .content {
+	@apply border-t-destructive;
+}
+
+.boxCard {
+	@apply bg-background border shadow-sm rounded-xl;
+	.invalid > & {
+		@apply border-destructive shadow-destructive/30;
+	}
 }

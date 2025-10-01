@@ -133,7 +133,7 @@ const InputCheckboxGroup = React.forwardRef<HTMLDivElement, InputCheckboxGroupPr
 	const { value: valueProp, options: optionsProp = [], multiple = false, size, ...rest } = props;
 
 	const classes = useInputCheckboxClasses();
-	const dump: Partial<Record<string | number, string>> = {};
+	const dump: Partial<Record<string | number, InputSelectOption>> = {};
 	const options: InputSelectOption[] = [];
 
 	if (Array.isArray(optionsProp)) {

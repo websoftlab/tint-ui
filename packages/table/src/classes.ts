@@ -5,6 +5,7 @@ const { base, b } = classGroup("table");
 const classes = {
 	table: base,
 	wrapper: b("wrapper"),
+	compact: b("compact"),
 	header: b("header"),
 	body: b("body"),
 	footer: b("footer"),

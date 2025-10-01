@@ -6,14 +6,17 @@ import type { WeakValidationMap, ValidationMap } from "prop-types";
 /**
  * Represents an option for an input select component.
  *
+ * @template T - The type of the config object. This is used to pass additional properties to the option.
+ *
  * @property {string} label - The label text for the option.
  * @property {string | number} value - The value of the option.
  * @property {boolean} [disabled] - Whether the option is disabled.
  */
-export interface InputSelectOption {
+export interface InputSelectOption<T = object> {
 	label: string;
 	value: string | number;
 	disabled?: boolean;
+	config?: T;
 }
 
 /**

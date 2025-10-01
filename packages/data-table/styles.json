@@ -1,0 +1,8 @@
+{
+	"styles": [
+		{ "template": "data-table.module.scss", "name": "styles", "classes": "classes" },
+		{ "template": "data-table-filter.module.scss", "name": "styles-filter", "classes": "filterClasses" },
+		{ "template": "data-table-toolbar.module.scss", "name": "styles-toolbar", "classes": "toolbarClasses" },
+		{ "template": "data-table-pagination.module.scss", "name": "styles-pagination", "classes": "paginationClasses" }
+	]
+}

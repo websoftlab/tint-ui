@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { AppStoreOptions } from "./app-store";
 
 import * as React from "react";
+import { useGlobalName } from "@tint-ui/tools/use-global-name";
 import { AppStore } from "./app-store";
 import { useAppTrigger } from "./use-app-trigger";
 
@@ -53,6 +54,7 @@ interface AppProviderProps {
 	children: ReactNode;
 	options?: AppStoreOptions;
 	useTrigger?: boolean;
+	globalName?: string | boolean;
 }
 
 /**
@@ -61,9 +63,10 @@ interface AppProviderProps {
  * @param {AppProviderProps} props - The props for the AppProvider.
  * @returns {React.ReactNode} The AppProvider component.
  */
-const AppProvider = ({ children, options, useTrigger = true }: AppProviderProps): React.ReactNode => {
+const AppProvider = ({ children, options, globalName, useTrigger = true }: AppProviderProps): React.ReactNode => {
 	const app = React.useMemo(() => new AppStore(options), []);
 	const mount = useMountContext();
+	useGlobalName(app, globalName, "__uiApp");
 	useAppTrigger(app, useTrigger);
 	return (
 		<AppContext.Provider value={app}>

@@ -1,7 +1,9 @@
-import { type Config } from "../get-config";
-import path from "path";
-import fs from "fs-extra";
+import type { Config } from "../get-config";
+
+import path from "node:path";
+import { mkdir } from "node:fs/promises";
 import recast from "recast";
+import * as fs from "../fs";
 import { handleError } from "../handle-error";
 import { spinner } from "../spinner";
 import { loadPackageFile } from "../load-package-file";
@@ -20,10 +22,10 @@ export interface UpdateComponentOptions {
 
 const write = async (file: string, data: string) => {
 	const dir = path.dirname(file);
-	if (!fs.existsSync(dir)) {
-		await fs.mkdir(dir, { recursive: true });
+	if (!(await fs.exists(dir))) {
+		await mkdir(dir, { recursive: true });
 	}
-	await fs.writeFile(file, data, "utf-8");
+	await fs.writeFile(file, data);
 };
 
 export async function updateComponent(
@@ -38,7 +40,7 @@ export async function updateComponent(
 	const componentPath = config.resolvedPaths.components;
 	const componentFile = path.resolve(componentPath, `${name}/index.${isTs ? "ts" : "js"}`);
 
-	if (overwrite || !fs.existsSync(componentFile)) {
+	if (overwrite || !(await fs.exists(componentFile))) {
 		await write(componentFile, await getComponentSource());
 	}
 
@@ -46,83 +48,125 @@ export async function updateComponent(
 		return;
 	}
 
-	const styleFilename = `styles.module.${mode === "sass" ? "scss" : "css"}`;
-	const styleFile = path.resolve(componentPath, `${name}/${name}.module.${mode === "sass" ? "scss" : "css"}`);
-	const classesName = `${name.replace(/-(.)/g, (_, v) => v.toUpperCase())}Classes`;
-	const localStyleFile = `${config.aliases.components}/${name}/${name}.module.${mode === "sass" ? "scss" : "css"}`;
-	const themeFile = path.resolve(componentPath, `theme/index.${isTs ? "tsx" : "jsx"}`);
+	// Example:
+	// { "template": "data-table.module.scss", "name": "styles", "classes": "classes" }
+	// { "template": "data-table-filter.module.scss", "name": "styles-filter", "classes": "filterClasses" }
 
-	if (overwrite || !fs.existsSync(styleFile)) {
-		await write(styleFile, await getCssSource(`${module}/${styleFilename}`));
-	}
+	type StyleType = {
+		template: string;
+		name: string;
+		classes: string;
+	};
 
-	const ast = await fileToAst(themeFile);
-	const b = recast.types.builders;
+	const updateStyle = async (style: StyleType) => {
+		let { template } = style;
+		if (mode === "css") {
+			template = template.replace(/\.scss$/, ".css");
+		}
 
-	let found = false;
-	let updated = false;
+		const styleFilename = `${style.name}.module.${mode === "sass" ? "scss" : "css"}`;
+		const styleFile = path.resolve(componentPath, `${name}/${template}`);
+		const styleName = style.name.replace("styles", name);
+		const classesName = `${styleName.replace(/-(.)/g, (_, v) => v.toUpperCase())}Classes`;
+		const localStyleFile = `${config.aliases.components}/${name}/${template}`;
+		const themeFile = path.resolve(componentPath, `theme/index.${isTs ? "tsx" : "jsx"}`);
 
-	// Add new object to `classes`
-	recast.visit(ast, {
-		visitVariableDeclaration(path) {
-			const { node } = path;
-			node.declarations.forEach((declaration) => {
-				if (
-					declaration.type === "VariableDeclarator" &&
-					declaration.id.type === "Identifier" &&
-					declaration.id.name === "classes" &&
-					declaration.init?.type === "ObjectExpression"
-				) {
-					found = true;
-					const index = declaration.init.properties.findIndex((prop) => {
-						if (prop.type === "ObjectProperty") {
-							if (prop.key.type === "Identifier") {
-								return name === prop.key.name;
-							} else if (prop.key.type === "StringLiteral") {
-								return name === prop.key.value;
+		if (overwrite || !(await fs.exists(styleFile))) {
+			await write(styleFile, await getCssSource(`${module}/${styleFilename}`));
+		}
+		const ast = await fileToAst(themeFile);
+		const b = recast.types.builders;
+
+		let found = false;
+		let updated = false;
+
+		// Add new object to `classes`
+		recast.visit(ast, {
+			visitVariableDeclaration(path) {
+				const { node } = path;
+				node.declarations.forEach((declaration) => {
+					if (
+						declaration.type === "VariableDeclarator" &&
+						declaration.id.type === "Identifier" &&
+						declaration.id.name === "classes" &&
+						declaration.init?.type === "ObjectExpression"
+					) {
+						found = true;
+						const index = declaration.init.properties.findIndex((prop) => {
+							if (prop.type === "ObjectProperty") {
+								if (prop.key.type === "Identifier") {
+									return styleName === prop.key.name;
+								} else if (prop.key.type === "StringLiteral") {
+									return styleName === prop.key.value;
+								}
 							}
+							return false;
+						});
+
+						if (index === -1) {
+							declaration.init.properties.push(
+								b.objectProperty(b.stringLiteral(styleName), b.identifier(classesName))
+							);
+						} else if (overwrite) {
+							declaration.init.properties[index] = b.objectProperty(
+								b.stringLiteral(styleName),
+								b.identifier(classesName)
+							);
+						} else {
+							return;
 						}
-						return false;
-					});
 
-					if (index === -1) {
-						declaration.init.properties.push(
-							b.objectProperty(b.stringLiteral(name), b.identifier(classesName))
-						);
-					} else if (overwrite) {
-						declaration.init.properties[index] = b.objectProperty(
-							b.stringLiteral(name),
-							b.identifier(classesName)
-						);
-					} else {
-						return;
+						updated = true;
 					}
+				});
+				this.traverse(path);
+			},
+		});
 
-					updated = true;
-				}
-			});
-			this.traverse(path);
-		},
-	});
+		if (!found) {
+			throw new Error("The `classes` variable was not found in the theme file or variable is not plain object");
+		}
 
-	if (!found) {
-		throw new Error("The `classes` variable was not found in the theme file or variable is not plain object");
+		if (!updated) {
+			return;
+		}
+
+		// create new class import
+		addImportAst(ast, classesName, localStyleFile);
+
+		// Generate new source and write
+		let code = recast.print(ast).code;
+
+		while (true) {
+			code = code.trimStart();
+			if (code.charAt(0) === ";") {
+				code = code.substring(1);
+				continue;
+			}
+			const startUse = code.substring(0, 12).toLowerCase();
+			if (!["'use client'", '"use client"', "`use client`"].includes(startUse)) {
+				break;
+			}
+			code = code.substring(12);
+		}
+
+		await fs.writeFile(themeFile, `"use client";\n\n` + code);
+	};
+
+	const styles: StyleType[] = [];
+	try {
+		const text = await loadPackageFile(`${module}/styles.json`);
+		const data = JSON.parse(text) as { styles: StyleType[] };
+		if (Array.isArray(data.styles)) {
+			styles.push(...data.styles);
+		}
+	} catch (err) {
+		styles.push({ template: `${name}.module.scss`, name: "styles", classes: "classes" });
 	}
 
-	if (!updated) {
-		return;
+	for (const style of styles) {
+		await updateStyle(style);
 	}
-
-	// create new class import
-	addImportAst(ast, classesName, localStyleFile);
-
-	// Generate new source and write
-	const code = recast
-		.print(ast)
-		.code.trimStart()
-		.replace(/^(["'])use client\1;+\s+/, `"use client";\n\n`);
-
-	await fs.writeFile(themeFile, code, "utf-8");
 }
 
 export async function createNewComponent(
@@ -146,7 +190,7 @@ export async function createNewComponent(
 	const componentSpinner = spinner(`Create component ${name}.`, { silent }).start();
 
 	try {
-		if (overwrite || !fs.existsSync(componentFile)) {
+		if (overwrite || !(await fs.exists(componentFile))) {
 			const classesCode = `import { classGroup } from "@tint-ui/tools/class-group";
 import { useClasses } from "@tint-ui/theme";
 

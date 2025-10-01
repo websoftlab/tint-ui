@@ -136,11 +136,11 @@
 }
 
 .black {
-	@apply bg-foreground text-white hover:bg-black;
+	@apply bg-slate-950 text-white hover:bg-slate-900 dark:bg-slate-200 dark:text-slate-800 dark:hover:bg-slate-100 focus-visible:ring-slate-950 dark:focus-visible:ring-slate-100;
 
 	&:disabled,
 	&.disabled {
-		@apply hover:bg-black;
+		@apply hover:bg-slate-950 dark:hover:bg-slate-200;
 	}
 }
 

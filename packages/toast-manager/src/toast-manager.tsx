@@ -6,6 +6,7 @@ import type { TriggerToastCloseProps, TriggerToastProps } from "./types";
 import * as React from "react";
 import { Toaster, toast } from "sonner";
 import clsx from "clsx";
+import { useGlobalName } from "@tint-ui/tools/use-global-name";
 import { useThemeMode } from "@tint-ui/theme";
 import { useTrigger } from "@tint-ui/trigger";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
@@ -16,6 +17,7 @@ type BaseToastProps = ComponentProps<typeof Toaster>;
 
 type ToastManagerProps = Omit<BaseToastProps, "toastOptions" | "icons"> & {
 	toastOptions?: Omit<BaseToastProps["toastOptions"], "classNames">;
+	globalName?: string | boolean | null;
 };
 
 const createIcon = (name: string, classes: { icon: string; spin: string; close: string }) => {
@@ -27,7 +29,7 @@ const createIcon = (name: string, classes: { icon: string; spin: string; close: 
 	);
 };
 
-const ToastManager = ({ className, toastOptions, ...props }: ToastManagerProps) => {
+const ToastManager = ({ className, globalName, toastOptions, ...props }: ToastManagerProps) => {
 	const service = useTrigger();
 	const theme = useThemeMode();
 	const { svgIcon, svgIconSpin, svgIconClose, toaster, ...classNames } = useToastClasses();
@@ -61,6 +63,8 @@ const ToastManager = ({ className, toastOptions, ...props }: ToastManagerProps) 
 			),
 		[service]
 	);
+
+	useGlobalName(toast, globalName, "__uiToast");
 
 	return (
 		<Toaster

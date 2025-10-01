@@ -51,7 +51,14 @@ const InputPassword = React.forwardRef<HTMLInputElement, InputPasswordProps>(
 		const { visible, addonProps } = useInputPassword(revealMode);
 		return (
 			<InputGroup disabled={disabled} invalid={invalid} size={size} themePropsType="password" {...groupProps}>
-				<InputText themePropsType="password" {...props} ref={ref} type={visible ? "text" : "password"} />
+				<InputText
+					themePropsType="password"
+					{...props}
+					ref={ref}
+					type={visible ? "text" : "password"}
+					autoComplete="off"
+					autoCorrect="off"
+				/>
 				{revealMode !== "none" && (
 					<InputAddon
 						variant={revealMode === "toggle" ? "button" : "label"}

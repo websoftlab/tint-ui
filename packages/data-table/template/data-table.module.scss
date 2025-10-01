@@ -1,0 +1,38 @@
+.dataTable {
+	@apply relative border rounded-lg px-1;
+}
+
+.booleanCellType {
+	@apply inline-flex justify-center items-center align-top;
+}
+.iconTrue {
+	@apply text-primary;
+}
+.iconFalse {
+	@apply text-destructive;
+}
+.iconNull {
+	@apply text-gray-500;
+}
+
+.menuGroup {
+	@apply flex items-center;
+	> button {
+		&:not(:first-of-type) {
+			@apply rounded-l-none;
+		}
+		&:not(:last-of-type) {
+			@apply rounded-r-none;
+		}
+		& ~ button {
+			@apply -ml-[1px];
+		}
+	}
+}
+
+.menuItemDestructive {
+	@apply text-destructive;
+	&:hover {
+		@apply bg-destructive-foreground text-destructive;
+	}
+}

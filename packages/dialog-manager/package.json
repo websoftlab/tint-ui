@@ -43,6 +43,10 @@
 			"require": "./build/cjs/dialog-prompt.js",
 			"default": "./build/dialog-prompt.js"
 		},
+		"./helpers": {
+			"require": "./build/cjs/helpers.js",
+			"default": "./build/helpers.js"
+		},
 		"./register": {
 			"require": "./build/cjs/register.js",
 			"default": "./build/register.js"

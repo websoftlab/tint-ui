@@ -4,17 +4,20 @@ import type { ReactNode } from "react";
 import type { TriggerServiceImpl } from "./types";
 
 import * as React from "react";
+import { useGlobalName } from "@tint-ui/tools/use-global-name";
 import { TriggerService } from "./trigger-service";
 
 const TriggerContext = React.createContext<TriggerServiceImpl | null>(null);
 
 interface TriggerProviderProps {
 	children: ReactNode;
+	globalName?: string | boolean | null;
 }
 
-const TriggerProvider = (props: TriggerProviderProps) => {
+const TriggerProvider = ({ children, globalName }: TriggerProviderProps) => {
 	const trigger = React.useMemo(() => new TriggerService(), []);
-	return <TriggerContext.Provider value={trigger} {...props} />;
+	useGlobalName(trigger, globalName, "__uiTrigger");
+	return <TriggerContext.Provider value={trigger}>{children}</TriggerContext.Provider>;
 };
 
 const useTrigger = () => {

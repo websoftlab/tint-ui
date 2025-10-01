@@ -89,6 +89,10 @@
 			"require": "./build/cjs/use-fork-ref.js",
 			"default": "./build/use-fork-ref.js"
 		},
+		"./use-global-name": {
+			"require": "./build/cjs/use-global-name.js",
+			"default": "./build/use-global-name.js"
+		},
 		"./use-local-storage-state": {
 			"require": "./build/cjs/use-local-storage-state.js",
 			"default": "./build/use-local-storage-state.js"

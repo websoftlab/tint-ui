@@ -1,27 +1,59 @@
+import type { InputNumberAdapterProps } from "@tint-ui/input";
 import type { FormGridFieldType, AddFormFieldAdapter, AddFormFieldAdapterOptions } from "../types";
 
 import { z } from "zod";
 import { inputNumberAdapter } from "@tint-ui/input";
 
-type NumberAdapterConfig = {
-	min?: number;
-	max?: number;
-	step?: number;
-	shiftStep?: number;
-	onFormatValue?: (value: number) => number;
-	onChangeValue?: (value: number | null) => void;
-};
+type NumberAdapterConfig = Pick<
+	InputNumberAdapterProps,
+	| "min"
+	| "max"
+	| "step"
+	| "ctrlStep"
+	| "onFormatValue"
+	| "onChangeValue"
+	| "onChangeOptions"
+	| "size"
+	| "autoFocus"
+	| "autoComplete"
+	| "autoCorrect"
+	| "tabIndex"
+	| "form"
+>;
 
 const numberAdapter: AddFormFieldAdapter = (field: FormGridFieldType) => {
-	const { onFormatValue, onChangeValue, min, max, step, shiftStep } = (field.config || {}) as NumberAdapterConfig;
+	const { readOnly } = field;
+	const {
+		onFormatValue,
+		onChangeValue,
+		onChangeOptions,
+		size,
+		min,
+		max,
+		step,
+		ctrlStep,
+		autoCorrect,
+		autoFocus,
+		autoComplete,
+		tabIndex,
+		form,
+	} = (field.config || {}) as NumberAdapterConfig;
 	return inputNumberAdapter({
 		placeholder: field.placeholder || undefined,
 		onFormatValue,
 		onChangeValue,
+		onChangeOptions,
+		size,
 		min,
 		max,
 		step,
-		shiftStep,
+		ctrlStep,
+		readOnly,
+		autoCorrect,
+		autoFocus,
+		autoComplete,
+		tabIndex,
+		form,
 	});
 };
 

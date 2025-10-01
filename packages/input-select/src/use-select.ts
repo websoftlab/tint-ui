@@ -1,22 +1,26 @@
+"use client";
+
 import type { InputSelectOption, InputSelectOptionGroup } from "@tint-ui/tools";
 import type { CSSProperties, MutableRefObject, Ref } from "react";
-import type { InputSelectProps, OptionCallbackType, OptionType, OptionValueType } from "./types";
+import type {
+	InputSelectProps,
+	InputSelectTag,
+	OptionCallbackType,
+	OptionType,
+	OptionValueType,
+	OptionQueryMode,
+} from "./types";
 
 import * as React from "react";
 import { makeOption } from "@tint-ui/tools/make-option";
+import { errorMessage } from "@tint-ui/tools/error-message";
 import { resizeElement } from "@tint-ui/tools/resize-element";
 import { useForkRef } from "@tint-ui/tools/use-fork-ref";
 import { getValue } from "./get-value";
 import { getText } from "./lexicon";
 
-type Tag = {
-	value: OptionValueType;
-	label: string;
-	onClear(): void;
-};
-
 type OptionsState<T extends OptionValueType> = {
-	dump: Partial<Record<T, string>>;
+	dump: Partial<Record<T, InputSelectOption>>;
 	count: number;
 	options: InputSelectOptionGroup[];
 };
@@ -29,57 +33,84 @@ type OptionsControllerState<T extends OptionValueType> = OptionsState<T> & {
 	error: null | string;
 };
 
-const getPlaceholder = <T extends OptionValueType>(dump: Partial<Record<T, string>>, id: T): string => {
-	if (dump.hasOwnProperty(id)) {
-		return dump[id] as string;
+const getPlaceholder = <T extends OptionValueType>(dump: Partial<Record<T, InputSelectOption>>, id: T): string => {
+	const option = dump[id];
+	if (option && dump.hasOwnProperty(id)) {
+		return option.label;
 	}
 	return String(id === "" ? "- x -" : id);
 };
 
-const getOptions = function <T extends OptionValueType>(options: OptionType[]): OptionsState<T> {
+const getOption = <T extends OptionValueType>(
+	dump: Partial<Record<T, InputSelectOption>>,
+	id: T
+): InputSelectOption => {
+	const option = dump[id];
+	if (!option || !dump.hasOwnProperty(id)) {
+		return {
+			value: id,
+			label: String(id === "" ? "- x -" : id),
+		};
+	}
+	return option;
+};
+
+const getOptions = function <T extends OptionValueType>(
+	options: OptionType[],
+	lastOptions: InputSelectOptionGroup[] = []
+): OptionsState<T> {
 	let lastGroup: InputSelectOptionGroup | null = null;
 	let count = 0;
 
-	const calc: InputSelectOptionGroup[] = [];
-	const dump: Partial<Record<T, string>> = {};
-	const addLast = () => {
-		if (lastGroup != null) {
-			calc.push(lastGroup);
-			lastGroup = null;
+	const refs = new Map<string, InputSelectOptionGroup>();
+	const dump: Partial<Record<T, InputSelectOption>> = {};
+	const merge = (options: OptionType[]) => {
+		for (let option of options) {
+			if (typeof option !== "string" && "options" in option) {
+				const label = String(option.label);
+				const exists = refs.has(label);
+				const group: InputSelectOptionGroup = exists
+					? refs.get(label)!
+					: {
+							label: option.label,
+							options: [],
+					  };
+				Array.from(option.options).forEach((item) => {
+					const option = makeOption(item, dump);
+					if (option) {
+						count++;
+						group.options.push(option);
+					}
+				});
+				if (!exists && group.options.length) {
+					refs.set(label, group);
+				}
+			} else {
+				const item = makeOption(option, dump);
+				if (!item) {
+					continue;
+				}
+				count++;
+				if (!lastGroup) {
+					lastGroup = { options: [item] };
+				} else {
+					lastGroup.options.push(item);
+				}
+			}
 		}
 	};
 
-	for (let option of options) {
-		if (typeof option !== "string" && "options" in option) {
-			addLast();
-			const group: InputSelectOptionGroup = {
-				label: option.label,
-				options: [],
-			};
-			Array.from(option.options).forEach((item) => {
-				const option = makeOption(item, dump);
-				if (option) {
-					count++;
-					group.options.push(option);
-				}
-			});
-			if (group.options.length) {
-				calc.push(group);
-			}
-		} else {
-			const item = makeOption(option, dump);
-			if (!item) {
-				continue;
-			}
-			count++;
-			if (!lastGroup) {
-				lastGroup = { options: [item] };
-			} else {
-				lastGroup.options.push(item);
-			}
-		}
+	if (lastOptions.length) {
+		merge(lastOptions);
 	}
-	addLast();
+	if (options.length) {
+		merge(options);
+	}
+
+	const calc = Array.from(refs.values());
+	if (lastGroup != null) {
+		calc.push(lastGroup);
+	}
 
 	return {
 		options: calc,
@@ -90,16 +121,24 @@ const getOptions = function <T extends OptionValueType>(options: OptionType[]): 
 
 const renderOptionDefault = (option: InputSelectOption) => option.label;
 
+const renderTagDefault = (tag: InputSelectTag) => tag.option.label;
+
 const createControllerState = function <T extends OptionValueType>(
-	initialState?: OptionType[] | undefined | null
+	initialState?: OptionType[] | undefined | null,
+	valueRef?: MutableRefObject<T | T[] | null>
 ): OptionsControllerState<T> {
 	if (initialState != null) {
+		const opts = getOptions<T>(initialState);
+		let values = valueRef?.current;
+		if (!Array.isArray(values)) {
+			values = values == null ? [] : [values];
+		}
 		return {
-			...getOptions<T>(initialState),
+			...opts,
 			inputText: "",
 			text: "",
 			loading: false,
-			loaded: true,
+			loaded: values.every((value) => opts.dump.hasOwnProperty(value)),
 			error: null,
 		};
 	}
@@ -111,9 +150,13 @@ const useController = function <T extends OptionValueType>(
 	initialState: OptionType[] | null,
 	valueRef: MutableRefObject<T | T[] | null>
 ) {
-	const [state, setState] = React.useState<OptionsControllerState<T>>(() => createControllerState(initialState));
-	const ref = React.useRef(callback);
-	const { onMount, onReload, onChangeText } = React.useMemo(() => {
+	const [state, setState] = React.useState<OptionsControllerState<T>>(() =>
+		createControllerState(initialState, valueRef)
+	);
+	const ref = React.useRef<OptionCallbackType<T> | null>(null);
+	const initRef = React.useRef(false);
+
+	const { onCheckValue, onMount, onReload, onChangeText } = React.useMemo(() => {
 		let localState: OptionsControllerState<T> = state;
 		let mount = false;
 		let abortController: AbortController | null = null;
@@ -144,7 +187,7 @@ const useController = function <T extends OptionValueType>(
 			setState(localState);
 		};
 
-		const query = (force = false) => {
+		const query = (force = false, mode: OptionQueryMode = "search") => {
 			if (!mount) {
 				return;
 			}
@@ -168,9 +211,15 @@ const useController = function <T extends OptionValueType>(
 			const saveDump = localState.dump;
 
 			abortController = new AbortController();
-			(async (...args: [string, T[], AbortController]) => callback(...args))(text, values, abortController)
+			const signal = abortController.signal;
+			(async (...args: [string, T[], OptionQueryMode, AbortController]) => callback(...args))(
+				text,
+				values,
+				mode,
+				abortController
+			)
 				.then((options) => {
-					const state = getOptions(options);
+					const state = getOptions(options, mode === "lost" ? localState.options : []);
 					for (const id of values) {
 						if (!state.dump[id] && saveDump[id]) {
 							state.dump[id] = saveDump[id];
@@ -183,9 +232,12 @@ const useController = function <T extends OptionValueType>(
 					});
 				})
 				.catch((error) => {
+					if (signal.aborted) {
+						return;
+					}
 					update({
 						loading: false,
-						error: error instanceof Error ? error.message : String(error),
+						error: errorMessage(error).message,
 					});
 				})
 				.finally(() => {
@@ -194,20 +246,31 @@ const useController = function <T extends OptionValueType>(
 		};
 
 		return {
-			onChangeText(text: string) {
+			onCheckValue(value: T | T[]) {
+				if (!Array.isArray(value)) {
+					value = [value];
+				}
+				if (!value.some((id) => localState.dump.hasOwnProperty(id))) {
+					query(true, "lost");
+				}
+			},
+			onChangeText(text: string, focus = false) {
 				lazyClear();
 				update({ inputText: text });
-				lazyId = window.setTimeout(() => {
-					lazyId = null;
-					query();
-				}, 300);
+				lazyId = window.setTimeout(
+					() => {
+						lazyId = null;
+						query(focus);
+					},
+					focus ? 50 : 300
+				);
 			},
-			onReload(newState: OptionsControllerState<T>) {
+			onReload(newState: OptionsControllerState<T>, initial = false) {
 				abort();
 				localState = newState;
 				setState(localState);
 				if (!localState.loaded) {
-					query(true);
+					query(true, initial ? "initial" : "search");
 				}
 			},
 			onMount() {
@@ -226,11 +289,22 @@ const useController = function <T extends OptionValueType>(
 		}
 		ref.current = callback;
 		if (typeof callback === "function") {
-			onReload(createControllerState(initialState));
+			initRef.current = true;
+			onReload(createControllerState(initialState, valueRef), true);
 		} else {
 			setState(createControllerState());
 		}
 	}, [callback, onReload]);
+
+	// If the current value has been changed
+	const currentValue = valueRef.current;
+	React.useEffect(() => {
+		if (initRef.current) {
+			initRef.current = false;
+		} else if (currentValue != null && typeof ref.current === "function") {
+			onCheckValue(currentValue);
+		}
+	}, [currentValue, onCheckValue]);
 
 	return {
 		...state,
@@ -253,11 +327,25 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 		valueAsNumber = false,
 		disableSearch = false,
 		renderOption = renderOptionDefault,
+		renderTag = renderTagDefault,
 		tagsProps = {},
 		popoverProps = {},
 		size,
+		name,
+		readOnly,
+		inputHidden = false,
 		...rest
 	} = props;
+
+	// hidden field is used only if component name is not empty
+	if (!name) {
+		inputHidden = false;
+	}
+
+	// readonly flag support only for input
+	if (readOnly === true) {
+		rest.disabled = true;
+	}
 
 	const [nativeValue, setNativeValue] = React.useState<T | T[] | null>(null);
 	const { onSelectOption, isOptionSelected, value } = React.useMemo(() => {
@@ -282,7 +370,11 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 				value: valueProp || null,
 				isOptionSelected,
 				onSelectOption: (value: string | null) => {
-					onSelectOptionProp!(value, close);
+					let option: InputSelectOption | null = null;
+					if (value != null) {
+						option = getOption(refController.current.dump, value as T);
+					}
+					onSelectOptionProp!(value, { option, close });
 				},
 			};
 		}
@@ -337,6 +429,10 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 				onValueChange(text: string) {
 					refController.current.onChangeText(text);
 				},
+				onFocus() {
+					const { onChangeText, inputText } = refController.current;
+					onChangeText(inputText, true);
+				},
 			},
 		};
 	}, [optionsProp]);
@@ -369,7 +465,7 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 		);
 	}, []);
 
-	const tags: Tag[] = [];
+	const tags: InputSelectTag[] = [];
 
 	let placeholder: string | null = null;
 	let isFill = false;
@@ -383,8 +479,8 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 				tagged &&
 					value.forEach((id) => {
 						tags.push({
-							value: id,
-							label: getPlaceholder(dump, id),
+							id,
+							option: getOption(dump, id),
 							onClear() {
 								onSelectOption(`${id}`);
 							},
@@ -413,6 +509,9 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 			loading: getText(lexicon, "loading"),
 		},
 		innerRef: forkRef,
+		name,
+		value,
+		inputHidden,
 		tags,
 		size,
 		open,
@@ -420,6 +519,7 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 		onSelectOption,
 		isOptionSelected,
 		renderOption,
+		renderTag,
 		inputController,
 		count,
 		options,

@@ -85,6 +85,10 @@
 						"require": "./cjs/use-fork-ref.js",
 						"default": "./use-fork-ref.js"
 					},
+					"./use-global-name": {
+						"require": "./cjs/use-global-name.js",
+						"default": "./use-global-name.js"
+					},
 					"./use-local-storage-state": {
 						"require": "./cjs/use-local-storage-state.js",
 						"default": "./use-local-storage-state.js"

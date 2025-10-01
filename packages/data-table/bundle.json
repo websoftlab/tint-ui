@@ -1,0 +1,89 @@
+{
+	"styles.json": {
+		"target": "copy",
+		"output": "styles.json"
+	},
+	"src": [
+		{
+			"target": "node",
+			"output": "./cjs"
+		},
+		{
+			"target": "module",
+			"output": "."
+		},
+		{
+			"target": "types",
+			"output": ".",
+			"package.json": {
+				"exports": {
+					".": {
+						"require": "./cjs/index.js",
+						"default": "./index.js"
+					},
+
+					"./styles.module.scss": {
+						"require": "./styles.module.scss",
+						"default": "./styles.module.scss"
+					},
+					"./styles.module.css": {
+						"require": "./styles.module.css",
+						"default": "./styles.module.css"
+					},
+					"./styles.css": {
+						"require": "./styles.css",
+						"default": "./styles.css"
+					},
+
+					"./styles-filter.module.scss": {
+						"require": "./styles-filter.module.scss",
+						"default": "./styles-filter.module.scss"
+					},
+					"./styles-filter.module.css": {
+						"require": "./styles-filter.module.css",
+						"default": "./styles-filter.module.css"
+					},
+					"./styles-filter.css": {
+						"require": "./styles-filter.css",
+						"default": "./styles-filter.css"
+					},
+
+					"./styles-pagination.module.scss": {
+						"require": "./styles-pagination.module.scss",
+						"default": "./styles-pagination.module.scss"
+					},
+					"./styles-pagination.module.css": {
+						"require": "./styles-pagination.module.css",
+						"default": "./styles-pagination.module.css"
+					},
+					"./styles-pagination.css": {
+						"require": "./styles-pagination.css",
+						"default": "./styles-pagination.css"
+					},
+
+					"./styles-toolbar.module.scss": {
+						"require": "./styles-toolbar.module.scss",
+						"default": "./styles-toolbar.module.scss"
+					},
+					"./styles-toolbar.module.css": {
+						"require": "./styles-toolbar.module.css",
+						"default": "./styles-toolbar.module.css"
+					},
+					"./styles-toolbar.css": {
+						"require": "./styles-toolbar.css",
+						"default": "./styles-toolbar.css"
+					},
+
+					"./styles.json": {
+						"require": "./styles.json",
+						"default": "./styles.json"
+					},
+					"./package.json": {
+						"require": "./package.json",
+						"default": "./package.json"
+					}
+				}
+			}
+		}
+	]
+}
