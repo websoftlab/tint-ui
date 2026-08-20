@@ -40,7 +40,7 @@ const getQuery = async (url) => {
 		throw new Error(data.message);
 	}
 
-	throw new Error("Git API failure. " + status + " " + statusText);
+	throw new Error("Git API failure. " + status + " " + statusText + " [" + url + "]");
 };
 
 const writeJsonFile = async (file, data) => {
@@ -245,7 +245,7 @@ const version = await getTablerVersion();
 if (version !== loaded.version) {
 	loaded.version = version;
 	updated = true;
-	console.log(`$ Tablerabler version ${version} (new)`);
+	console.log(`$ Tabler version ${version} (new)`);
 } else {
 	console.log(`$ Tabler version ${version}`);
 }

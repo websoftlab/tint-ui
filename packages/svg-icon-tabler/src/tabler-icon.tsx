@@ -17,13 +17,15 @@ type IconData = IconDataType | IconDataType[] | { default: IconDataType } | { de
 const baseProps = {
 	outline: {
 		stroke: "currentColor",
+		fill: "none",
 		strokeWidth: 2,
 		strokeLinecap: "round",
 		strokeLinejoin: "round",
-	} as Pick<SvgIconProps, "stroke" | "strokeWidth" | "strokeLinecap" | "strokeLinejoin">,
+	} as Pick<SvgIconProps, "fill" | "stroke" | "strokeWidth" | "strokeLinecap" | "strokeLinejoin">,
 	filled: {
+		stroke: "none",
 		fill: "currentColor",
-	} as Pick<SvgIconProps, "fill">,
+	} as Pick<SvgIconProps, "stroke" | "fill">,
 };
 
 const createIcon = (name: string, type: "filled" | "outline", data: string[]) => {

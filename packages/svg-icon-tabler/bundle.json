@@ -45,6 +45,14 @@
 						"require": "./icon-all-filled.json",
 						"default": "./icon-all-filled.json"
 					},
+					"./icon-text.json": {
+						"require": "./icon-text.json",
+						"default": "./icon-text.json"
+					},
+					"./icon-text-outline.json": {
+						"require": "./icon-text-outline.json",
+						"default": "./icon-text-outline.json"
+					},
 					"./icon-development.json": {
 						"require": "./icon-development.json",
 						"default": "./icon-development.json"
@@ -69,6 +77,14 @@
 						"require": "./icon-devices-outline.json",
 						"default": "./icon-devices-outline.json"
 					},
+					"./icon-health.json": {
+						"require": "./icon-health.json",
+						"default": "./icon-health.json"
+					},
+					"./icon-health-outline.json": {
+						"require": "./icon-health-outline.json",
+						"default": "./icon-health-outline.json"
+					},
 					"./icon-design.json": {
 						"require": "./icon-design.json",
 						"default": "./icon-design.json"
@@ -84,6 +100,14 @@
 					"./icon-system-outline.json": {
 						"require": "./icon-system-outline.json",
 						"default": "./icon-system-outline.json"
+					},
+					"./icon-communication.json": {
+						"require": "./icon-communication.json",
+						"default": "./icon-communication.json"
+					},
+					"./icon-communication-outline.json": {
+						"require": "./icon-communication-outline.json",
+						"default": "./icon-communication-outline.json"
 					},
 					"./icon-vehicles.json": {
 						"require": "./icon-vehicles.json",
@@ -101,13 +125,21 @@
 						"require": "./icon-map-outline.json",
 						"default": "./icon-map-outline.json"
 					},
-					"./icon-text.json": {
-						"require": "./icon-text.json",
-						"default": "./icon-text.json"
+					"./icon-media.json": {
+						"require": "./icon-media.json",
+						"default": "./icon-media.json"
 					},
-					"./icon-text-outline.json": {
-						"require": "./icon-text-outline.json",
-						"default": "./icon-text-outline.json"
+					"./icon-media-outline.json": {
+						"require": "./icon-media-outline.json",
+						"default": "./icon-media-outline.json"
+					},
+					"./icon-nature.json": {
+						"require": "./icon-nature.json",
+						"default": "./icon-nature.json"
+					},
+					"./icon-nature-outline.json": {
+						"require": "./icon-nature-outline.json",
+						"default": "./icon-nature-outline.json"
 					},
 					"./icon-letters.json": {
 						"require": "./icon-letters.json",
@@ -157,6 +189,14 @@
 						"require": "./icon-document-outline.json",
 						"default": "./icon-document-outline.json"
 					},
+					"./icon-buildings.json": {
+						"require": "./icon-buildings.json",
+						"default": "./icon-buildings.json"
+					},
+					"./icon-buildings-outline.json": {
+						"require": "./icon-buildings-outline.json",
+						"default": "./icon-buildings-outline.json"
+					},
 					"./icon-arrows.json": {
 						"require": "./icon-arrows.json",
 						"default": "./icon-arrows.json"
@@ -165,21 +205,13 @@
 						"require": "./icon-arrows-outline.json",
 						"default": "./icon-arrows-outline.json"
 					},
-					"./icon-media.json": {
-						"require": "./icon-media.json",
-						"default": "./icon-media.json"
+					"./icon-badges.json": {
+						"require": "./icon-badges.json",
+						"default": "./icon-badges.json"
 					},
-					"./icon-media-outline.json": {
-						"require": "./icon-media-outline.json",
-						"default": "./icon-media-outline.json"
-					},
-					"./icon-health.json": {
-						"require": "./icon-health.json",
-						"default": "./icon-health.json"
-					},
-					"./icon-health-outline.json": {
-						"require": "./icon-health-outline.json",
-						"default": "./icon-health-outline.json"
+					"./icon-badges-outline.json": {
+						"require": "./icon-badges-outline.json",
+						"default": "./icon-badges-outline.json"
 					},
 					"./icon-e-commerce.json": {
 						"require": "./icon-e-commerce.json",
@@ -188,14 +220,6 @@
 					"./icon-e-commerce-outline.json": {
 						"require": "./icon-e-commerce-outline.json",
 						"default": "./icon-e-commerce-outline.json"
-					},
-					"./icon-badges.json": {
-						"require": "./icon-badges.json",
-						"default": "./icon-badges.json"
-					},
-					"./icon-badges-outline.json": {
-						"require": "./icon-badges-outline.json",
-						"default": "./icon-badges-outline.json"
 					},
 					"./icon-sport.json": {
 						"require": "./icon-sport.json",
@@ -237,6 +261,14 @@
 						"require": "./icon-extensions-outline.json",
 						"default": "./icon-extensions-outline.json"
 					},
+					"./icon-shapes.json": {
+						"require": "./icon-shapes.json",
+						"default": "./icon-shapes.json"
+					},
+					"./icon-shapes-outline.json": {
+						"require": "./icon-shapes-outline.json",
+						"default": "./icon-shapes-outline.json"
+					},
 					"./icon-numbers.json": {
 						"require": "./icon-numbers.json",
 						"default": "./icon-numbers.json"
@@ -252,38 +284,6 @@
 					"./icon-brand-outline.json": {
 						"require": "./icon-brand-outline.json",
 						"default": "./icon-brand-outline.json"
-					},
-					"./icon-communication.json": {
-						"require": "./icon-communication.json",
-						"default": "./icon-communication.json"
-					},
-					"./icon-communication-outline.json": {
-						"require": "./icon-communication-outline.json",
-						"default": "./icon-communication-outline.json"
-					},
-					"./icon-buildings.json": {
-						"require": "./icon-buildings.json",
-						"default": "./icon-buildings.json"
-					},
-					"./icon-buildings-outline.json": {
-						"require": "./icon-buildings-outline.json",
-						"default": "./icon-buildings-outline.json"
-					},
-					"./icon-nature.json": {
-						"require": "./icon-nature.json",
-						"default": "./icon-nature.json"
-					},
-					"./icon-nature-outline.json": {
-						"require": "./icon-nature-outline.json",
-						"default": "./icon-nature-outline.json"
-					},
-					"./icon-shapes.json": {
-						"require": "./icon-shapes.json",
-						"default": "./icon-shapes.json"
-					},
-					"./icon-shapes-outline.json": {
-						"require": "./icon-shapes-outline.json",
-						"default": "./icon-shapes-outline.json"
 					},
 					"./icon-charts.json": {
 						"require": "./icon-charts.json",
@@ -324,14 +324,6 @@
 					"./icon-currencies-outline.json": {
 						"require": "./icon-currencies-outline.json",
 						"default": "./icon-currencies-outline.json"
-					},
-					"./icon-sytem.json": {
-						"require": "./icon-sytem.json",
-						"default": "./icon-sytem.json"
-					},
-					"./icon-sytem-outline.json": {
-						"require": "./icon-sytem-outline.json",
-						"default": "./icon-sytem-outline.json"
 					},
 					"./icon-gender.json": {
 						"require": "./icon-gender.json",
