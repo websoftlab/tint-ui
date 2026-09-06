@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
+		"@tint-ui/theme": "*",
 		"@tint-ui/tools": "*",
 		"@tint-ui/input": "*"
 	},

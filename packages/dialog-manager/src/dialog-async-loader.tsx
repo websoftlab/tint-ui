@@ -6,6 +6,7 @@ import * as React from "react";
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@tint-ui/dialog";
 import { Button } from "@tint-ui/button";
 import { errorMessage } from "@tint-ui/tools/error-message";
+import { useLayer } from "@tint-ui/theme";
 import { useDialogText } from "./use-dialog-text";
 import { useDialog } from "./context";
 
@@ -36,6 +37,7 @@ const DialogAsyncLoader = (props: DialogAsyncLoaderProps) => {
 		defaultText
 	);
 
+	const layer = useLayer();
 	const loaderRef = React.useRef<null | ((reload?: boolean) => void)>(null);
 	const reloadHandler = () => {
 		if (Proxy == null && !dialog.locked && loaderRef.current) {
@@ -114,6 +116,7 @@ const DialogAsyncLoader = (props: DialogAsyncLoaderProps) => {
 				</DialogHeader>
 				<DialogFooter>
 					<Button
+						data-id={layer.dataId("dialog-reload")}
 						variant="primary"
 						loading={locked && lockedType === "loading"}
 						disabled={locked}
@@ -123,6 +126,7 @@ const DialogAsyncLoader = (props: DialogAsyncLoaderProps) => {
 						{reloadButton}
 					</Button>
 					<Button
+						data-id={layer.dataId("dialog-cancel")}
 						variant="outline"
 						autoFocus
 						loading={locked && lockedType === "close"}

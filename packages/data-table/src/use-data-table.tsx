@@ -1,6 +1,6 @@
 "use client";
 
-import {
+import type {
 	FilterData,
 	DataTableCallbackType,
 	DataTableCellType,
@@ -9,6 +9,7 @@ import {
 	DataTableContextType,
 	RowMenuOption,
 	DataTableDisplayFilter,
+	DataTableOptions,
 } from "./types";
 import type {
 	FilterFn,
@@ -216,7 +217,15 @@ const getPageCount = (total: number | null | undefined, limit: number) => {
 };
 
 const useDataTable = function <TData extends object>(props: DataTableCoreProps<TData>): DataTableContextType<TData> {
-	const { table, header, cacheable = true, onRowClick, toolbar: toolbarProp, navbar: navbarProp } = props;
+	const {
+		table,
+		header,
+		cacheable = true,
+		onRowClick,
+		toolbar: toolbarProp,
+		navbar: navbarProp,
+		options = null,
+	} = props;
 	const {
 		name,
 		keyName = "id",
@@ -234,6 +243,8 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 
 	const hash = createHash(name, keyName, manual, tableCells);
 	const refHash = React.useRef(hash);
+	const refOptions = React.useRef(options);
+	refOptions.current = options;
 
 	const [data, setData] = React.useState(() => initialDataState(props.data, props.initialData));
 	const toolbar = getToolbarConfig(toolbarProp);
@@ -407,12 +418,17 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 				if (!mount) {
 					return;
 				}
+				const cb = refOptions.current?.onFilterReset;
 				setState((prev) => {
 					if (prev.loading) {
 						return prev;
 					}
+					if (cb) {
+						cb();
+					}
 					const state = {
 						...prev,
+						pagination: { pageSize: prev.pagination.pageSize, pageIndex: 0 },
 						columnFilters: [],
 						globalFilter: "",
 					};
@@ -424,13 +440,18 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 				});
 			},
 			onPageSizeChange(pageSize: number) {
+				const cb = refOptions.current?.onPaginationChange;
 				setState((prev) => {
 					if (prev.loading || prev.pagination.pageSize === pageSize) {
 						return prev;
 					}
+					const paginationState = { pageSize, pageIndex: 0 };
+					if (cb) {
+						cb(paginationState);
+					}
 					const state = {
 						...prev,
-						pagination: { pageSize, pageIndex: 0 },
+						pagination: paginationState,
 					};
 					if (force(state)) {
 						state.loading = true;
@@ -440,6 +461,7 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 				});
 			},
 			onGlobalFilterChange(value: string | ((value: string) => string)) {
+				const cb = refOptions.current?.onGlobalFilterChange;
 				setState((prev) => {
 					if (prev.loading) {
 						return prev;
@@ -448,8 +470,12 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 					if (typeof value === "function") {
 						value = value(globalFilter);
 					}
+					if (cb) {
+						cb(value);
+					}
 					const state = {
 						...rest,
+						pagination: { pageSize: prev.pagination.pageSize, pageIndex: 0 },
 						globalFilter: value == null ? "" : String(value),
 					};
 					if (force(state, true, "filter-text")) {
@@ -460,6 +486,7 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 				});
 			},
 			onColumnFiltersChange(value: ColumnFiltersState | ((value: ColumnFiltersState) => ColumnFiltersState)) {
+				const cb = refOptions.current?.onColumnFiltersChange;
 				setState((prev) => {
 					if (prev.loading) {
 						return prev;
@@ -471,8 +498,12 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 					value = value.filter(({ value }) =>
 						Array.isArray(value) ? value.length > 0 : value != null && value !== ""
 					);
+					if (cb) {
+						cb(value);
+					}
 					const state = {
 						...rest,
+						pagination: { pageSize: prev.pagination.pageSize, pageIndex: 0 },
 						columnFilters: value,
 					};
 					if (force(state)) {
@@ -483,15 +514,21 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 				});
 			},
 			onSortingChange(value: SortingState | ((value: SortingState) => SortingState)) {
+				const cb = refOptions.current?.onSortingChange;
 				setState((prev) => {
 					if (prev.loading) {
 						return prev;
 					}
 					const { sorting, ...rest } = prev;
+					const sortingState = typeof value === "function" ? value(sorting) : value;
+					if (cb) {
+						cb(sortingState);
+					}
 					const state = {
 						...rest,
+						pagination: { pageSize: prev.pagination.pageSize, pageIndex: 0 },
 						error: null,
-						sorting: typeof value === "function" ? value(sorting) : value,
+						sorting: sortingState,
 						loading: false,
 					};
 					if (force(state)) {
@@ -505,14 +542,19 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 				});
 			},
 			onPaginationChange(value: PaginationState | ((value: PaginationState) => PaginationState)) {
+				const cb = refOptions.current?.onPaginationChange;
 				setState((prev) => {
 					if (prev.loading) {
 						return prev;
 					}
 					const { pagination, ...rest } = prev;
+					const paginationState = typeof value === "function" ? value(pagination) : value;
+					if (cb) {
+						cb(paginationState);
+					}
 					const state = {
 						...rest,
-						pagination: typeof value === "function" ? value(pagination) : value,
+						pagination: paginationState,
 						error: null,
 						loading: false,
 					};
@@ -679,7 +721,10 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 			}
 			return (event: React.MouseEvent) => {
 				const target = event.target as HTMLElement;
-				if ("closest" in target && !target.closest("a[href],button,input,select,textarea,[role=button]")) {
+				if (
+					"closest" in target &&
+					!target.closest("a[href],button,input,select,textarea,[role=button],[data-row-click=off]")
+				) {
 					onRowClick(data);
 				}
 			};
@@ -687,18 +732,20 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 		[onRowClick, loading]
 	);
 
+	let optProp: Omit<DataTableOptions<TData>, "onFilterReset"> = {};
+	let optState: DataTableOptions<TData>["state"] = {};
+	if (options != null) {
+		const { onFilterReset, state, ...prop } = options;
+		optProp = prop;
+		if (state) {
+			optState = state;
+		}
+	}
+
 	const { pagination } = state;
 	const tableCtx = useReactTable({
-		data,
-		columns,
+		...optProp,
 		pageCount: manual ? state.pageCount : undefined,
-		state: {
-			columnVisibility,
-			sorting: state.sorting,
-			globalFilter: state.globalFilter,
-			columnFilters: state.columnFilters,
-			pagination,
-		},
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
@@ -712,6 +759,16 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 		manualFiltering: manual,
 		manualSorting: manual,
 		manualPagination: manual,
+		state: {
+			...optState,
+			columnVisibility,
+			sorting: state.sorting,
+			globalFilter: state.globalFilter,
+			columnFilters: state.columnFilters,
+			pagination,
+		},
+		data,
+		columns,
 	});
 
 	// lexicon page config
@@ -738,7 +795,6 @@ const useDataTable = function <TData extends object>(props: DataTableCoreProps<T
 		selected: state.selected.length,
 	});
 
-	console.log("state.loadingTarget", state.loadingTarget);
 	return {
 		hash,
 		data,

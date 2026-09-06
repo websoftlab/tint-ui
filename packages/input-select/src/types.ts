@@ -106,6 +106,10 @@ export interface InputSelectProps<T extends OptionValueType = string>
 	 */
 	renderTag?: (tag: InputSelectTag) => ReactNode;
 	/**
+	 * The callback function for generating keywords for an option.
+	 */
+	getOptionKeywords?: (options: InputSelectOption) => string[] | undefined;
+	/**
 	 * The size of the input select.
 	 */
 	size?: InputSelectSize | null;
@@ -136,7 +140,7 @@ export interface InputSelectProps<T extends OptionValueType = string>
 	/**
 	 * Whether the input select is tagged.
 	 */
-	tagged?: boolean;
+	tagged?: boolean | number;
 	/**
 	 * Whether the input select value is a number.
 	 */

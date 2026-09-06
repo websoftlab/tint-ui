@@ -16,15 +16,18 @@ import {
 import { useRowMenu } from "./use-row-menu";
 import { useDataTableContext } from "./context";
 import { useDataTableClasses } from "./classes";
+import { useLayer } from "@tint-ui/theme";
 
 const rowPopoverMenu = <TData,>(info: CellContext<TData, unknown>, menu: RowMenuOption<TData>[]) => {
 	const classes = useDataTableClasses();
 	const { loading } = useDataTableContext<TData>();
 	const rowMenu = useRowMenu(info);
+	const layer = useLayer();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
+					data-id={layer.dataId("table-nav", info.row.id)}
 					variant="ghost"
 					disabled={loading}
 					size="xs"
@@ -37,7 +40,7 @@ const rowPopoverMenu = <TData,>(info: CellContext<TData, unknown>, menu: RowMenu
 				<DropdownMenuContent>
 					{menu.map((item: RowMenuOption<TData>) => {
 						const { icon, label, id, destructive } = item;
-						const { disabled, onClick } = rowMenu(item);
+						const { disabled, onClick, getLabel } = rowMenu(item);
 						return (
 							<DropdownMenuItem
 								key={id}
@@ -46,7 +49,7 @@ const rowPopoverMenu = <TData,>(info: CellContext<TData, unknown>, menu: RowMenu
 								onSelect={onClick}
 							>
 								{icon != null && <SvgThemeIcon icon={icon} />}
-								{label}
+								{getLabel(label)}
 							</DropdownMenuItem>
 						);
 					})}

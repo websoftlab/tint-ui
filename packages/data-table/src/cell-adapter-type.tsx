@@ -8,6 +8,7 @@ import { flexRender } from "@tanstack/react-table";
 import { TableCell, TableHead, TableButtonSort } from "@tint-ui/table";
 import { invariant, warningOnce } from "@tint-ui/tools/proof";
 import { errorMessage } from "@tint-ui/tools/error-message";
+import { useLayer } from "@tint-ui/theme";
 import { adapters as coreAdapters } from "./adapters";
 import { useDataTableClasses } from "./classes";
 import { useDataTableContext } from "./context";
@@ -229,13 +230,14 @@ const DataTableCell = React.forwardRef(
 		{ cell: tableCell, withWidth, style, ...props }: DataTableCellNoRef<TData>,
 		ref: React.ForwardedRef<HTMLTableCellElement>
 	) => {
+		const layer = useLayer();
 		const colDef = tableCell.column.columnDef;
 		const cell = (colDef.meta as { _cell?: DataTableDisplayCell })?._cell;
 		const minProps = {
 			...props,
 			style,
 			ref,
-			"data-cell-id": tableCell.id,
+			"data-id": layer.dataId(tableCell.id),
 		};
 		if (!cell) {
 			if (withWidth && String(tableCell.column.id).startsWith("__#")) {
@@ -283,6 +285,7 @@ const DataTableHead = React.forwardRef(
 		ref: React.ForwardedRef<HTMLTableCellElement>
 	) => {
 		const table = useDataTableContext<TData>();
+		const layer = useLayer();
 		const colDef = header.column.columnDef;
 		const cell = (colDef.meta as { _cell?: DataTableDisplayCell })?._cell;
 		const body = header.isPlaceholder ? null : flexRender(colDef.header, header.getContext());
@@ -290,7 +293,7 @@ const DataTableHead = React.forwardRef(
 			...props,
 			ref,
 			style,
-			"data-cell-id": header.id,
+			"data-id": layer.dataId(header.id),
 		};
 
 		if (!cell || body == null) {
@@ -323,6 +326,7 @@ const DataTableHead = React.forwardRef(
 			const sorted = header.column.getIsSorted();
 			node = (
 				<TableButtonSort
+					data-id={layer.dataId("sort-by", header.id)}
 					disabled={table.loading}
 					direction={sorted ? sorted : "none"}
 					onClick={header.column.getToggleSortingHandler()}

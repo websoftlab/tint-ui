@@ -1,3 +1,5 @@
+"use client";
+
 import { classGroup } from "@tint-ui/tools/class-group";
 import { useClasses } from "@tint-ui/theme";
 

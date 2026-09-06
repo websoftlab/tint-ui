@@ -7,6 +7,7 @@ import { SvgThemeIcon } from "@tint-ui/svg-icon";
 import { useDataTableContext } from "./context";
 import { useDataTablePaginationClasses } from "./pagination-classes";
 import { getPaginationNumber } from "./utils";
+import { useLayer } from "@tint-ui/theme";
 
 const PaginationNumber = React.forwardRef(
 	<TData,>(
@@ -21,6 +22,7 @@ const PaginationNumber = React.forwardRef(
 			lexicon,
 			navbar: { size, numberSize },
 		} = useDataTableContext<TData>();
+		const layer = useLayer();
 		const pageNumber = table.getState().pagination.pageIndex + 1;
 		const pageCount = table.getPageCount();
 		const pages = React.useMemo(
@@ -48,6 +50,7 @@ const PaginationNumber = React.forwardRef(
 									? lexicon.pageLast
 									: String(page)
 							}
+							data-id={layer.dataId(`table-page-${item.page}`)}
 							variant={item.selected ? "primary" : "outline"}
 							size={size}
 							onClick={() => {

@@ -123,6 +123,17 @@ const renderOptionDefault = (option: InputSelectOption) => option.label;
 
 const renderTagDefault = (tag: InputSelectTag) => tag.option.label;
 
+const getOptionKeywordsDefault = (item: InputSelectOption): string[] | undefined => {
+	const { value, label, config } = item;
+	if (config != null && "keywords" in config && Array.isArray(config.keywords)) {
+		return config.keywords;
+	}
+	if (value !== label) {
+		return [label];
+	}
+	return undefined;
+};
+
 const createControllerState = function <T extends OptionValueType>(
 	initialState?: OptionType[] | undefined | null,
 	valueRef?: MutableRefObject<T | T[] | null>
@@ -328,6 +339,7 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 		disableSearch = false,
 		renderOption = renderOptionDefault,
 		renderTag = renderTagDefault,
+		getOptionKeywords = getOptionKeywordsDefault,
 		tagsProps = {},
 		popoverProps = {},
 		size,
@@ -472,7 +484,8 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 	if (multiple && Array.isArray(value)) {
 		isFill = value.length !== 0;
 		if (isFill) {
-			if (value.length === 1) {
+			const count = typeof tagged === "number" ? tagged : 2;
+			if (value.length < count) {
 				placeholder = getPlaceholder(dump, value[0]);
 			} else {
 				placeholder = getText(lexicon, "selected", { count: value.length });
@@ -520,6 +533,7 @@ export const useSelect = <T extends OptionValueType = string>(props: InputSelect
 		isOptionSelected,
 		renderOption,
 		renderTag,
+		getOptionKeywords,
 		inputController,
 		count,
 		options,

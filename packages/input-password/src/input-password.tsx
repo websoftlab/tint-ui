@@ -6,6 +6,7 @@ import type { InputTextProps, InputGroupProps } from "@tint-ui/input";
 import * as React from "react";
 import { InputText, InputGroup, InputAddon } from "@tint-ui/input";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
+import { useLayer } from "@tint-ui/theme";
 
 type RevealModeType = "toggle" | "hover" | "press" | "none";
 
@@ -49,6 +50,7 @@ const useInputPassword = (mode: RevealModeType) => {
 const InputPassword = React.forwardRef<HTMLInputElement, InputPasswordProps>(
 	({ revealMode = "toggle", groupProps, disabled, invalid, size, ...props }, ref) => {
 		const { visible, addonProps } = useInputPassword(revealMode);
+		const layer = useLayer();
 		return (
 			<InputGroup disabled={disabled} invalid={invalid} size={size} themePropsType="password" {...groupProps}>
 				<InputText
@@ -61,6 +63,7 @@ const InputPassword = React.forwardRef<HTMLInputElement, InputPasswordProps>(
 				/>
 				{revealMode !== "none" && (
 					<InputAddon
+						data-id={layer.dataId(`password-${revealMode}`, props.name)}
 						variant={revealMode === "toggle" ? "button" : "label"}
 						themePropsType="password"
 						{...addonProps}

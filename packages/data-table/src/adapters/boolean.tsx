@@ -23,7 +23,7 @@ const BooleanType = (props: { value?: boolean | null } & TableDataCellBooleanCon
 	const variant = value == null ? "iconNull" : value ? "iconTrue" : "iconFalse";
 	const classes = useDataTableClasses();
 	return (
-		<span className={classes.booleanCellType}>
+		<span className={classes.booleanCellType} data-row-click="off">
 			<SvgThemeIcon className={classes[variant]} icon={props[variant] || typeIcon[variant]} />
 		</span>
 	);

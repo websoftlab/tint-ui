@@ -13,4 +13,5 @@ export * from "./data-table";
 export * from "./pagination-arrow";
 export * from "./pagination-number";
 export * from "./pagination-size-options";
+export * from "./use-data-table";
 export * from "./types";

@@ -12,8 +12,10 @@ import {
 } from "@tint-ui/dropdown-menu";
 import { useDataTableContext } from "./context";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
+import { useLayer } from "@tint-ui/theme";
 
 const PaginationSizeOptions = () => {
+	const layer = useLayer();
 	const {
 		loading,
 		loadingTarget,
@@ -26,6 +28,7 @@ const PaginationSizeOptions = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
+					data-id={layer.dataId("table-page-size")}
 					variant="outline"
 					disabled={loading}
 					loading={loading && loadingTarget === "page-size"}

@@ -5,18 +5,25 @@ import type { InputSize } from "./types";
 
 import * as React from "react";
 import clsx from "clsx";
-import { useProps } from "@tint-ui/theme";
+import { useLayerForm, applyDataId, useProps } from "@tint-ui/theme";
 import { useInputClasses, useInputFilterClasses } from "./classes";
 
 type ManualProps = {
 	invalid?: boolean;
 	size?: InputSize;
+	dirty?: boolean;
 	themePropsType?: string;
 };
 
-type BaseProps<T extends Element> = Omit<React.InputHTMLAttributes<T>, "size" | "invalid"> & ManualProps;
+type BaseProps<T> = Omit<T, "size" | "invalid"> & ManualProps;
 
-const InputGroupContext = React.createContext<null | { invalid?: boolean; disabled?: boolean; size?: InputSize }>(null);
+const InputGroupContext = React.createContext<null | {
+	dirty?: boolean;
+	invalid?: boolean;
+	disabled?: boolean;
+	size?: InputSize;
+}>(null);
+
 const useInputGroupContext = () => {
 	return React.useContext(InputGroupContext);
 };
@@ -27,16 +34,18 @@ const InputText = React.forwardRef<
 		ManualProps
 >((props, ref) => {
 	const ctx = useInputGroupContext();
+	const layer = useLayerForm();
 	const {
 		type = "text",
 		size = ctx?.size,
 		invalid = ctx?.invalid,
 		disabled = ctx?.disabled,
+		dirty = ctx?.dirty,
 		className,
 		...inputProps
-	} = useProps("component.input-text", props, { as: "input", ctx });
+	} = useProps("component.input-text", applyDataId(layer, props, { property: "name" }), { as: "input", ctx });
 	const { classes, filterProps } = useInputFilterClasses();
-	const { className: filterClassName } = filterProps({ size, className });
+	const { className: filterClassName } = filterProps({ size, className, dirty });
 	return (
 		<input
 			{...inputProps}
@@ -58,15 +67,17 @@ const InputTextarea = React.forwardRef<
 		ManualProps
 >((props, ref) => {
 	const ctx = useInputGroupContext();
+	const layer = useLayerForm();
 	const {
 		className,
 		size = ctx?.size,
 		invalid = ctx?.invalid,
 		disabled = ctx?.disabled,
+		dirty = ctx?.dirty,
 		...inputProps
-	} = useProps("component.input-textarea", props, { as: "textarea", ctx });
+	} = useProps("component.input-textarea", applyDataId(layer, props, { property: "name" }), { as: "textarea", ctx });
 	const { classes, filterProps } = useInputFilterClasses();
-	const { className: filterClassName } = filterProps({ size, className });
+	const { className: filterClassName } = filterProps({ size, className, dirty });
 	return (
 		<textarea
 			{...inputProps}
@@ -78,7 +89,9 @@ const InputTextarea = React.forwardRef<
 	);
 });
 
-interface InputGroupProps extends BaseProps<HTMLDivElement> {}
+interface InputGroupProps extends BaseProps<React.HTMLAttributes<HTMLDivElement>> {
+	disabled?: boolean;
+}
 
 const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(({ children, ...rest }, ref) => {
 	const classes = useInputClasses();
@@ -100,17 +113,18 @@ const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(({ children
 	);
 });
 
+type BtnType = React.ButtonHTMLAttributes<HTMLButtonElement>;
 type InputAddonProps =
-	| (BaseProps<HTMLSpanElement> & {
+	| (BaseProps<React.HTMLAttributes<HTMLSpanElement>> & {
 			variant?: "text";
 	  })
-	| (BaseProps<HTMLButtonElement> & {
+	| (BaseProps<BtnType> & {
 			variant: "button";
 	  })
-	| (BaseProps<HTMLLabelElement> & {
+	| (BaseProps<React.LabelHTMLAttributes<HTMLLabelElement>> & {
 			variant: "label";
 	  })
-	| (BaseProps<HTMLLabelElement> & {
+	| (BaseProps<React.LabelHTMLAttributes<HTMLLabelElement>> & {
 			variant: "blank";
 	  });
 
@@ -129,10 +143,10 @@ const InputAddon = React.forwardRef<HTMLSpanElement | HTMLButtonElement | HTMLLa
 		const disabled = ctx?.disabled;
 		if (variant === "button") {
 			if (disabled) {
-				addonProps.disabled = true;
+				(addonProps as BtnType).disabled = true;
 			}
-			if (!addonProps.type) {
-				addonProps.type = "button";
+			if (!(addonProps as BtnType).type) {
+				(addonProps as BtnType).type = "button";
 			}
 		}
 		if (disabled) {

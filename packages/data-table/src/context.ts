@@ -1,3 +1,5 @@
+"use client";
+
 import type { DataTableContextType } from "./types";
 
 import * as React from "react";

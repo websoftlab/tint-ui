@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { Table } from "@tanstack/react-table";
+import type { Table, TableOptions, TableState } from "@tanstack/react-table";
 import type { InputSelectOption } from "@tint-ui/tools";
 import type { TriggerProp } from "@tint-ui/trigger";
 
@@ -20,7 +20,7 @@ interface OptionTrigger<TData> {
 	id: string;
 	trigger?: TriggerProp;
 	label: string;
-	enabledKey?: keyof TData | string;
+	disabledKey?: keyof TData | string;
 	icon?: string;
 	destructive?: boolean;
 	confirmation?: string | null;
@@ -40,6 +40,28 @@ export type DataTableToolbarSize = "sm" | "md" | "lg";
 
 export type DataTableNavbarSize = "sm" | "md" | "lg";
 
+export interface DataTableOptions<TData>
+	extends Partial<
+		Omit<
+			TableOptions<TData>,
+			| "pageCount"
+			| "getCoreRowModel"
+			| "getPaginationRowModel"
+			| "getFilteredRowModel"
+			| "getSortedRowModel"
+			| "globalFilterFn"
+			| "manualFiltering"
+			| "manualSorting"
+			| "manualPagination"
+			| "data"
+			| "columns"
+			| "state"
+		>
+	> {
+	state?: Partial<Omit<TableState, "columnVisibility" | "sorting" | "globalFilter" | "columnFilters" | "pagination">>;
+	onFilterReset?: () => void;
+}
+
 export interface DataTableCoreProps<TData> extends FilterType<TData> {
 	table: DataTableType<TData>;
 	data: TData[] | DataTableCallbackType<TData>;
@@ -51,6 +73,7 @@ export interface DataTableCoreProps<TData> extends FilterType<TData> {
 	navbar?: Partial<Omit<NavbarConfig, "onPageSizeChange">> | null;
 	compact?: boolean;
 	cacheable?: boolean;
+	options?: DataTableOptions<TData>;
 }
 
 export type StringOrFn = string | (() => string);
@@ -146,6 +169,7 @@ export interface DataTableFilterOptionConfig {
 	disableSearch?: boolean;
 	autoSelect?: boolean;
 	groupBy?: string;
+	toggleMode?: boolean;
 }
 
 export type DataTableDisplayCell<TValue = string, TConfig extends object = any> = Required<

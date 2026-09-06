@@ -21,6 +21,7 @@ import {
 } from "@tint-ui/dropdown-menu";
 import { useDataTableContext } from "./context";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
+import { useLayer } from "@tint-ui/theme";
 
 const preventHandler = (event: { preventDefault: () => void }) => {
 	event.preventDefault();
@@ -113,6 +114,7 @@ export function DataTableViewOptions<TData>() {
 		toolbar: { size, viewIconOnly },
 		lexicon,
 	} = useDataTableContext<TData>();
+	const layer = useLayer();
 
 	let count = 0;
 	if (dynamic.column) {
@@ -156,6 +158,7 @@ export function DataTableViewOptions<TData>() {
 				<Button
 					variant="outline"
 					data-type="toolbar-button-options"
+					data-id={layer.dataId("table-options")}
 					size={size}
 					iconLeft={<SvgThemeIcon icon="data-table-view" />}
 					iconOnly={viewIconOnly}

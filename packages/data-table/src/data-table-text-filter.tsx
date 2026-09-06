@@ -3,11 +3,12 @@
 import type { Table } from "@tanstack/react-table";
 
 import * as React from "react";
+import clsx from "clsx";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
 import { InputGroup, InputAddon, InputText } from "@tint-ui/input";
+import { useLayer } from "@tint-ui/theme";
 import { useDataTableFilterClasses } from "./filter-classes";
 import { useDataTableContext } from "./context";
-import clsx from "clsx";
 
 const getFilterText = <TData,>(table: Table<TData>) => {
 	const text = table.getState().globalFilter;
@@ -24,12 +25,14 @@ const DataTableTextFilter = React.forwardRef(
 		ref: React.ForwardedRef<HTMLDivElement>
 	) => {
 		const classes = useDataTableFilterClasses();
+		const layer = useLayer();
 		const {
 			lexicon,
 			table,
 			toolbar: { size },
 		} = useDataTableContext<TData>();
 
+		const forId = React.useId();
 		const [text, setText] = React.useState(() => getFilterText(table));
 		const focusRef = React.useRef(false);
 		const { resetHandler, inputProps } = React.useMemo(() => {
@@ -64,11 +67,18 @@ const DataTableTextFilter = React.forwardRef(
 				className={clsx(classes.text, isMobile && classes.textMobile, className)}
 				ref={ref}
 			>
-				<InputAddon size={size} variant="label">
+				<InputAddon
+					variant="label"
+					size={size}
+					data-id={layer.dataId("data-table", "filter-label")}
+					htmlFor={forId}
+				>
 					<SvgThemeIcon icon="search" />
 				</InputAddon>
 				<InputText
 					{...inputProps}
+					id={forId}
+					data-id={layer.dataId("data-table", "text-filter")}
 					size={size}
 					placeholder={lexicon.search}
 					value={text}

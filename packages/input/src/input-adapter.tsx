@@ -15,7 +15,7 @@ const components = {
 	textarea: InputTextarea,
 };
 
-type ExcludeProperties = "name" | "required" | "onChange" | "disabled" | "value" | "invalid";
+type ExcludeProperties = "name" | "required" | "onChange" | "disabled" | "value" | "invalid" | "dirty";
 
 const createAdapter = function <T extends keyof typeof components>(
 	type: T
@@ -25,7 +25,7 @@ const createAdapter = function <T extends keyof typeof components>(
 	const Input = components[type];
 	return (props) => {
 		const { onBlur: onBlurProp, onChangeValue, onFormatValue, onChangeOptions, ...restProp } = props || {};
-		return ((props, { invalid }, ctx) => {
+		return ((props, { invalid, dirty }, ctx) => {
 			const { onBlur, onChange, ...rest } = props;
 			const { onChange: onChangeHandler } = createTextAdapterHandlers(ctx, props.name, onChange, {
 				onChangeValue,
@@ -37,6 +37,7 @@ const createAdapter = function <T extends keyof typeof components>(
 					{...(restProp as any)}
 					{...rest}
 					invalid={invalid}
+					dirty={dirty}
 					onBlur={mergeVoidCallbackAsync(onBlurProp as () => void, onBlur as () => Promise<void>)}
 					onChange={onChangeHandler}
 				/>
@@ -62,7 +63,7 @@ const inputNumberAdapter = (props: InputNumberAdapterProps = {}): FormInputGroup
 		ctrlStep,
 		...restProp
 	} = props || {};
-	return ((props, { invalid }, ctx) => {
+	return ((props, { invalid, dirty }, ctx) => {
 		const { onBlur, onChange, ...rest } = props;
 		const { onChange: onChangeHandler, onKeyDown: onKeyDownHandler } = createNumberAdapterHandlers(
 			ctx,
@@ -85,6 +86,7 @@ const inputNumberAdapter = (props: InputNumberAdapterProps = {}): FormInputGroup
 				{...rest}
 				inputMode="number"
 				invalid={invalid}
+				dirty={dirty}
 				onBlur={mergeVoidCallbackAsync(onBlurProp as () => void, onBlur as () => Promise<void>)}
 				onChange={onChangeHandler}
 				onKeyDown={onKeyDownHandler}

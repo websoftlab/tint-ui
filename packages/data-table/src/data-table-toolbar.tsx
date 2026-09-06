@@ -11,6 +11,7 @@ import { useDataTableToolbarClasses } from "./toolbar-classes";
 import { DataTableViewOptions } from "./data-table-views-options";
 import { DataTableTextFilter } from "./data-table-text-filter";
 import { renderDataTableFilter } from "./filter-adapter-type";
+import { useLayer } from "@tint-ui/theme";
 
 // label
 const DataTableToolbar = React.forwardRef<
@@ -24,6 +25,7 @@ const DataTableToolbar = React.forwardRef<
 		filterVisible,
 		toolbar: { size, resetIconOnly, onFilterReset },
 	} = useDataTableContext();
+	const layer = useLayer();
 
 	const isMobile = useMediaQuery("(max-width: 639px)", { noSsr: true });
 	const state = table.getState();
@@ -67,6 +69,7 @@ const DataTableToolbar = React.forwardRef<
 					<Button
 						variant="secondary"
 						data-type="toolbar-button-reset"
+						data-id={layer.dataId("table-filter-reset")}
 						size={size}
 						onClick={onFilterReset}
 						iconLeft={<SvgThemeIcon icon="x" aria-hidden="true" />}

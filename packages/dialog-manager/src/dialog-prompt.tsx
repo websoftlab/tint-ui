@@ -5,9 +5,10 @@ import type { TriggerDialogPrompt } from "./types";
 import * as React from "react";
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@tint-ui/dialog";
 import { Button } from "@tint-ui/button";
+import { InputText, InputTextarea } from "@tint-ui/input";
+import { useLayer } from "@tint-ui/theme";
 import { usePrompt } from "./use-prompt";
 import { useDialogText } from "./use-dialog-text";
-import { InputText, InputTextarea } from "@tint-ui/input";
 
 const defaultText = { okButton: "OK", cancelButton: "Cancel", title: "Prompt" };
 
@@ -17,6 +18,7 @@ export const DialogPrompt = (props: TriggerDialogPrompt) => {
 	const { title, okButton, cancelButton } = useDialogText(["okButton", "cancelButton", "title"], props, defaultText);
 	const Input = multiline ? InputTextarea : InputText;
 	const id = React.useId();
+	const layer = useLayer();
 	return (
 		<>
 			<DialogHeader>
@@ -28,6 +30,7 @@ export const DialogPrompt = (props: TriggerDialogPrompt) => {
 			</form>
 			<DialogFooter>
 				<Button
+					data-id={layer.dataId("dialog-ok")}
 					variant="primary"
 					type="submit"
 					form={id}
@@ -37,7 +40,14 @@ export const DialogPrompt = (props: TriggerDialogPrompt) => {
 				>
 					{okButton}
 				</Button>
-				<Button variant="outline" autoFocus disabled={locked} onClick={onClose} themePropsType="dialog.cancel">
+				<Button
+					data-id={layer.dataId("dialog-cancel")}
+					variant="outline"
+					autoFocus
+					disabled={locked}
+					onClick={onClose}
+					themePropsType="dialog.cancel"
+				>
 					{cancelButton}
 				</Button>
 			</DialogFooter>

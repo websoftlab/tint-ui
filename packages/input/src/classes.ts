@@ -9,6 +9,7 @@ const classes = {
 	sm: b("sm"),
 	xs: b("xs"),
 	inline: b("inline"),
+	dirty: b("dirty"),
 	textarea: b("textarea"),
 	group: b("group"),
 	addon: b("addon"),
@@ -28,7 +29,9 @@ const useInputFilterClasses = createClassNameVariantFilter("input", classes, {
 			xs: "xs",
 		},
 	},
-	flags: {},
+	flags: {
+		dirty: "dirty",
+	},
 	defaultVariants: {
 		size: "md",
 	},

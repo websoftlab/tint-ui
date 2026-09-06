@@ -16,7 +16,8 @@ import {
 	CommandLoading,
 } from "@tint-ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@tint-ui/popover";
-import { useProps } from "@tint-ui/theme";
+import { FormPrefixContext, useLayer, useProps, useTheme } from "@tint-ui/theme";
+import { asProps } from "@tint-ui/tools/as-props";
 import { noop } from "@tint-ui/tools/noop";
 import { useForkRef } from "@tint-ui/tools/use-fork-ref";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
@@ -39,28 +40,29 @@ const ButtonCancel = ({
 	onClick,
 	inside = false,
 	disabled = false,
-}: {
+	...rest
+}: DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> & {
 	inside?: boolean;
-	onClick: MouseEventHandler<HTMLButtonElement>;
 	disabled?: boolean;
 }) => {
 	const classes = useInputSelectClasses();
-	const icon = <SvgThemeIcon icon="x" aria-disabled={disabled} />;
-	const props = {
-		className: classes.close,
-		onClick: disabled ? undefined : onClick,
-	};
-	if (inside) {
-		return (
-			<span role="button" tabIndex={1} aria-disabled={disabled} {...props}>
-				{icon}
-			</span>
-		);
-	}
+	const [As, props] = asProps<object>(
+		{
+			onClick: disabled ? undefined : onClick,
+			...(inside ? { role: "button", tabIndex: 1, "aria-disabled": disabled } : { type: "button", disabled }),
+			...rest,
+		},
+		{ as: inside ? "span" : "button" }
+	);
+	const { className, ...buttonProps } = useProps<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>>(
+		"component.input-select.button-cancel",
+		props as {},
+		{ as: inside ? "span" : "button" }
+	);
 	return (
-		<button type="button" disabled={disabled} {...props}>
-			{icon}
-		</button>
+		<As {...buttonProps} className={clsx(className, classes.close)}>
+			<SvgThemeIcon icon="x" aria-disabled={disabled} />
+		</As>
 	);
 };
 
@@ -84,17 +86,27 @@ const InputHidden = ({ name, value }: { name: string; value: null | OptionType |
 
 InputHidden.displayName = "InputHidden";
 
-const Tag = ({ children, ...rest }: { children: React.ReactNode; disabled: boolean; onClick(): void }) => {
+const Tag = ({
+	children,
+	cancelButtonId,
+	onClear,
+	disabled,
+	...rest
+}: DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> & {
+	cancelButtonId?: string;
+	disabled: boolean;
+	onClear(): void;
+}) => {
 	const classes = useInputSelectClasses();
 	const { className, ...tagProps } = useProps<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>>(
 		"component.input-select.tag",
-		{},
+		{ role: "listitem", ...rest },
 		{ as: "span" }
 	);
 	return (
 		<span {...tagProps} className={clsx(classes.tag, className)}>
 			{React.isValidElement(children) ? children : <span>{children}</span>}
-			<ButtonCancel {...rest} />
+			<ButtonCancel data-id={cancelButtonId} disabled={disabled} onClick={onClear} />
 		</span>
 	);
 };
@@ -103,7 +115,11 @@ Tag.displayName = "Tag";
 
 const TagGroup = ({ children, size, ...rest }: TagGroupProps) => {
 	const classes = useInputSelectClasses();
-	const { className, ...groupProps } = useProps("component.input-select.tag-group", rest, { as: "div" });
+	const { className, ...groupProps } = useProps(
+		"component.input-select.tag-group",
+		{ role: "list", ...rest },
+		{ as: "div" }
+	);
 	return (
 		<div {...groupProps} className={clsx(classes.tags, classes[size || "md"], className)}>
 			{children}
@@ -113,8 +129,13 @@ const TagGroup = ({ children, size, ...rest }: TagGroupProps) => {
 
 TagGroup.displayName = "TagGroup";
 
-const ButtonSelect = React.forwardRef<HTMLButtonElement, ButtonSelectProps>((props, ref) => {
-	const { classes, children, onSelectOption, ...restProps } = props;
+const ButtonSelect = React.forwardRef<
+	HTMLButtonElement,
+	ButtonSelectProps & {
+		cancelButtonId?: string;
+	}
+>((props, ref) => {
+	const { classes, children, onSelectOption, cancelButtonId, ...restProps } = props;
 
 	const {
 		className,
@@ -148,7 +169,9 @@ const ButtonSelect = React.forwardRef<HTMLButtonElement, ButtonSelectProps>((pro
 			{loading ? (
 				<SvgThemeIcon icon="loader" spin className={classes.loader} />
 			) : (
-				clearable && <ButtonCancel inside disabled={disabled} onClick={onClearHandler} />
+				clearable && (
+					<ButtonCancel data-id={cancelButtonId} inside disabled={disabled} onClick={onClearHandler} />
+				)
 			)}
 			<SvgThemeIcon role="button" icon="selector" className={classes.selector} />
 		</button>
@@ -174,6 +197,7 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 		isOptionSelected,
 		renderOption,
 		renderTag,
+		getOptionKeywords,
 		disableSearch,
 		inputController,
 		error,
@@ -187,9 +211,13 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 	} = useSelect(props);
 
 	const classes = useInputSelectClasses();
+	const layer = useLayer();
 	const { disabled = false } = buttonProps;
 	const forceMount = inputController != null;
 	const forkRef = useForkRef(innerRef, ref);
+	const prefix = React.useContext(FormPrefixContext);
+	const theme = useTheme();
+	const inputName = name ? prefix.joinName(name, theme.dataId.separator) : name;
 
 	return (
 		<>
@@ -203,15 +231,23 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 						clearable={clearable}
 						onSelectOption={onSelectOption}
 						aria-expanded={open}
+						data-id={layer.dataId("input-select", inputName)}
+						cancelButtonId={layer.dataId("input-select-cancel-button", inputName)}
 						ref={forkRef}
 					>
 						{lexicon.placeholder}
 					</ButtonSelect>
 				</PopoverTrigger>
 				{tags.length > 0 && (
-					<TagGroup size={size} {...tagsProps}>
+					<TagGroup data-id={layer.dataId("input-select-tag-group", inputName)} size={size} {...tagsProps}>
 						{tags.map((item) => (
-							<Tag key={item.id} disabled={disabled} onClick={item.onClear}>
+							<Tag
+								key={item.id}
+								data-id={layer.dataId("input-select-tag", inputName, item.id)}
+								cancelButtonId={layer.dataId("input-select-cancel-button", inputName, item.id)}
+								disabled={disabled}
+								onClear={item.onClear}
+							>
 								{renderTag(item)}
 							</Tag>
 						))}
@@ -241,6 +277,7 @@ const InputSelect = React.forwardRef<HTMLButtonElement, InputSelectProps>((props
 											value={`${item.value}`}
 											disabled={item.disabled}
 											onSelect={onSelectOption}
+											keywords={forceMount ? undefined : getOptionKeywords(item)}
 											aria-checked={isOptionSelected(item.value as string)}
 										>
 											{renderOption(item)}

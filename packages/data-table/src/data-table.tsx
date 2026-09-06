@@ -37,6 +37,7 @@ const DataTable = React.forwardRef(
 			sortDir,
 			toolbar,
 			cacheable,
+			options,
 			...props
 		}: DataTablePropsNoRef<TData>,
 		ref: React.ForwardedRef<HTMLTableElement>
@@ -58,6 +59,7 @@ const DataTable = React.forwardRef(
 			header,
 			onRowClick,
 			cacheable,
+			options,
 		});
 		return (
 			<DataTableContext.Provider value={context}>

@@ -5,6 +5,7 @@ import type { TriggerDialogAlert } from "./types";
 import * as React from "react";
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@tint-ui/dialog";
 import { Button } from "@tint-ui/button";
+import { useLayer } from "@tint-ui/theme";
 import { useDialogText } from "./use-dialog-text";
 import { useAlert } from "./use-alert";
 
@@ -14,6 +15,7 @@ export const DialogAlert = (props: TriggerDialogAlert) => {
 	const { message } = props;
 	const { onClose, locked, lockedType } = useAlert(props);
 	const { title, okButton } = useDialogText(["okButton", "title"], props, defaultText);
+	const layer = useLayer();
 	return (
 		<>
 			<DialogHeader>
@@ -22,6 +24,7 @@ export const DialogAlert = (props: TriggerDialogAlert) => {
 			</DialogHeader>
 			<DialogFooter>
 				<Button
+					data-id={layer.dataId("dialog-ok")}
 					variant="primary"
 					loading={locked && lockedType === "close"}
 					disabled={locked}

@@ -6,14 +6,17 @@ import * as React from "react";
 import clsx from "clsx";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
 import { Button } from "@tint-ui/button";
+import { useLayer } from "@tint-ui/theme";
 import { useSlideNavigatorClasses } from "./classes";
 
 const NavButton = React.forwardRef<HTMLButtonElement, ButtonProps & { mode: "previous" | "next" }>(
 	({ mode, className, themePropsType = "slide-navigator", ...props }, ref) => {
 		const classes = useSlideNavigatorClasses();
 		const prev = mode === "previous";
+		const layer = useLayer();
 		return (
 			<Button
+				data-id={layer.dataId(`slide-nav-${mode}`)}
 				variant="ghost"
 				{...props}
 				ref={ref}

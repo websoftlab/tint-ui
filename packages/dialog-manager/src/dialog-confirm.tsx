@@ -5,6 +5,7 @@ import type { TriggerDialogConfirm } from "./types";
 import * as React from "react";
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@tint-ui/dialog";
 import { Button } from "@tint-ui/button";
+import { useLayer } from "@tint-ui/theme";
 import { useConfirm } from "./use-confirm";
 import { useDialogText } from "./use-dialog-text";
 
@@ -14,6 +15,7 @@ export const DialogConfirm = (props: TriggerDialogConfirm) => {
 	const { message } = props;
 	const { locked, lockedType, onConfirm, onClose } = useConfirm(props);
 	const { title, okButton, cancelButton } = useDialogText(["okButton", "cancelButton", "title"], props, defaultText);
+	const layer = useLayer();
 	return (
 		<>
 			<DialogHeader>
@@ -22,6 +24,7 @@ export const DialogConfirm = (props: TriggerDialogConfirm) => {
 			</DialogHeader>
 			<DialogFooter>
 				<Button
+					data-id={layer.dataId("dialog-ok")}
 					variant="primary"
 					loading={locked && lockedType === "confirm"}
 					disabled={locked}
@@ -31,6 +34,7 @@ export const DialogConfirm = (props: TriggerDialogConfirm) => {
 					{okButton}
 				</Button>
 				<Button
+					data-id={layer.dataId("dialog-cancel")}
 					variant="outline"
 					autoFocus
 					loading={locked && lockedType === "close"}

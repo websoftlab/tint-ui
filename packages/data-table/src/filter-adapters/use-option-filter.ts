@@ -37,7 +37,11 @@ const getOptions = (result: InputSelectOption[], dump: Record<string, InputSelec
 };
 
 const useOptionFilter = function <TData>(filter: DataTableDisplayFilter<keyof TData, DataTableFilterOptionConfig>) {
-	const { name, config: { options: filterOptions, initialOptions, ...rest } = {} } = filter;
+	const {
+		name,
+		multiple = false,
+		config: { options: filterOptions, initialOptions, toggleMode = multiple, ...rest } = {},
+	} = filter;
 	const ctx = useDataTableContext();
 	const column = ctx.table.getColumn(name) as Column<TData> | undefined;
 
@@ -207,6 +211,8 @@ const useOptionFilter = function <TData>(filter: DataTableDisplayFilter<keyof TD
 		name,
 		column,
 		inputProps,
+		multiple,
+		toggleMode,
 		getSelectedOptions,
 		lexicon: ctx.lexicon,
 		size: ctx.toolbar.size,

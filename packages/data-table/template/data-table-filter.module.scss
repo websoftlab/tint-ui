@@ -47,6 +47,12 @@
 			@apply visible;
 		}
 	}
+	[data-multiple="false"] > & {
+		@apply rounded-full;
+		&.selected {
+			@apply bg-foreground text-background;
+		}
+	}
 }
 
 .text {

@@ -12,7 +12,7 @@ import type { InputSelectOption } from "@tint-ui/tools";
 
 import * as React from "react";
 import clsx from "clsx";
-import { useProps as useThemeProps } from "@tint-ui/theme";
+import { applyDataId, useProps as useThemeProps, useLayerForm } from "@tint-ui/theme";
 import { makeOption } from "@tint-ui/tools/make-option";
 import { useForkRef } from "@tint-ui/tools/use-fork-ref";
 import { useInputCheckboxClasses } from "./classes";
@@ -51,6 +51,7 @@ const useProps = (
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const classes = useInputCheckboxClasses();
 	const forkRef = useForkRef(ref, inputRef);
+	const layer = useLayerForm();
 
 	React.useEffect(() => {
 		if (type === "checkbox" && inputRef.current) {
@@ -58,11 +59,15 @@ const useProps = (
 		}
 	}, [indeterminate, type]);
 
-	const { className, invalid, ...props } = useThemeProps(`component.input-${type}`, rest, {
-		as: "input",
-		type,
-		indeterminate,
-	});
+	const { className, invalid, ...props } = useThemeProps(
+		`component.input-${type}`,
+		applyDataId(layer, rest, { property: "name" }),
+		{
+			as: "input",
+			type,
+			indeterminate,
+		}
+	);
 
 	return {
 		"aria-invalid": invalid,

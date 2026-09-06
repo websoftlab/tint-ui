@@ -6,6 +6,7 @@ import { Button } from "@tint-ui/button";
 import { SvgThemeIcon } from "@tint-ui/svg-icon";
 import { useDataTableContext } from "./context";
 import { useDataTablePaginationClasses } from "./pagination-classes";
+import { useLayer } from "@tint-ui/theme";
 
 const PaginationArrow = React.forwardRef(
 	<TData,>(
@@ -19,12 +20,14 @@ const PaginationArrow = React.forwardRef(
 			lexicon,
 			navbar: { size },
 		} = useDataTableContext<TData>();
+		const layer = useLayer();
 		const pageCount = table.getPageCount();
 		return (
 			<div {...props} className={clsx(classes.group, className)} ref={ref}>
 				{pageCount > 1 && <span>{lexicon.pageOf}</span>}
 				<Button
 					aria-label={lexicon.pageFirst}
+					data-id={layer.dataId("table-page-first")}
 					variant="outline"
 					size={size}
 					className={classes.firstLast}
@@ -37,6 +40,7 @@ const PaginationArrow = React.forwardRef(
 				/>
 				<Button
 					aria-label={lexicon.pagePrevious}
+					data-id={layer.dataId("table-page-previous")}
 					variant="outline"
 					size={size}
 					className={classes.previousNext}
@@ -49,6 +53,7 @@ const PaginationArrow = React.forwardRef(
 				/>
 				<Button
 					aria-label={lexicon.pageNext}
+					data-id={layer.dataId("table-page-next")}
 					variant="outline"
 					size={size}
 					className={classes.previousNext}
@@ -61,6 +66,7 @@ const PaginationArrow = React.forwardRef(
 				/>
 				<Button
 					aria-label={lexicon.pageLast}
+					data-id={layer.dataId("table-page-last")}
 					variant="outline"
 					size={size}
 					className={classes.firstLast}

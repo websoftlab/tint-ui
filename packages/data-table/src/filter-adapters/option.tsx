@@ -21,6 +21,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@tint-ui/popover";
 import { useOptionFilter } from "./use-option-filter";
 import { useDataTableFilterClasses } from "../filter-classes";
+import { useLayer } from "@tint-ui/theme";
 
 type OptionGroup = {
 	heading?: string | undefined;
@@ -55,6 +56,7 @@ const createOptionGroups = (options: InputSelectOption[], groupBy: string) => {
 const FilterOptionType = ({ filter }: { filter: DataTableDisplayFilter<string, DataTableFilterOptionConfig> }) => {
 	const classes = useDataTableFilterClasses();
 	const ctx = useOptionFilter(filter);
+	const layer = useLayer();
 	const column = ctx.column;
 	if (!column) {
 		return null;
@@ -70,6 +72,8 @@ const FilterOptionType = ({ filter }: { filter: DataTableDisplayFilter<string, D
 		icon,
 		groupBy = null,
 		disableSearch = false,
+		multiple,
+		toggleMode,
 	} = ctx;
 
 	const selectedOptions = getSelectedOptions();
@@ -82,6 +86,7 @@ const FilterOptionType = ({ filter }: { filter: DataTableDisplayFilter<string, D
 		<Popover>
 			<PopoverTrigger asChild>
 				<Button
+					data-id={layer.dataId("table-filter", filter.name)}
 					variant="outline"
 					size={ctx.size}
 					className={classes.button}
@@ -129,12 +134,16 @@ const FilterOptionType = ({ filter }: { filter: DataTableDisplayFilter<string, D
 									return (
 										<CommandItem
 											key={option.value}
+											data-multiple={multiple}
 											onSelect={() => {
 												const selectedValues = new Set(value);
 												if (isSelected) {
+													if (!toggleMode) {
+														return;
+													}
 													selectedValues.delete(optionValue);
 												} else {
-													if (!filter.multiple) {
+													if (!multiple) {
 														selectedValues.clear();
 													}
 													selectedValues.add(optionValue);
@@ -143,7 +152,10 @@ const FilterOptionType = ({ filter }: { filter: DataTableDisplayFilter<string, D
 											}}
 										>
 											<div className={clsx(classes.checkbox, isSelected && classes.selected)}>
-												<SvgThemeIcon icon="check" aria-hidden="true" />
+												<SvgThemeIcon
+													icon={multiple ? "filter-option-checkbox" : "filter-option-radio"}
+													aria-hidden="true"
+												/>
 											</div>
 											{!isEmptyString(icon) && (
 												<SvgThemeIcon icon={icon} className={classes.icon} aria-hidden="true" />

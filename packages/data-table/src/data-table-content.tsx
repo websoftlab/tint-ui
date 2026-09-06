@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { flexRender } from "@tanstack/react-table";
 import { Table, TableHeader, TableFooter, TableBody, TableRow, TableCell } from "@tint-ui/table";
 import { isEmpty } from "@tint-ui/tools/is-empty";
+import { useLayer } from "@tint-ui/theme";
 import { useDataTableContext } from "./context";
 import { DataTableCell, DataTableHead } from "./cell-adapter-type";
 import { useDataTableClasses } from "./classes";
@@ -44,8 +45,11 @@ const DataTableContent = React.forwardRef(
 			}
 		}
 
+		const layer = useLayer();
+
 		return (
 			<Table
+				data-id={layer.dataId("data-table")}
 				{...props}
 				wrapperProps={{
 					...wrapperProps,
@@ -56,9 +60,13 @@ const DataTableContent = React.forwardRef(
 				ref={ref}
 			>
 				{top && (
-					<TableHeader themePropsType={themePropsType}>
+					<TableHeader data-id={layer.dataId("data-table-header")} themePropsType={themePropsType}>
 						{table.getHeaderGroups().map((group) => (
-							<TableRow key={group.id} themePropsType={themePropsType}>
+							<TableRow
+								data-id={layer.dataId("row-header")}
+								key={group.id}
+								themePropsType={themePropsType}
+							>
 								{group.headers.map((header) =>
 									invisible[header.column.id] ? null : (
 										<DataTableHead
@@ -73,10 +81,11 @@ const DataTableContent = React.forwardRef(
 						))}
 					</TableHeader>
 				)}
-				<TableBody themePropsType={themePropsType}>
+				<TableBody data-id={layer.dataId("data-table-body")} themePropsType={themePropsType}>
 					{rows.length === 0 ? (
-						<TableRow key="empty" themePropsType={themePropsType}>
+						<TableRow key="empty" data-id={layer.dataId("row-empty")} themePropsType={themePropsType}>
 							<TableCell
+								data-id={layer.dataId("cell-empty")}
 								colSpan={
 									table.getVisibleLeafColumns().filter((cell) => invisible[cell.id] !== true).length
 								}
@@ -91,6 +100,7 @@ const DataTableContent = React.forwardRef(
 							return (
 								<TableRow
 									key={row.id}
+									data-id={layer.dataId("row", index)}
 									themePropsType={themePropsType}
 									onClick={clickHandler}
 									data-click={clickHandler != null}
@@ -113,9 +123,13 @@ const DataTableContent = React.forwardRef(
 					)}
 				</TableBody>
 				{bottom && (
-					<TableFooter themePropsType={themePropsType}>
+					<TableFooter data-id={layer.dataId("data-table-footer")} themePropsType={themePropsType}>
 						{table.getHeaderGroups().map((group) => (
-							<TableRow key={group.id} themePropsType={themePropsType}>
+							<TableRow
+								data-id={layer.dataId("row-footer")}
+								key={group.id}
+								themePropsType={themePropsType}
+							>
 								{group.headers.map((header) =>
 									invisible[header.column.id] ? null : (
 										<DataTableHead
