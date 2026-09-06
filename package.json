@@ -21,7 +21,7 @@
 		"ui",
 		"react"
 	],
-	"author": "phragon@websoftlab.com",
+	"author": "dev@websoftlab.com",
 	"license": "MIT",
 	"dependencies": {
 		"@phragon-util/script": "^0.0.7"
