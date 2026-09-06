@@ -19,7 +19,8 @@
 				"exports": {
 					".": {
 						"require": "./cjs/index.js",
-						"default": "./index.js"
+						"default": "./index.js",
+						"types": "./index.d.ts"
 					},
 					"./tags.json": {
 						"require": "./tags.json",
