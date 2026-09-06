@@ -5,7 +5,7 @@ import type { FormGridFieldObjectType } from "./types";
 import * as React from "react";
 import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
-import { useProps } from "@tint-ui/theme";
+import { useLayer, useProps } from "@tint-ui/theme";
 import { isObject } from "@tint-ui/tools/is-plain-object";
 import { useFormPrefix, useFormError, FormPrefixProvider, FormInputGroupHelper } from "@tint-ui/form-input-group";
 import { useFormGridClasses } from "./classes";
@@ -73,9 +73,6 @@ const useFormGridObject = (
 		};
 	}, [ctx]);
 
-	// @ts-ignore
-	window.__ctx = ctx;
-
 	return {
 		open,
 		field,
@@ -120,74 +117,83 @@ const FormGridObjectContextProvider = ({
 
 FormGridObjectContextProvider.displayName = "FormGridObjectContextProvider";
 
-const FormGridFieldObjectHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-	({ className, ...props }, ref) => {
-		const classes = useFormGridClasses();
-		const object = useFormGridObjectContext();
-		const { disabled } = object;
+const FormGridFieldObjectHeader = React.forwardRef<
+	HTMLDivElement,
+	React.HTMLAttributes<HTMLDivElement> & { dataIdSuffix: (string | number)[] }
+>(({ className, dataIdSuffix, ...props }, ref) => {
+	const classes = useFormGridClasses();
+	const object = useFormGridObjectContext();
+	const layer = useLayer();
+	const { disabled } = object;
 
-		return (
-			<div {...props} className={clsx(className, classes.boxHeader)} ref={ref}>
-				{object.collapsible && (
-					<ButtonIcon
-						themePropsType={object.themePropsType}
-						variant="ghost"
-						icon={object.open ? "item-collapse" : "item-expand"}
-						disabled={disabled}
-						onClick={() => {
-							object.onOpenToggle();
-						}}
-					/>
-				)}
-				<span className={classes.boxLabel}>{object.field.label}</span>
-				{object.removable && (
-					<ButtonIcon
-						themePropsType={object.themePropsType}
-						icon="x"
-						variant="destructive"
-						disabled={disabled}
-						onClick={() => {
-							object.destroy();
-						}}
-					/>
-				)}
-			</div>
-		);
-	}
-);
+	return (
+		<div {...props} className={clsx(className, classes.boxHeader)} ref={ref}>
+			{object.collapsible && (
+				<ButtonIcon
+					data-id={layer.dataId("form-object-collapse", ...dataIdSuffix)}
+					themePropsType={object.themePropsType}
+					variant="ghost"
+					icon={object.open ? "item-collapse" : "item-expand"}
+					disabled={disabled}
+					onClick={() => {
+						object.onOpenToggle();
+					}}
+				/>
+			)}
+			<span className={classes.boxLabel}>{object.field.label}</span>
+			{object.removable && (
+				<ButtonIcon
+					data-id={layer.dataId("form-object-delete", ...dataIdSuffix)}
+					themePropsType={object.themePropsType}
+					icon="x"
+					variant="destructive"
+					disabled={disabled}
+					onClick={() => {
+						object.destroy();
+					}}
+				/>
+			)}
+		</div>
+	);
+});
 
 FormGridFieldObjectHeader.displayName = "FormGridFieldObjectHeader";
 
-const FormGridFieldObjectEmpty = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-	({ className, ...props }, ref) => {
-		const classes = useFormGridClasses();
-		const object = useFormGridObjectContext();
-		return (
-			<div
-				{...props}
-				className={clsx(className, classes.box, classes.boxEmpty, object.invalid && classes.invalid)}
-				ref={ref}
-			>
-				<div className={classes.boxCard}>
-					<div className={classes.boxHeader}>
-						<span className={classes.boxLabel}>{object.field.label}</span>
-						<ButtonIcon
-							themePropsType={object.themePropsType}
-							icon="plus"
-							disabled={object.disabled}
-							onClick={() => {
-								object.fill();
-							}}
-						/>
-					</div>
-				</div>
-				{object.invalid && object.errorMessage != null && (
-					<FormInputGroupHelper className={classes.helper}>{object.errorMessage}</FormInputGroupHelper>
-				)}
-			</div>
-		);
+const FormGridFieldObjectEmpty = React.forwardRef<
+	HTMLDivElement,
+	React.HTMLAttributes<HTMLDivElement> & {
+		dataIdSuffix: (string | number)[];
 	}
-);
+>(({ className, dataIdSuffix, ...props }, ref) => {
+	const classes = useFormGridClasses();
+	const object = useFormGridObjectContext();
+	const layer = useLayer();
+	return (
+		<div
+			{...props}
+			className={clsx(className, classes.box, classes.boxEmpty, object.invalid && classes.invalid)}
+			ref={ref}
+		>
+			<div className={classes.boxCard}>
+				<div className={classes.boxHeader}>
+					<span className={classes.boxLabel}>{object.field.label}</span>
+					<ButtonIcon
+						data-id={layer.dataId("form-object-create", ...dataIdSuffix)}
+						themePropsType={object.themePropsType}
+						icon="plus"
+						disabled={object.disabled}
+						onClick={() => {
+							object.fill();
+						}}
+					/>
+				</div>
+			</div>
+			{object.invalid && object.errorMessage != null && (
+				<FormInputGroupHelper className={classes.helper}>{object.errorMessage}</FormInputGroupHelper>
+			)}
+		</div>
+	);
+});
 
 FormGridFieldObjectEmpty.displayName = "FormGridFieldObjectEmpty";
 
@@ -211,11 +217,13 @@ const FormGridFieldObject = React.forwardRef<
 
 	const object = useFormGridObject(field, { disabled, removable, themePropsType });
 	const classes = useFormGridClasses();
+	const prefix = useFormPrefix();
+	const dataIdSuffix = [...prefix.path, field.name];
 
 	if (!object.filled) {
 		return (
 			<FormGridObjectContextProvider value={object}>
-				<FormGridFieldObjectEmpty {...rest} ref={ref} />
+				<FormGridFieldObjectEmpty {...rest} dataIdSuffix={dataIdSuffix} ref={ref} />
 			</FormGridObjectContextProvider>
 		);
 	}
@@ -224,7 +232,7 @@ const FormGridFieldObject = React.forwardRef<
 		<FormGridObjectContextProvider value={object}>
 			<div {...rest} className={clsx(className, classes.box, object.invalid && classes.invalid)} ref={ref}>
 				<div className={classes.boxCard}>
-					<FormGridFieldObjectHeader />
+					<FormGridFieldObjectHeader dataIdSuffix={dataIdSuffix} />
 					{object.open && (
 						<div className={classes.content}>
 							<FormGridList

@@ -67,7 +67,7 @@ export type FormGridFieldHiddenType<T = unknown> = {
 
 export type FormGridFieldArrayType = Pick<
 	FormGridFieldType<{}>,
-	"name" | "label" | "readOnly" | "help" | "disabled" | "heading"
+	"name" | "label" | "readOnly" | "help" | "disabled" | "heading" | "rule"
 > &
 	Pick<FormGridType, "rules" | "fields"> & {
 		/**
@@ -102,7 +102,7 @@ export type FormGridFieldArrayType = Pick<
 
 export type FormGridFieldObjectType = Pick<
 	FormGridFieldType<{}>,
-	"name" | "label" | "readOnly" | "help" | "disabled" | "required" | "heading"
+	"name" | "label" | "readOnly" | "help" | "disabled" | "required" | "heading" | "rule"
 > &
 	Pick<FormGridType, "rules" | "fields"> & {
 		/**
@@ -131,19 +131,28 @@ export type FormGridThenOperator =
 
 export type FormGridThenArrayOperator = "in" | "not-in";
 
-export type FormGridThenRule =
-	| {
-			name: string;
-			operator?: FormGridThenOperator;
-			value?: string | number | boolean;
-			required?: boolean;
-	  }
-	| {
-			name: string;
-			operator: FormGridThenArrayOperator;
-			value: unknown[];
-			required?: boolean;
-	  };
+export type FormGridThenRuleScalar = {
+	name: string;
+	operator?: FormGridThenOperator;
+	value?: string | number | boolean;
+};
+
+export type FormGridThenRuleEnum = {
+	name: string;
+	operator: FormGridThenArrayOperator;
+	value: unknown[];
+};
+
+export type FormGridThenRuleGroup = {
+	mode: "or" | "and" | "xor";
+	rule: (FormGridThenRuleScalar | FormGridThenRuleEnum | FormGridThenRuleGroup)[];
+};
+
+export type FormGridThenRule = {
+	required?: boolean;
+	showData?: Record<string, unknown>;
+	hideData?: Record<string, unknown>;
+} & (FormGridThenRuleScalar | FormGridThenRuleEnum | FormGridThenRuleGroup);
 
 /**
  * FormGridFieldType is the interface for the form grid field.
@@ -205,6 +214,10 @@ export type FormGridFieldType<P extends object = any> = {
 	 * The header of the field group. If set, the field will be displayed as a group with the header.
 	 */
 	heading?: FormGridGroupHeading | string | null;
+	/**
+	 * The rule of the form field.
+	 */
+	rule?: FormGridThenRule;
 };
 
 /**

@@ -47,21 +47,26 @@ const FormGridList = (props: {
 					<FormGridGroup themePropsType={themePropsType} key={index}>
 						{col.map(({ field, col }) => {
 							const keyId = createKey(field.name);
-							const rule = rules[field.name];
+							const rule = field.rule || rules[field.name];
 
 							let required = false;
 							let fieldNode: React.JSX.Element;
 
 							if (isArrayType(field)) {
+								let removable: boolean | undefined = undefined;
 								if (field.min && field.min > 0) {
 									required = true;
+									removable = false;
+								}
+								if (!required && rule != null && rule.required) {
+									removable = false;
 								}
 								fieldNode = (
 									<FormGridFieldArray
 										key={keyId}
 										field={field}
 										disabled={disabled}
-										removable={!required && rule != null ? false : undefined}
+										removable={removable}
 										themePropsType={themePropsType}
 									/>
 								);
@@ -74,7 +79,7 @@ const FormGridList = (props: {
 										key={keyId}
 										field={field}
 										disabled={disabled}
-										removable={!required && rule != null ? false : undefined}
+										removable={!required && rule != null && rule.required ? false : undefined}
 										themePropsType={themePropsType}
 									/>
 								);

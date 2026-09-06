@@ -6,7 +6,7 @@ import type { FormGridFieldArrayType, FormGridFieldOneOfType } from "./types";
 import * as React from "react";
 import clsx from "clsx";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { useProps } from "@tint-ui/theme";
+import { useLayer, useProps } from "@tint-ui/theme";
 import {
 	FormPrefixProvider,
 	FormInputGroupLabel,
@@ -21,113 +21,126 @@ import { createDefaultValues } from "./create-default-values";
 import { FormGridList } from "./form-grid-list";
 import { ButtonIcon } from "./button-icon";
 
-const FormGridFieldArrayEmpty = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-	({ className, ...props }, ref) => {
-		const classes = useFormGridClasses();
-		const array = useFormGridArrayContext();
-		return (
-			<div
-				{...props}
-				className={clsx(className, classes.box, classes.boxEmpty, array.invalid && classes.invalid)}
-				ref={ref}
-			>
-				<div className={classes.boxCard}>
-					<div className={classes.boxHeader}>
-						<span className={classes.boxLabel}>{array.field.label}</span>
-						<ButtonIcon
-							themePropsType={array.themePropsType}
-							icon="plus"
-							disabled={array.disabled || !array.additional}
-							onClick={() => {
-								array.add();
-							}}
-						/>
-					</div>
-				</div>
-				{array.invalid && array.errorMessage != null && (
-					<FormInputGroupHelper className={classes.helper}>{array.errorMessage}</FormInputGroupHelper>
-				)}
-			</div>
-		);
+const FormGridFieldArrayEmpty = React.forwardRef<
+	HTMLDivElement,
+	React.HTMLAttributes<HTMLDivElement> & {
+		dataIdSuffix: (string | number)[];
 	}
-);
+>(({ className, dataIdSuffix, ...props }, ref) => {
+	const classes = useFormGridClasses();
+	const array = useFormGridArrayContext();
+	const layer = useLayer();
+	return (
+		<div
+			{...props}
+			className={clsx(className, classes.box, classes.boxEmpty, array.invalid && classes.invalid)}
+			ref={ref}
+		>
+			<div className={classes.boxCard}>
+				<div className={classes.boxHeader}>
+					<span className={classes.boxLabel}>{array.field.label}</span>
+					<ButtonIcon
+						data-id={layer.dataId("form-array-create", ...dataIdSuffix)}
+						themePropsType={array.themePropsType}
+						icon="plus"
+						disabled={array.disabled || !array.additional}
+						onClick={() => {
+							array.add();
+						}}
+					/>
+				</div>
+			</div>
+			{array.invalid && array.errorMessage != null && (
+				<FormInputGroupHelper className={classes.helper}>{array.errorMessage}</FormInputGroupHelper>
+			)}
+		</div>
+	);
+});
 
 FormGridFieldArrayEmpty.displayName = "FormGridFieldArrayEmpty";
 
-const FormGridFieldArrayHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-	({ className, ...props }, ref) => {
-		const classes = useFormGridClasses();
-		const array = useFormGridArrayContext();
-		const ctx = useFormContext();
-		const { index, id: itemId, isLast } = useFormGridFieldArrayItemContext();
-		const { prefix } = useFormPrefix();
-		const idx = index + 1;
-		const open = array.isOpen(itemId);
-		const { disabled } = array;
-
-		let labelName = array.labelName;
-		let label: string | number | null = null;
-		if (labelName) {
-			if (prefix) {
-				labelName = `${prefix}.${labelName}`;
-			}
-			label = ctx.watch(labelName);
-		}
-
-		label = String(label || "").trim();
-		if (!label) {
-			label = array.createItemLabel(idx);
-		}
-
-		return (
-			<div {...props} className={clsx(className, classes.boxHeader)} ref={ref}>
-				{array.collapsible && (
-					<ButtonIcon
-						themePropsType={array.themePropsType}
-						variant="ghost"
-						icon={open ? "item-collapse" : "item-expand"}
-						disabled={disabled}
-						onClick={() => {
-							array.onOpenToggle(itemId);
-						}}
-					/>
-				)}
-				<span className={classes.boxLabel}>{label}</span>
-				{array.movable && !isLast && (
-					<ButtonIcon
-						themePropsType={array.themePropsType}
-						icon="arrow-down"
-						disabled={disabled}
-						onClick={() => {
-							array.down(index);
-						}}
-					/>
-				)}
-				{array.additional && (
-					<ButtonIcon
-						themePropsType={array.themePropsType}
-						icon="plus"
-						disabled={disabled}
-						onClick={() => {
-							array.add(index);
-						}}
-					/>
-				)}
-				{array.removable && (
-					<ButtonIcon
-						themePropsType={array.themePropsType}
-						icon="x"
-						variant="destructive"
-						disabled={disabled}
-						onClick={() => {
-							array.remove(index);
-						}}
-					/>
-				)}
-			</div>
-		);
+const FormGridFieldArrayHeader = React.forwardRef<
+	HTMLDivElement,
+	React.HTMLAttributes<HTMLDivElement> & {
+		dataIdSuffix: (string | number)[];
 	}
-);
+>(({ className, dataIdSuffix, ...props }, ref) => {
+	const classes = useFormGridClasses();
+	const array = useFormGridArrayContext();
+	const ctx = useFormContext();
+	const { index, id: itemId, isLast } = useFormGridFieldArrayItemContext();
+	const { prefix } = useFormPrefix();
+	const layer = useLayer();
+	const idx = index + 1;
+	const open = array.isOpen(itemId);
+	const { disabled } = array;
+
+	let labelName = array.labelName;
+	let label: string | number | null = null;
+	if (labelName) {
+		if (prefix) {
+			labelName = `${prefix}.${labelName}`;
+		}
+		label = ctx.watch(labelName);
+	}
+
+	label = String(label || "").trim();
+	if (!label) {
+		label = array.createItemLabel(idx);
+	}
+
+	return (
+		<div {...props} className={clsx(className, classes.boxHeader)} ref={ref}>
+			{array.collapsible && (
+				<ButtonIcon
+					data-id={layer.dataId("form-array-collapse", ...dataIdSuffix, index)}
+					themePropsType={array.themePropsType}
+					variant="ghost"
+					icon={open ? "item-collapse" : "item-expand"}
+					disabled={disabled}
+					onClick={() => {
+						array.onOpenToggle(itemId);
+					}}
+				/>
+			)}
+			<span className={classes.boxLabel}>{label}</span>
+			{array.movable && !isLast && (
+				<ButtonIcon
+					data-id={layer.dataId("form-array-down", ...dataIdSuffix, index)}
+					themePropsType={array.themePropsType}
+					icon="arrow-down"
+					disabled={disabled}
+					onClick={() => {
+						array.down(index);
+					}}
+				/>
+			)}
+			{array.additional && (
+				<ButtonIcon
+					data-id={layer.dataId("form-array-create", ...dataIdSuffix, index)}
+					themePropsType={array.themePropsType}
+					icon="plus"
+					disabled={disabled}
+					onClick={() => {
+						array.add(index);
+					}}
+				/>
+			)}
+			{array.removable && (
+				<ButtonIcon
+					data-id={layer.dataId("form-array-delete", ...dataIdSuffix, index)}
+					themePropsType={array.themePropsType}
+					icon="x"
+					variant="destructive"
+					disabled={disabled}
+					onClick={() => {
+						array.remove(index);
+					}}
+				/>
+			)}
+		</div>
+	);
+});
 
 FormGridFieldArrayHeader.displayName = "FormGridFieldArrayHeader";
 
@@ -164,7 +177,13 @@ const useFormGridFieldArrayItemContext = () => {
 	return ctx;
 };
 
-const FormGridFieldArrayItem = ({ itemIndex }: { itemIndex: number }) => {
+const FormGridFieldArrayItem = ({
+	itemIndex,
+	dataIdSuffix,
+}: {
+	itemIndex: number;
+	dataIdSuffix: (string | number)[];
+}) => {
 	const classes = useFormGridClasses();
 	const array = useFormGridArrayContext();
 	const itemId = array.fields[itemIndex][array.keyName as "id"];
@@ -182,7 +201,7 @@ const FormGridFieldArrayItem = ({ itemIndex }: { itemIndex: number }) => {
 			<div className={clsx(classes.boxArrayItem, invalid && classes.invalid)}>
 				<div className={classes.boxCard}>
 					<FormPrefixProvider value={itemIndex}>
-						<FormGridFieldArrayHeader />
+						<FormGridFieldArrayHeader dataIdSuffix={dataIdSuffix} />
 						{open && (
 							<div className={classes.content}>
 								<FormGridList
@@ -525,11 +544,13 @@ const FormGridFieldArray = React.forwardRef<
 	const array = useFormGridArray(field, { disabled, removable, themePropsType });
 	const { fields, length, keyName } = array;
 	const classes = useFormGridClasses();
+	const prefix = useFormPrefix();
+	const dataIdSuffix = [...prefix.path, field.name];
 
 	if (length === 0) {
 		return (
 			<FormGridArrayContextProvider value={array}>
-				<FormGridFieldArrayEmpty {...props} ref={ref} />
+				<FormGridFieldArrayEmpty {...props} dataIdSuffix={dataIdSuffix} ref={ref} />
 			</FormGridArrayContextProvider>
 		);
 	}
@@ -544,7 +565,11 @@ const FormGridFieldArray = React.forwardRef<
 				)}
 				<div className={classes.boxArrayList}>
 					{fields.map((item, index) => (
-						<FormGridFieldArrayItem key={item[keyName as "id"]} itemIndex={index} />
+						<FormGridFieldArrayItem
+							key={item[keyName as "id"]}
+							dataIdSuffix={dataIdSuffix}
+							itemIndex={index}
+						/>
 					))}
 				</div>
 				{array.invalid && array.errorMessage != null && (

@@ -45,7 +45,7 @@ const createSchema = (
 			if (max) {
 				type = type.max(max);
 			}
-			object[name] = type;
+			object[name] = min ? type : type.nullish();
 		} else if (isObjectType(field)) {
 			const type = createSchema(field, {});
 			object[name] = field.required ? type : type.nullish();
@@ -107,6 +107,7 @@ export interface UseFormOptions {
 	 * The reset flag. If true, the form will be reset when the form is submitted. Default is true.
 	 */
 	reset?: boolean;
+	disableAutoSubmit?: boolean;
 }
 
 /**
@@ -116,7 +117,13 @@ export interface UseFormOptions {
 export const useFormGrid = (form: FormGridType, options: UseFormOptions = {}): FormGridContextType => {
 	const app = useApp();
 	const hash = createHash(form);
-	const { defaultValues = {}, toastError, reset = true, trigger: triggerName = "fetch.form" } = options;
+	const {
+		defaultValues = {},
+		toastError,
+		reset = true,
+		disableAutoSubmit = false,
+		trigger: triggerName = "fetch.form",
+	} = options;
 	const { values, schema } = React.useMemo(() => {
 		const confirm = app.line("form.errors.confirmation");
 		const values = createDefaultValues(form.fields, defaultValues, form.confirmation !== false);
@@ -163,6 +170,7 @@ export const useFormGrid = (form: FormGridType, options: UseFormOptions = {}): F
 	const confirmation = form.confirmation !== false;
 	const isConfirm = ctx.watch("__form_confirmation");
 	const disabled = isSubmitting || query.loading || (confirmation && isConfirm !== true);
+	const submitHandler = handleSubmit(queryHandler);
 
 	return {
 		form,
@@ -191,6 +199,14 @@ export const useFormGrid = (form: FormGridType, options: UseFormOptions = {}): F
 			return app.translate("form.messages.confirm", "I agree with the terms of the user agreement");
 		},
 		disabled,
-		onSubmit: handleSubmit(queryHandler),
+		onSubmit: (e) => {
+			if (disableAutoSubmit && e.nativeEvent) {
+				const submitter = (e.nativeEvent as SubmitEvent).submitter;
+				if (!submitter) {
+					return e.preventDefault();
+				}
+			}
+			return submitHandler(e);
+		},
 	};
 };
