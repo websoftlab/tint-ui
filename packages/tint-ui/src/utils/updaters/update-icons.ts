@@ -85,6 +85,7 @@ const rebuild = (ast: any, newIcons: RegistryIconSchema[]) => {
 
 export async function updateIcons(
 	icons: string[] | undefined,
+	iconsData: RegistryIconSchema[] | undefined,
 	config: Config,
 	options: {
 		silent?: boolean;
@@ -94,7 +95,7 @@ export async function updateIcons(
 		return;
 	}
 
-	const newIcons = getRegistryIcons(icons);
+	const newIcons = getRegistryIcons(icons, iconsData);
 	if (!newIcons.length) {
 		return;
 	}

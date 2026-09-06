@@ -36,6 +36,8 @@ export interface RegistryItemSchema {
 	icons?: string[];
 	meta?: Record<string, any>;
 	docs?: string;
+	styles?: StyleType[];
+	iconsData?: RegistryIconSchema[];
 }
 
 export interface RegistryColors {
@@ -52,11 +54,18 @@ export interface RegistryBaseColorSchema {
 
 export type RegistryResolvedItemsTreeSchema = Pick<
 	RegistryItemSchema,
-	"dependencies" | "tailwind" | "cssVars" | "icons" | "docs"
+	"dependencies" | "tailwind" | "cssVars" | "icons" | "iconsData" | "docs"
 > & {
 	components: {
 		name: string;
 		module: string;
 		withStyles?: boolean;
+		styles?: StyleType[];
 	}[];
+};
+
+export type StyleType = {
+	template: string;
+	name: string;
+	classes: string;
 };

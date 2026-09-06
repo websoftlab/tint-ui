@@ -1,5 +1,6 @@
 import type { Config } from "../get-config";
 import type {
+	RegistryIconSchema,
 	RegistryItemCssVarsSchema,
 	RegistryItemSchema,
 	RegistryItemTailwindSchema,
@@ -16,6 +17,7 @@ import * as colors from "./colors";
 import deepmerge from "deepmerge";
 import { mergeArrayString } from "../merge-array-string";
 import { buildTailwindThemeColorsFromCssVars } from "../updaters/update-tailwind-config";
+import { loadPackageFile } from "../load-package-file";
 
 export function getRegistryIndex() {
 	return components;
@@ -91,11 +93,29 @@ export function getRegistryBaseColors(): RegistryOptionSchema[] {
 	];
 }
 
-export function getRegistryIcons(baseIcons?: string[]) {
+export function getRegistryIcons(
+	baseIcons?: string[],
+	iconsData?: RegistryIconSchema[] | undefined | null
+): RegistryIconSchema[] {
 	if (!baseIcons) {
 		return icons.slice();
 	}
-	return icons.filter((item) => baseIcons.includes(item.name));
+	const found = new Set<string>();
+	const filter = icons.filter((item) => {
+		if (baseIcons.includes(item.name)) {
+			found.add(item.name);
+			return true;
+		}
+		return false;
+	});
+	if (Array.isArray(iconsData) && iconsData.length > 0) {
+		for (const icon of iconsData) {
+			if (!found.has(icon.name) && baseIcons.includes(icon.name)) {
+				filter.push(icon);
+			}
+		}
+	}
+	return filter;
 }
 
 export function getRegistryBaseColor(baseColor: string) {
@@ -131,10 +151,10 @@ function getRegistryComponents(paths: string[]) {
 	return results;
 }
 
-export function registryResolveItemsTree(names: string[], config: Config, initialize = false) {
+export async function registryResolveItemsTree(names: string[], config: Config, initialize = false) {
 	let registryDependencies: string[] = [];
 	for (const name of names) {
-		const itemRegistryDependencies = resolveRegistryDependencies(name);
+		const itemRegistryDependencies = await resolveRegistryDependencies(name);
 		registryDependencies = mergeArrayString(registryDependencies, itemRegistryDependencies);
 	}
 
@@ -155,6 +175,8 @@ export function registryResolveItemsTree(names: string[], config: Config, initia
 	let icons: string[] = [];
 	let dependencies: string[] = [];
 	let docs = "";
+	const iconsData: RegistryIconSchema[] = [];
+	const iconsDataNames = new Set<string>();
 
 	payload.forEach((item) => {
 		if (item.tailwind) {
@@ -173,6 +195,14 @@ export function registryResolveItemsTree(names: string[], config: Config, initia
 		if (item.docs) {
 			docs += `${item.docs}\n`;
 		}
+		if (Array.isArray(item.iconsData)) {
+			for (const icon of item.iconsData) {
+				if (icon.name && !iconsDataNames.has(icon.name)) {
+					iconsDataNames.add(icon.name);
+					iconsData.push(icon);
+				}
+			}
+		}
 	});
 
 	return {
@@ -180,22 +210,80 @@ export function registryResolveItemsTree(names: string[], config: Config, initia
 			name: item.name,
 			module: item.module,
 			withStyles: item.withStyles,
+			styles: item.styles,
 		})),
 		dependencies,
 		tailwind,
 		cssVars,
 		icons,
+		iconsData,
 		docs,
 	} as RegistryResolvedItemsTreeSchema;
 }
 
-function resolveRegistryDependencies(name: string): string[] {
+async function readNpm(name: string) {
+	if (name.startsWith("npm:")) {
+		name = name.substring(4);
+	}
+	let data: RegistryItemSchema;
+	try {
+		const text = await loadPackageFile(`${name}/tint-ui.json`);
+		data = JSON.parse(text);
+	} catch (err) {
+		logger.log("\n");
+		handleError(
+			new Error(
+				`The component at ${highlighter.info(name)} was not found.\nOr ${highlighter.info(
+					"tint-ui.json"
+				)} file is not exists.`
+			)
+		);
+	}
+
+	if (!data.name) {
+		const testSplit = name.match(/\/(.+?)$/);
+		data.name = testSplit ? testSplit[1] : name;
+	}
+
+	const duplicate = components.find((item) => item.name === data.name);
+	if (duplicate && duplicate.module !== name) {
+		logger.log("\n");
+		handleError(
+			new Error(
+				`Duplicate local component name ${highlighter.info(data.name)} for the ${highlighter.info(
+					name
+				)} -> ${highlighter.info(duplicate.module)} package.`
+			)
+		);
+	}
+
+	if (!data.module) {
+		data.module = name;
+	}
+
+	if (data.withStyles && (!Array.isArray(data.styles) || data.styles.length === 0)) {
+		data.styles = [{ template: `${data.name}.module.scss`, name: "styles", classes: "classes" }];
+	}
+
+	return data;
+}
+
+async function resolveRegistryDependencies(name: string): Promise<string[]> {
 	const payload: string[] = [];
 
-	function resolveDependencies(localName: string, tree: string[] = []) {
-		const component = components.find((item) => item.name === localName);
+	async function resolveDependencies(localName: string, tree: string[] = []) {
+		const isNpm = localName.startsWith("npm:");
+		let component = components.find((item) =>
+			isNpm ? item.module === localName.substring(4) : item.name === localName
+		);
+
 		if (!component) {
-			return console.error(`The ${localName} component not found`);
+			if (isNpm) {
+				component = await readNpm(localName);
+				components.push(component);
+			} else {
+				return console.error(`The ${localName} component not found`);
+			}
 		}
 
 		if (tree.includes(localName)) {
@@ -205,14 +293,14 @@ function resolveRegistryDependencies(name: string): string[] {
 		tree.push(localName);
 		if (component.registryDependencies) {
 			for (const dependency of component.registryDependencies) {
-				resolveDependencies(dependency, tree);
+				await resolveDependencies(dependency, tree);
 			}
 		}
 
 		payload.push(localName);
 	}
 
-	resolveDependencies(name);
+	await resolveDependencies(name);
 	return Array.from(new Set(payload));
 }
 

@@ -219,6 +219,16 @@ export const icons: RegistryIconSchema[] = [
 		data: ["M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0", "M9 12h6", "M12 9v6"],
 	},
 	{
+		name: "filter-option-radio",
+		type: "filled",
+		data: ["M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z"],
+	},
+	{
+		name: "filter-option-checkbox",
+		type: "outline",
+		data: ["M5 12l5 5l10 -10"],
+	},
+	{
 		name: "pagination-first",
 		type: "outline",
 		data: ["M11 7l-5 5l5 5", "M17 7l-5 5l5 5"],

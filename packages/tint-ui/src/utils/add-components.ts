@@ -1,4 +1,5 @@
 import type { Config } from "./get-config";
+
 import { handleError } from "./handle-error";
 import { logger } from "./logger";
 import { registryResolveItemsTree } from "./registry";
@@ -8,6 +9,21 @@ import { updateDependencies } from "./updaters/update-dependencies";
 import { updateTailwindConfig } from "./updaters/update-tailwind-config";
 import { updateComponents } from "./updaters/update-components";
 import { updateIcons } from "./updaters/update-icons";
+
+export async function addNpmComponent(
+	name: string,
+	config: Config,
+	options: {
+		overwrite?: boolean;
+		silent?: boolean;
+		initialize?: boolean;
+	}
+): Promise<void> {
+	await updateDependencies([name], config, {
+		silent: options.silent,
+	});
+	await addComponents([`npm:${name}`], config, options);
+}
 
 export async function addComponents(
 	components: string[],
@@ -28,7 +44,7 @@ export async function addComponents(
 	const registrySpinner = spinner(`Checking registry.`, {
 		silent: options.silent,
 	}).start();
-	const tree = registryResolveItemsTree(components, config, options.initialize);
+	const tree = await registryResolveItemsTree(components, config, options.initialize);
 	if (!tree) {
 		registrySpinner.fail();
 		return handleError(new Error("Failed to fetch components from registry."));
@@ -52,7 +68,7 @@ export async function addComponents(
 		overwrite: options.overwrite,
 	});
 
-	await updateIcons(tree.icons, config, {
+	await updateIcons(tree.icons, tree.iconsData, config, {
 		silent: options.silent,
 	});
 

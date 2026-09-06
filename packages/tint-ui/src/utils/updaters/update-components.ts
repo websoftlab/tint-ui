@@ -1,4 +1,5 @@
 import type { Config } from "../get-config";
+import type { StyleType } from "../registry/types";
 
 import path from "node:path";
 import { mkdir } from "node:fs/promises";
@@ -18,6 +19,7 @@ export interface UpdateComponentOptions {
 	getComponentSource: () => Promise<string> | string;
 	overwrite?: boolean;
 	withStyles?: boolean;
+	styles?: StyleType[];
 }
 
 const write = async (file: string, data: string) => {
@@ -30,7 +32,7 @@ const write = async (file: string, data: string) => {
 
 export async function updateComponent(
 	config: Config,
-	{ name, module, withStyles, getCssSource, getComponentSource, overwrite }: UpdateComponentOptions
+	{ name, module, withStyles, getCssSource, getComponentSource, overwrite, styles }: UpdateComponentOptions
 ) {
 	const { mode, ts: isTs } = config;
 	if (name === "theme") {
@@ -51,12 +53,6 @@ export async function updateComponent(
 	// Example:
 	// { "template": "data-table.module.scss", "name": "styles", "classes": "classes" }
 	// { "template": "data-table-filter.module.scss", "name": "styles-filter", "classes": "filterClasses" }
-
-	type StyleType = {
-		template: string;
-		name: string;
-		classes: string;
-	};
 
 	const updateStyle = async (style: StyleType) => {
 		let { template } = style;
@@ -153,15 +149,20 @@ export async function updateComponent(
 		await fs.writeFile(themeFile, `"use client";\n\n` + code);
 	};
 
-	const styles: StyleType[] = [];
-	try {
-		const text = await loadPackageFile(`${module}/styles.json`);
-		const data = JSON.parse(text) as { styles: StyleType[] };
-		if (Array.isArray(data.styles)) {
-			styles.push(...data.styles);
+	if (!Array.isArray(styles)) {
+		styles = [];
+	}
+
+	if (!styles.length) {
+		try {
+			const text = await loadPackageFile(`${module}/styles.json`);
+			const data = JSON.parse(text) as { styles: StyleType[] };
+			if (Array.isArray(data.styles)) {
+				styles.push(...data.styles);
+			}
+		} catch (err) {
+			styles.push({ template: `${name}.module.scss`, name: "styles", classes: "classes" });
 		}
-	} catch (err) {
-		styles.push({ template: `${name}.module.scss`, name: "styles", classes: "classes" });
 	}
 
 	for (const style of styles) {
@@ -254,20 +255,26 @@ export const ${Name} = React.forwardRef${
 }
 
 export async function updateComponents(
-	components: { name: string; module: string; withStyles?: boolean }[],
+	components: {
+		name: string;
+		module: string;
+		withStyles?: boolean;
+		styles?: StyleType[];
+	}[],
 	config: Config,
 	options: {
 		silent?: boolean;
 		overwrite?: boolean;
 	}
 ) {
-	for (const { name, module, withStyles } of components) {
+	for (const { name, module, withStyles, styles } of components) {
 		const componentSpinner = spinner(`Installing component ${name}.`, { silent: options.silent }).start();
 		try {
 			await updateComponent(config, {
 				name,
 				module,
 				withStyles,
+				styles,
 				overwrite: options.overwrite,
 				getCssSource(pathName: string) {
 					return loadPackageFile(pathName);
