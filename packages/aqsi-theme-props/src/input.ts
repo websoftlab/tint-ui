@@ -1,17 +1,12 @@
 import type { ThemePropsType } from "@tint-ui/theme";
 
-import { isEmptyString } from "@tint-ui/tools/is-empty";
-import { DATA_ATTRIBUTES } from "./constant";
+import { DATA_ATTRIBUTES, dataIdProps } from "./constant";
 
-const componentInputPropsType: ThemePropsType<{ name?: string }> = (props) => {
-	const { name } = props;
-	if (DATA_ATTRIBUTES.INPUT in props || isEmptyString(name)) {
-		return props;
-	}
-	return {
-		[DATA_ATTRIBUTES.INPUT]: name,
-		...props,
-	};
+const componentInputPropsType: ThemePropsType<{ id?: string; name?: string }> = (props) => {
+	return dataIdProps(props, DATA_ATTRIBUTES.INPUT, "input", {
+		required: false,
+		alternativeProperty: "name",
+	});
 };
 
 const componentInputProps = {

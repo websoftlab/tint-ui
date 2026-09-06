@@ -1,22 +1,18 @@
 import type { ThemePropsType } from "@tint-ui/theme";
 
-import { isEmptyString } from "@tint-ui/tools/is-empty";
-import { DATA_ATTRIBUTES } from "./constant";
+import { DATA_ATTRIBUTES, dataIdProps } from "./constant";
 
-const componentButtonPropsType: ThemePropsType<{ [DATA_ATTRIBUTES.BUTTON]?: string }> = (props) => {
-	const attrValue = props[DATA_ATTRIBUTES.BUTTON] ?? "button";
-	if (isEmptyString(attrValue)) {
-		return props;
-	}
-	return {
-		[DATA_ATTRIBUTES.BUTTON]: attrValue,
-		...props,
-	};
+const componentButtonPropsType: ThemePropsType<{
+	id?: string;
+}> = (props) => {
+	return dataIdProps(props, DATA_ATTRIBUTES.BUTTON, "button");
 };
 
 const componentButtonProps = {
 	"component.button": componentButtonPropsType,
 	"component.input-select": componentButtonPropsType,
+	"component.input-select.button-cancel": componentButtonPropsType,
+	"component.table.sort": componentButtonPropsType,
 };
 
 export { componentButtonProps, componentButtonPropsType };

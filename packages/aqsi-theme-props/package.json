@@ -8,7 +8,8 @@
 		"prettier": "phragon-script prettier --cwd \"../../\" -P @tint-ui/aqsi-theme-props"
 	},
 	"dependencies": {
-		"@tint-ui/tools": "*"
+		"@tint-ui/tools": "*",
+		"@tint-ui/theme": "*"
 	},
 	"devDependencies": {
 		"@tint-ui/theme": "*"
