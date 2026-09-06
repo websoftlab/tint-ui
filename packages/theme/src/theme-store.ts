@@ -17,6 +17,13 @@ interface ThemeConfig {
 	mixin: Record<string, Readonly<Omit<ThemeConfig, "mixin" | "controller">>>;
 	props: Record<string, ThemePropsType>;
 	controller?: ThemeModeController;
+	dataId?: Partial<ThemeDataId> | boolean;
+}
+
+interface ThemeDataId {
+	enabled: boolean;
+	name: string | null;
+	separator: string;
 }
 
 const control = Symbol();
@@ -46,10 +53,15 @@ class ThemeStore implements ThemeConfig {
 	readonly mixin: Record<string, Readonly<Omit<ThemeConfig, "mixin" | "controller">>> = {};
 	readonly props: Record<string, ThemePropsType> = {};
 	readonly controller: ThemeModeController | undefined = undefined;
+	readonly dataId: ThemeDataId = {
+		enabled: true,
+		separator: "--",
+		name: null,
+	};
 
 	constructor(config: Partial<ThemeConfig> = {}) {
 		const { icons, mixin, classes, props, classesMode, controller } = config;
-		let { theme } = config;
+		let { theme, dataId } = config;
 
 		if (controller) {
 			this.controller = controller;
@@ -75,6 +87,22 @@ class ThemeStore implements ThemeConfig {
 		}
 		if (mixin) {
 			this.mixin = mixin;
+		}
+
+		const dId = this.dataId;
+		if (typeof dataId === "boolean") {
+			dId.enabled = dataId;
+		} else if (dataId != null) {
+			const { enabled, name, separator } = dataId;
+			if (name) {
+				dId.name = name;
+			}
+			if (separator) {
+				dId.separator = separator;
+			}
+			if (enabled === false) {
+				dId.enabled = false;
+			}
 		}
 
 		makeObservable(this, {

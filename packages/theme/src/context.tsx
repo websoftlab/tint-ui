@@ -1,18 +1,38 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import * as React from "react";
 import { ThemeStore } from "./theme-store";
+
+type FormPrefixContextType = {
+	prefix: string;
+	path: (string | number)[];
+	depth: number;
+	joinName(value: string | number, separator: string): string;
+	getName(value: string | number): string;
+};
+
+interface WithMixinThemeProps {
+	children: React.ReactNode;
+	name: string;
+}
 
 const defaultThemeStore = new ThemeStore();
 
 const ThemeContext = React.createContext<ThemeStore>(defaultThemeStore);
 
-interface WithMixinThemeProps {
-	children: ReactNode;
-	name: string;
-}
+const LayerContext = React.createContext<string | null>(null);
+
+const FormPrefixContext = React.createContext<FormPrefixContextType>({
+	prefix: "",
+	path: [],
+	depth: 0,
+	joinName(value: string | number): string {
+		return String(value);
+	},
+	getName(name: string | number) {
+		return String(name);
+	},
+});
 
 const WithMixinTheme = ({ children, name }: WithMixinThemeProps) => {
 	const baseTheme = React.useContext(ThemeContext);
@@ -28,10 +48,28 @@ const WithMixinTheme = ({ children, name }: WithMixinThemeProps) => {
 			classes: mixin.classes,
 			icons: mixin.icons,
 			mixin: baseTheme.mixin,
+			dataId: baseTheme.dataId,
 		});
 	}, [baseTheme, name]);
 	return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 };
 
-export { defaultThemeStore, ThemeContext, WithMixinTheme };
-export type { WithMixinThemeProps };
+const LayerProvider = ({ value, children }: { children: React.ReactNode; value: string }) => {
+	const theme = React.useContext(ThemeContext);
+	const parent = React.useContext(LayerContext);
+	if (parent) {
+		value = parent + theme.dataId.separator + value;
+	}
+	return React.createElement(LayerContext.Provider, {
+		children,
+		value,
+	});
+};
+
+ThemeContext.displayName = "ThemeContext";
+LayerContext.displayName = "LayerContext";
+FormPrefixContext.displayName = "FormPrefixContext";
+LayerProvider.displayName = "LayerProvider";
+
+export { defaultThemeStore, ThemeContext, LayerContext, FormPrefixContext, WithMixinTheme };
+export type { WithMixinThemeProps, FormPrefixContextType };

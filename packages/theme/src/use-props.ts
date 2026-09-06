@@ -30,7 +30,7 @@ export const useProps = function <T extends object, Attr extends object = object
 	}
 
 	if (typeof themeProps === "function") {
-		return themeProps(props, name, options);
+		return themeProps(props, name, { ...options, themePropsType });
 	}
 
 	return { ...themeProps, ...props };

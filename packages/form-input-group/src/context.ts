@@ -1,25 +1,10 @@
+import type { FormPrefixContextType } from "@tint-ui/theme";
+
 import * as React from "react";
-
-type FormPrefixContextType = {
-	prefix: string;
-	path: (string | number)[];
-	depth: number;
-	getName(value: string | number): string;
-};
-
-const FormPrefix = React.createContext<FormPrefixContextType>({
-	prefix: "",
-	path: [],
-	depth: 0,
-	getName(name: string | number) {
-		return String(name);
-	},
-});
-
-FormPrefix.displayName = "FormPrefix";
+import { FormPrefixContext } from "@tint-ui/theme";
 
 const useFormPrefix = () => {
-	return React.useContext(FormPrefix);
+	return React.useContext(FormPrefixContext);
 };
 
 const FormPrefixProvider = (props: { children: React.ReactNode; value: string | number }) => {
@@ -31,11 +16,18 @@ const FormPrefixProvider = (props: { children: React.ReactNode; value: string | 
 		path,
 		depth,
 		prefix,
+		joinName(value: string | number, separator: string): string {
+			let result = String(path[0]);
+			for (let i = 1; i < path.length; i++) {
+				result += separator + path[i];
+			}
+			return result + separator + value;
+		},
 		getName(value: string | number): string {
 			return `${prefix}.${value}`;
 		},
 	};
-	return React.createElement(FormPrefix.Provider, {
+	return React.createElement(FormPrefixContext.Provider, {
 		children: props.children,
 		value,
 	});

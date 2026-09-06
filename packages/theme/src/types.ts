@@ -85,5 +85,5 @@ export type ThemePropsTypeOptions<T extends object = object> = T & {
  * Define a type for the theme props
  */
 export type ThemePropsType<T extends object = object, Attr extends object = object> =
-	| ((props: T, name: string, options: ThemePropsTypeOptions<Attr>) => T)
+	| ((props: T, name: string, options: ThemePropsTypeOptions<Attr> & { themePropsType?: string | null }) => T)
 	| T;
