@@ -202,8 +202,8 @@ const createTablerIconHandler = (
 			// create spinner
 			const { spin, ...rest } = props;
 			return (
-				<SvgIcon spin {...rest} ref={ref}>
-					<path d="" />
+				<SvgIcon spin {...rest} {...baseProps.outline} ref={ref}>
+					<path d="M12 3a9 9 0 1 0 9 9" opacity="0.8" />
 				</SvgIcon>
 			);
 		});
