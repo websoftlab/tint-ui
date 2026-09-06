@@ -5,14 +5,18 @@ import type { ReactNode, HTMLAttributes, ComponentProps, FC } from "react";
 
 import * as React from "react";
 import clsx from "clsx";
-import { useProps } from "@tint-ui/theme";
+import { useLayerForm, useProps } from "@tint-ui/theme";
 import { InputText } from "@tint-ui/input";
 import { useFormInputGroupClasses } from "./classes";
 import { useFormInputGroup } from "./use-form-input-group";
 
 type FormInputGroupRenderProps<T extends string = string> = UseFormRegisterReturn<T> & { id: string };
 
-type FormInputGroupRenderStatus = { invalid: boolean; message: string | null };
+type FormInputGroupRenderStatus = {
+	invalid: boolean;
+	dirty: boolean;
+	message: string | null;
+};
 
 type FormInputGroupRenderHandler<T extends string = string> = (
 	props: FormInputGroupRenderProps<T>,
@@ -89,6 +93,7 @@ const FormInputGroup = React.forwardRef<HTMLDivElement, FormInputGroupProps>((pr
 	} as FormInputGroupImplProps;
 	const classes = useFormInputGroupClasses();
 	const render = typeof children === "function" ? children : renderEmpty;
+	const layer = useLayerForm();
 	return (
 		<FormInputGroupImpl {...options}>
 			{(props, status, ctx) => {
@@ -96,6 +101,7 @@ const FormInputGroup = React.forwardRef<HTMLDivElement, FormInputGroupProps>((pr
 				const helper = help === false ? undefined : invalid ? message : help;
 				return (
 					<div
+						data-id={layer.dataId("form-input-group", name)}
 						{...rest}
 						className={clsx(
 							className,
@@ -107,6 +113,7 @@ const FormInputGroup = React.forwardRef<HTMLDivElement, FormInputGroupProps>((pr
 					>
 						{label !== false && (
 							<FormInputGroupLabel
+								data-id={layer.dataId("form-label", name)}
 								themePropsType={themePropsType}
 								htmlFor={props.id}
 								required={props.required}
@@ -115,7 +122,12 @@ const FormInputGroup = React.forwardRef<HTMLDivElement, FormInputGroupProps>((pr
 							</FormInputGroupLabel>
 						)}
 						{render(props, status, ctx)}
-						<FormInputGroupHelper themePropsType={themePropsType}>{helper}</FormInputGroupHelper>
+						<FormInputGroupHelper
+							data-id={layer.dataId("form-helper", name)}
+							themePropsType={themePropsType}
+						>
+							{helper}
+						</FormInputGroupHelper>
 					</div>
 				);
 			}}

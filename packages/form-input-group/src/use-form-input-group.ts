@@ -18,7 +18,7 @@ export const useFormInputGroup = <T extends string = string>(
 	const { disabled, ...registerOptions } = options;
 	const {
 		register,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, dirtyFields },
 	} = ctx;
 
 	let error = errors[fullPath[0]];
@@ -60,9 +60,21 @@ export const useFormInputGroup = <T extends string = string>(
 		}
 	}
 
+	let dirty: any = dirtyFields[fullPath[0]];
+	if (fullPath.length > 1) {
+		for (let i = 1; i < fullPath.length; i++) {
+			if (dirty == null || typeof dirty !== "object") {
+				dirty = false;
+				break;
+			}
+			dirty = dirty[fullPath[i]];
+		}
+	}
+
 	return {
 		ctx,
 		invalid,
+		dirty: dirty === true,
 		message,
 		props,
 	};
