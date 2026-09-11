@@ -11,8 +11,13 @@ import { useDialogText } from "./use-dialog-text";
 
 const defaultText = { okButton: "OK", cancelButton: "Cancel", title: "Confirm" };
 
-export const DialogConfirm = (props: TriggerDialogConfirm) => {
-	const { message } = props;
+export interface DialogConfirmProps extends Omit<TriggerDialogConfirm, "message"> {
+	message?: string;
+	children?: React.ReactNode;
+}
+
+export const DialogConfirm = (props: DialogConfirmProps) => {
+	const { message, children } = props;
 	const { locked, lockedType, onConfirm, onClose } = useConfirm(props);
 	const { title, okButton, cancelButton } = useDialogText(["okButton", "cancelButton", "title"], props, defaultText);
 	const layer = useLayer();
@@ -20,8 +25,9 @@ export const DialogConfirm = (props: TriggerDialogConfirm) => {
 		<>
 			<DialogHeader>
 				<DialogTitle>{title}</DialogTitle>
-				<DialogDescription>{message}</DialogDescription>
+				{message != null && message !== "" && <DialogDescription>{message}</DialogDescription>}
 			</DialogHeader>
+			{children}
 			<DialogFooter>
 				<Button
 					data-id={layer.dataId("dialog-ok")}

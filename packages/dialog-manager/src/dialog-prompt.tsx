@@ -12,8 +12,13 @@ import { useDialogText } from "./use-dialog-text";
 
 const defaultText = { okButton: "OK", cancelButton: "Cancel", title: "Prompt" };
 
-export const DialogPrompt = (props: TriggerDialogPrompt) => {
-	const { message, multiline } = props;
+export interface DialogPromptProps extends Omit<TriggerDialogPrompt, "message"> {
+	message?: string;
+	children?: React.ReactNode;
+}
+
+export const DialogPrompt = (props: DialogPromptProps) => {
+	const { message, multiline, children } = props;
 	const { locked, text, onSubmit, onChange, onClose } = usePrompt(props);
 	const { title, okButton, cancelButton } = useDialogText(["okButton", "cancelButton", "title"], props, defaultText);
 	const Input = multiline ? InputTextarea : InputText;
@@ -23,11 +28,12 @@ export const DialogPrompt = (props: TriggerDialogPrompt) => {
 		<>
 			<DialogHeader>
 				<DialogTitle>{title}</DialogTitle>
-				<DialogDescription>{message}</DialogDescription>
+				{message != null && message !== "" && <DialogDescription>{message}</DialogDescription>}
 			</DialogHeader>
 			<form id={id} onSubmit={onSubmit}>
 				<Input disabled={locked} value={text} onChange={onChange} />
 			</form>
+			{children}
 			<DialogFooter>
 				<Button
 					data-id={layer.dataId("dialog-ok")}

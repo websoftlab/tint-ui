@@ -4,7 +4,7 @@ import { useTrigger } from "@tint-ui/trigger";
 import { useDialog } from "./context";
 import { dialogTriggerHandler } from "./dialog-trigger-handler";
 
-const useAlert = (props: TriggerDialogAlert) => {
+const useAlert = (props: Pick<TriggerDialogAlert, "cancelTrigger" | "cancelHandler">) => {
 	const { cancelHandler, cancelTrigger } = props;
 	const dialog = useDialog();
 	const trigger = useTrigger();

@@ -6,7 +6,12 @@ import { createTriggerProp, useTrigger } from "@tint-ui/trigger";
 import { useDialog } from "./context";
 import { dialogTriggerHandler } from "./dialog-trigger-handler";
 
-const usePrompt = (props: TriggerDialogPrompt) => {
+const usePrompt = (
+	props: Pick<
+		TriggerDialogPrompt,
+		"initialMessage" | "confirmHandler" | "confirmTrigger" | "cancelHandler" | "cancelTrigger"
+	>
+) => {
 	const { initialMessage = "" } = props;
 	const [text, setText] = React.useState(initialMessage);
 	const ref = React.useRef(props);

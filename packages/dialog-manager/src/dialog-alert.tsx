@@ -11,8 +11,13 @@ import { useAlert } from "./use-alert";
 
 const defaultText = { okButton: "OK", title: "Alert" };
 
-export const DialogAlert = (props: TriggerDialogAlert) => {
-	const { message } = props;
+export interface DialogAlertProps extends Omit<TriggerDialogAlert, "message"> {
+	message?: string;
+	children?: React.ReactNode;
+}
+
+export const DialogAlert = (props: DialogAlertProps) => {
+	const { message, children } = props;
 	const { onClose, locked, lockedType } = useAlert(props);
 	const { title, okButton } = useDialogText(["okButton", "title"], props, defaultText);
 	const layer = useLayer();
@@ -20,8 +25,9 @@ export const DialogAlert = (props: TriggerDialogAlert) => {
 		<>
 			<DialogHeader>
 				<DialogTitle>{title}</DialogTitle>
-				<DialogDescription>{message}</DialogDescription>
+				{message != null && message !== "" && <DialogDescription>{message}</DialogDescription>}
 			</DialogHeader>
+			{children}
 			<DialogFooter>
 				<Button
 					data-id={layer.dataId("dialog-ok")}

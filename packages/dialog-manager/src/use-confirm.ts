@@ -4,7 +4,9 @@ import { useTrigger } from "@tint-ui/trigger";
 import { useDialog } from "./context";
 import { dialogTriggerHandler } from "./dialog-trigger-handler";
 
-const useConfirm = (props: TriggerDialogConfirm) => {
+const useConfirm = (
+	props: Pick<TriggerDialogConfirm, "cancelHandler" | "cancelTrigger" | "confirmHandler" | "confirmTrigger">
+) => {
 	const { cancelHandler, cancelTrigger, confirmHandler, confirmTrigger } = props;
 	const dialog = useDialog();
 	const trigger = useTrigger();
