@@ -7,6 +7,7 @@ export * from "./cell-adapter-type";
 export * from "./filter-adapter-type";
 export * from "./data-table-content";
 export * from "./data-table-pagination";
+export * from "./data-table-text-filter";
 export * from "./data-table-toolbar";
 export * from "./data-table-views-options";
 export * from "./data-table";
