@@ -14,8 +14,22 @@ const DataTablePagination = React.forwardRef<
 >(({ className, ...props }, ref) => {
 	const classes = useDataTablePaginationClasses();
 	const {
-		navbar: { mode, size },
+		navbar: { mode, size, pageSize, pageSizeOptions },
+		table,
+		totalCount,
 	} = useDataTableContext();
+
+	let min = pageSize;
+	for (const value of pageSizeOptions) {
+		if (value < min) {
+			min = value;
+		}
+	}
+
+	if (totalCount <= min && table.getPageCount() < 2) {
+		return null;
+	}
+
 	return (
 		<div {...props} data-navbar-size={size} className={clsx(classes.pagination, className)} ref={ref}>
 			<span className={classes.divider} />
