@@ -14,6 +14,7 @@ const defaultText = { okButton: "OK", cancelButton: "Cancel", title: "Confirm" }
 export interface DialogConfirmProps extends Omit<TriggerDialogConfirm, "message"> {
 	message?: string;
 	children?: React.ReactNode;
+	onClosePrevent?: boolean;
 }
 
 export const DialogConfirm = (props: DialogConfirmProps) => {

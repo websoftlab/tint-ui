@@ -4,8 +4,10 @@ import { useTrigger } from "@tint-ui/trigger";
 import { useDialog } from "./context";
 import { dialogTriggerHandler } from "./dialog-trigger-handler";
 
-const useAlert = (props: Pick<TriggerDialogAlert, "cancelTrigger" | "cancelHandler">) => {
-	const { cancelHandler, cancelTrigger } = props;
+const useAlert = (
+	props: Pick<TriggerDialogAlert, "cancelTrigger" | "cancelHandler"> & { onClosePrevent?: boolean }
+) => {
+	const { cancelHandler, cancelTrigger, onClosePrevent } = props;
 	const dialog = useDialog();
 	const trigger = useTrigger();
 	return {
@@ -18,6 +20,7 @@ const useAlert = (props: Pick<TriggerDialogAlert, "cancelTrigger" | "cancelHandl
 				trigger: cancelTrigger,
 				handler: cancelHandler,
 				lockedType: "close",
+				onClosePrevent,
 			});
 		},
 	};

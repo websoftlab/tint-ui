@@ -5,9 +5,11 @@ import { useDialog } from "./context";
 import { dialogTriggerHandler } from "./dialog-trigger-handler";
 
 const useConfirm = (
-	props: Pick<TriggerDialogConfirm, "cancelHandler" | "cancelTrigger" | "confirmHandler" | "confirmTrigger">
+	props: Pick<TriggerDialogConfirm, "cancelHandler" | "cancelTrigger" | "confirmHandler" | "confirmTrigger"> & {
+		onClosePrevent?: boolean;
+	}
 ) => {
-	const { cancelHandler, cancelTrigger, confirmHandler, confirmTrigger } = props;
+	const { cancelHandler, cancelTrigger, confirmHandler, confirmTrigger, onClosePrevent } = props;
 	const dialog = useDialog();
 	const trigger = useTrigger();
 	return {
@@ -20,6 +22,7 @@ const useConfirm = (
 				trigger: cancelTrigger,
 				handler: cancelHandler,
 				lockedType: "close",
+				onClosePrevent,
 			});
 		},
 		onConfirm() {
@@ -29,6 +32,7 @@ const useConfirm = (
 				trigger: confirmTrigger,
 				handler: confirmHandler,
 				lockedType: "confirm",
+				onClosePrevent,
 			});
 		},
 	};

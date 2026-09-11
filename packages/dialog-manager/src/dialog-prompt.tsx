@@ -15,6 +15,7 @@ const defaultText = { okButton: "OK", cancelButton: "Cancel", title: "Prompt" };
 export interface DialogPromptProps extends Omit<TriggerDialogPrompt, "message"> {
 	message?: string;
 	children?: React.ReactNode;
+	onClosePrevent?: boolean;
 }
 
 export const DialogPrompt = (props: DialogPromptProps) => {

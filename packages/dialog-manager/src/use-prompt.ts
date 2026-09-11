@@ -10,7 +10,9 @@ const usePrompt = (
 	props: Pick<
 		TriggerDialogPrompt,
 		"initialMessage" | "confirmHandler" | "confirmTrigger" | "cancelHandler" | "cancelTrigger"
-	>
+	> & {
+		onClosePrevent?: boolean;
+	}
 ) => {
 	const { initialMessage = "" } = props;
 	const [text, setText] = React.useState(initialMessage);
@@ -36,7 +38,7 @@ const usePrompt = (
 				if (!message.length) {
 					return;
 				}
-				const { confirmHandler, confirmTrigger } = ref.current;
+				const { confirmHandler, confirmTrigger, onClosePrevent } = ref.current;
 				let triggerMerge = confirmTrigger;
 				if (confirmTrigger) {
 					const { name, props } = createTriggerProp(confirmTrigger);
@@ -47,6 +49,7 @@ const usePrompt = (
 					service: trigger,
 					lockedType: "submit",
 					trigger: triggerMerge,
+					onClosePrevent,
 					handler: () => {
 						if (typeof confirmHandler === "function") {
 							return confirmHandler(message);
@@ -55,13 +58,14 @@ const usePrompt = (
 				});
 			},
 			onClose() {
-				const { cancelHandler, cancelTrigger } = ref.current;
+				const { cancelHandler, cancelTrigger, onClosePrevent } = ref.current;
 				return dialogTriggerHandler("prompt", {
 					dialog,
 					service: trigger,
 					trigger: cancelTrigger,
 					handler: cancelHandler,
 					lockedType: "close",
+					onClosePrevent,
 				});
 			},
 		};

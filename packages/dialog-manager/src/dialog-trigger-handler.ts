@@ -11,17 +11,20 @@ const dialogTriggerHandler = async (
 		trigger?: TriggerProp | undefined;
 		handler?: (() => void | Promise<void>) | undefined;
 		lockedType?: string;
+		onClosePrevent?: boolean;
 	}
 ) => {
 	const { dialog } = options;
 	if (dialog.locked) {
 		return;
 	}
-	const { service, trigger, handler, lockedType } = options;
+	const { service, trigger, handler, lockedType, onClosePrevent = false } = options;
 	const complete = (err?: unknown) => {
 		dialog.setLocked(false);
 		if (err == null) {
-			dialog.onClose();
+			if (!onClosePrevent) {
+				dialog.onClose();
+			}
 		} else if (service.registered("toast")) {
 			service.emit("toast", {
 				id: `dialog-${type}`,

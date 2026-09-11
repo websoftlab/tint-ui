@@ -14,6 +14,7 @@ const defaultText = { okButton: "OK", title: "Alert" };
 export interface DialogAlertProps extends Omit<TriggerDialogAlert, "message"> {
 	message?: string;
 	children?: React.ReactNode;
+	onClosePrevent?: boolean;
 }
 
 export const DialogAlert = (props: DialogAlertProps) => {
